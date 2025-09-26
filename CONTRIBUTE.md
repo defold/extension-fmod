@@ -23,7 +23,7 @@ Alternatively, if you don't want to install Python on your system, you can run
 it through Docker:
 
 ```
-docker-compose -f bridge/docker-compose.generate_bindings.yml up
+docker compose -f bridge/docker compose.generate_bindings.yml up
 ```
 
 The bridge library comes with compilation scripts for each platform:
@@ -57,7 +57,7 @@ You can build all of these in one go with Docker:
 
 ```bash
 cd bridge
-docker-compose up
+docker compose up
 ```
 
 Or use the respective Makefiles to build manually. Make sure to match
