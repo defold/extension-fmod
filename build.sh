@@ -8,7 +8,7 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 
 echo -e "${YELLOW}Generating bindings...${NC}"
-docker compose -f bridge/docker compose.generate_bindings.yml up
+docker compose -f bridge/docker-compose.generate_bindings.yml up
 
 echo -e "${YELLOW}Building...${NC}"
 cd bridge

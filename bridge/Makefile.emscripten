@@ -9,7 +9,7 @@ HEADERS = src/fmod_bridge.h
 CC := emcc
 AR := emar
 
-CFLAGS := -O3 -fvisibility=hidden -I./include
+CFLAGS := -O3 -fvisibility=hidden -I./include -s USE_PTHREADS=0 -s ALLOW_MEMORY_GROWTH=1 -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","addFunction","removeFunction"]' -s EXPORTED_FUNCTIONS='["_main","_malloc","_free","_FMODBridge_unmuteAfterUserInteraction"]' -s INITIAL_MEMORY=16MB
 
 all: $(LIBPATH)
 

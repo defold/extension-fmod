@@ -59,7 +59,13 @@ static FMOD_SPEAKERMODE speakerModeFromString(const char* str) {
 
 void FMODBridge_init(lua_State *L) {
     #ifdef __EMSCRIPTEN__
-    EM_ASM(Module.cwrap = Module.cwrap || cwrap);
+    EM_ASM({
+        if (typeof Module !== 'undefined' && typeof cwrap !== 'undefined') {
+            if (typeof Module.cwrap === 'undefined') {
+                Module.cwrap = cwrap;
+            }
+        }
+    });
     #endif
 
     #ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
@@ -136,13 +142,17 @@ void FMODBridge_init(lua_State *L) {
 
     #ifdef __EMSCRIPTEN__
     EM_ASM({
-        Module._FMODBridge_onClick = function () {
-            ccall('FMODBridge_unmuteAfterUserInteraction', null, [], []);
-            Module.canvas.removeEventListener('click', Module._FMODBridge_onClick);
-            Module.canvas.removeEventListener('touchend', Module._FMODBridge_onClick);
-        };
-        Module.canvas.addEventListener('click', Module._FMODBridge_onClick);
-        Module.canvas.addEventListener('touchend', Module._FMODBridge_onClick, false);
+        if (typeof Module !== 'undefined' && typeof Module.canvas !== 'undefined') {
+            Module._FMODBridge_onClick = function () {
+                if (typeof Module.ccall !== 'undefined') {
+                    Module.ccall('FMODBridge_unmuteAfterUserInteraction', null, [], []);
+                }
+                Module.canvas.removeEventListener('click', Module._FMODBridge_onClick);
+                Module.canvas.removeEventListener('touchend', Module._FMODBridge_onClick);
+            };
+            Module.canvas.addEventListener('click', Module._FMODBridge_onClick);
+            Module.canvas.addEventListener('touchend', Module._FMODBridge_onClick, false);
+        }
     });
     #endif
 
@@ -188,7 +198,9 @@ void FMODBridge_finalize() {
 
     #ifdef __EMSCRIPTEN__
     EM_ASM({
-        Module.canvas.removeEventListener('click', Module._FMODBridge_onClick);
+        if (typeof Module !== 'undefined' && typeof Module.canvas !== 'undefined' && typeof Module._FMODBridge_onClick !== 'undefined') {
+            Module.canvas.removeEventListener('click', Module._FMODBridge_onClick);
+        }
     });
     #endif
 
@@ -220,7 +232,7 @@ void FMODBridge_suspendMixer() {
 }
 
 #ifdef __EMSCRIPTEN__
-__attribute__((used))
+EMSCRIPTEN_KEEPALIVE
 void FMODBridge_unmuteAfterUserInteraction() {
     if (FMODBridge_system && !FMODBridge_isPaused) {
         attachJNI();
