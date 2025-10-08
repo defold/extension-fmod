@@ -1,10 +1,5 @@
 ![fmod](./docs/fmod_logo.png)
 
-# Pending tasks:
-
-- [ ] Add macro preprocessing to the bridge `gcc -E -std=c99` as pycparser uses c99
-- [ ] Add android clang 
-
 # FMOD extension for Defold
 
 > [FMOD] sound engine bindings for Defold

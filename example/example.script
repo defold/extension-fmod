@@ -53,6 +53,9 @@ function init(self)
 end
 
 local function update_attributes(attr, dt, new_position)
+  if new_position.x ~= new_position.x or attr.position.x ~= attr.position.x then
+    return
+  end
   local delta_pos = new_position - attr.position
   attr.position = new_position
   attr.velocity = delta_pos * (1.0 / dt)

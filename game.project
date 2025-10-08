@@ -1,5 +1,5 @@
 [project]
-title = FMOD Example
+title = FMODexample
 version = 0.1
 custom_resources = example/banks/
 
@@ -30,4 +30,5 @@ speaker_mode = 5.1
 
 [html5]
 heap_size = 512
+htmlfile = /engine_template.html
 

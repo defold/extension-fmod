@@ -9,19 +9,19 @@ HEADERS = src/fmod_bridge.h
 CC := emcc
 AR := emar
 
-CFLAGS := -O3 -fvisibility=hidden -I./include -s USE_PTHREADS=0 -s ALLOW_MEMORY_GROWTH=1 -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","addFunction","removeFunction"]' -s EXPORTED_FUNCTIONS='["_main","_malloc","_free","_FMODBridge_unmuteAfterUserInteraction"]' -s INITIAL_MEMORY=16MB
+CFLAGS := -O3 -fvisibility=hidden -I./include -s USE_PTHREADS=1 -s ALLOW_MEMORY_GROWTH=1 -s SHARED_MEMORY=1 -s LEGACY_RUNTIME=1 -s EXPORTED_RUNTIME_METHODS=cwrap,ccall,getValue,setValue
 
 all: $(LIBPATH)
 
-OBJECTS = $(patsubst src/%.c,build/js-%.bc,$(SOURCES))
+OBJECTS = $(patsubst src/%.c,build/js-%.o,$(SOURCES))
 
-build/js-%.bc: src/%.c $(HEADERS)
+build/js-%.o: src/%.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIBPATH): $(OBJECTS)
 	$(AR) rcs $@ $^
 
 clean:
-	rm -f $(LIBPATH) build/js-*.bc
+	rm -f $(LIBPATH) build/js-*.o
 
 .PHONY: all clean
