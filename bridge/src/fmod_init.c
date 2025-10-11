@@ -200,6 +200,7 @@ void FMODBridge_suspendMixer() {
 
 #ifdef __EMSCRIPTEN__
 EMSCRIPTEN_KEEPALIVE
+__attribute__((used))
 void FMODBridge_unmuteAfterUserInteraction() {
     if (FMODBridge_system && !FMODBridge_isPaused) {
         attachJNI();

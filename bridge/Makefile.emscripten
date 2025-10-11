@@ -9,8 +9,7 @@ HEADERS = src/fmod_bridge.h
 CC := emcc
 AR := emar
 
-CFLAGS := -O3 -fvisibility=hidden -I./include -s USE_PTHREADS=1 -s ALLOW_MEMORY_GROWTH=1 -s SHARED_MEMORY=1 -s LEGACY_RUNTIME=1 -s EXPORTED_RUNTIME_METHODS=cwrap,ccall,getValue,setValue
-
+CFLAGS := -O3 -fvisibility=hidden -I./include -s ALLOW_MEMORY_GROWTH=1 -s LEGACY_RUNTIME=1
 all: $(LIBPATH)
 
 OBJECTS = $(patsubst src/%.c,build/js-%.o,$(SOURCES))

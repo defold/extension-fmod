@@ -19,3 +19,13 @@ platforms:
   x86-win32:
     context:
       libs: ["shlwapi.lib"]
+
+  js-web:
+    context:
+      libs: ["fmodbridge", "fmodstudio"]
+      emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=callMain,UTF8ToString,HEAPU8,stringToNewUTF8,cwrap,ccall,getValue,setValue"]
+
+  wasm-web:
+    context:
+      libs: ["fmodbridge", "fmodstudio"]
+      emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=callMain,UTF8ToString,HEAPU8,stringToNewUTF8,cwrap,ccall,getValue,setValue"]

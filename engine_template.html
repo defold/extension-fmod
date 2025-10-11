@@ -105,105 +105,36 @@
 	<script id='engine-setup' type='text/javascript'>
 		// From here you can configure game startup parameters via the CUSTOM_PARAMETERS object,
 		// override ProgressView to create your own loader. See dmloader.js for more details.
-		
-		// Fix for Module.cwrap, getValue, setValue functions not being available
-		// This ensures all required Emscripten runtime methods are available
+        function fakeCwrap(name, returnType, argTypes) {
+            return function (...args){
+                console.error(`cwrap function called but not implemented, using ccall instead.\nName: "${name}", returnType: "${returnType}", argTypes: "${argTypes}", args: "${args}"`);
+                return Module.ccall(name, returnType, argTypes, args);
+                // Module.ccall('JSWriteDump', 'null', ['string'], [JSON.stringify(errorObject.stack)]);
+            }
+
+
+            return function() {
+                return null;
+            };
+        }
+        
 		var originalOnRuntimeInitialized = Module.onRuntimeInitialized;
 		Module.onRuntimeInitialized = function() {
-			// Call the original onRuntimeInitialized if it exists
 			if (originalOnRuntimeInitialized) {
 				originalOnRuntimeInitialized.call(this);
 			}
-			
-            // temporary bypass overrid
 			if (!Module.cwrap) {
 				console.warn('Module.cwrap is not available. Adding fallback implementation.');
-				Module.cwrap = function(name, returnType, argTypes) {
-					return function() {
-						console.error('cwrap function called but not properly implemented. Function:', name, returnType, argTypes);
-						return null;
-					};
-				};
+				Module.cwrap = fakeCwrap
 			}
-			
-			if (!Module.getValue) {
-				console.warn('Module.getValue is not available. Adding fallback implementation.');
-				Module.getValue = function(ptr, type) {
-					console.error('getValue function called but not properly implemented. Ptr:', ptr, 'Type:', type);
-					return 0;
-				};
-			}
-			
-			if (!Module.setValue) {
-				console.warn('Module.setValue is not available. Adding fallback implementation.');
-				Module.setValue = function(ptr, value, type) {
-					console.error('setValue function called but not properly implemented. Ptr:', ptr, 'Value:', value, 'Type:', type);
-				};
-			}
-			
-			if (!Module.ccall) {
-				console.warn('Module.ccall is not available. Adding fallback implementation.');
-				Module.ccall = function(name, returnType, argTypes, args) {
-					console.error('ccall function called but not properly implemented. Function:', name);
-					return null;
-				};
-			}
-		};
-		
-		// Also add the fix immediately in case Module is already defined
-		if (typeof Module !== 'undefined' && Module) {
+        };
+        
+        if (typeof Module !== 'undefined' && Module) {
 			if (!Module.cwrap) {
-				Module.cwrap = function(name, returnType, argTypes) {
-					console.warn('Module.cwrap is not available. Adding fallback implementation.');
-					return function() {
-						console.error('cwrap function called but not properly implemented. Function:', name);
-						return null;
-					};
-				};
+                console.warn('Module.cwrap. Adding fallback.')
+				Module.cwrap = fakeCwrap;
 			}
-			
-			if (!Module.getValue) {
-				Module.getValue = function(ptr, type) {
-					console.warn('Module.getValue is not available. Adding fallback implementation.');
-					return 0;
-				};
-			}
-			
-			if (!Module.setValue) {
-				Module.setValue = function(ptr, value, type) {
-					console.warn('Module.setValue is not available. Adding fallback implementation.');
-				};
-			}
-			
-			if (!Module.ccall) {
-				Module.ccall = function(name, returnType, argTypes, args) {
-					console.warn('Module.ccall is not available. Adding fallback implementation.');
-					return null;
-				};
-			}
-		}
-		
-		// Additional immediate fix - try to add functions to Module as soon as possible
-		window.addEventListener('load', function() {
-			if (typeof Module !== 'undefined' && Module) {
-				if (!Module.getValue) {
-					console.warn('Adding getValue fallback on window load');
-					Module.getValue = function(ptr, type) {
-						console.warn('getValue fallback called with ptr:', ptr, 'type:', type);
-						return 0;
-					};
-				}
-				if (!Module.cwrap) {
-					console.warn('Adding cwrap fallback on window load');
-					Module.cwrap = function(name, returnType, argTypes) {
-						return function() {
-							console.warn('cwrap fallback called for function:', name);
-							return null;
-						};
-					};
-				}
-			}
-		});
+        }
 	</script>
 	<script id='engine-start' type='text/javascript'>
 		var runningFromFileWarning = document.getElementById("running-from-file-warning");
