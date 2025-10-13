@@ -30,7 +30,3 @@ speaker_mode = 5.1
 
 [html5]
 heap_size = 512
-htmlfile = /engine_template.html
-
-[native_extension]
-app_manifest = /main.appmanifest

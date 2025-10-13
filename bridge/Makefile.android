@@ -13,7 +13,6 @@ HEADERS = \
 JAVA_FILES = \
 	src/me/petcu/fmodbridge/BridgeHelper.java
 
-# ANDROID_NDK ?= $(HOME)/Tools/android-ndk-r17c
 ANDROID_NDK ?= /opt/android-ndk-r25b
 HOST_TAG ?= `uname | tr A-Z a-z`-x86_64
 
