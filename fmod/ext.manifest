@@ -12,6 +12,14 @@ platforms:
     context:
       frameworks: ["AVFoundation"]
 
+  armv7-android:
+    context:
+      libs: ["fmodbridge"]
+
+  arm64-android:
+    context:
+      libs: ["fmodbridge"]
+
   x86_64-win32:
     context:
       libs: ["shlwapi.lib"]

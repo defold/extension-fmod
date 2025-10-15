@@ -14,11 +14,13 @@ JAVA_FILES = \
 	src/me/petcu/fmodbridge/BridgeHelper.java
 
 ANDROID_NDK ?= /opt/android-ndk-r25b
-HOST_TAG ?= `uname | tr A-Z a-z`-x86_64
+HOST_TAG ?= linux-x86_64
 
-CC_ARM := $(ANDROID_NDK)/toolchains/llvm/prebuilt/$(HOST_TAG)/bin/clang -target armv7a-linux-androideabi14 --sysroot=$(ANDROID_NDK)/sysroot -I$(ANDROID_NDK)/sysroot/usr/include/arm-linux-androideabi
-CC_ARM64 := $(ANDROID_NDK)/toolchains/llvm/prebuilt/$(HOST_TAG)/bin/clang -target aarch64-linux-androideabi21 --sysroot=$(ANDROID_NDK)/sysroot -I$(ANDROID_NDK)/sysroot/usr/include/aarch64-linux-android
-AR := $(ANDROID_NDK)/toolchains/llvm/prebuilt/$(HOST_TAG)/bin/llvm-ar
+# prebuilt compiler from the NDK toolchain
+TOOLCHAIN_PREFIX := $(ANDROID_NDK)/toolchains/llvm/prebuilt/$(HOST_TAG)
+CC_ARM := $(TOOLCHAIN_PREFIX)/bin/armv7a-linux-androideabi19-clang
+CC_ARM64 := $(TOOLCHAIN_PREFIX)/bin/aarch64-linux-android21-clang
+AR := $(TOOLCHAIN_PREFIX)/bin/llvm-ar
 
 CFLAGS := -std=c11 -O3 -fvisibility=hidden -I./include -fpic -fomit-frame-pointer \
 	-fno-strict-aliasing -funwind-tables -ffunction-sections -fstack-protector \
