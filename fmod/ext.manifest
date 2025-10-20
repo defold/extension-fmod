@@ -1,9 +1,11 @@
 name: "DefoldFMOD"
 platforms:
+  arm64-osx:
+    context:
+      libs: ["fmodbridge"]
   arm64-ios:
     context:
       frameworks: ["AVFoundation"]
-
   armv7-ios:
     context:
       frameworks: ["AVFoundation"]
