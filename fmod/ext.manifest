@@ -1,6 +1,6 @@
 name: "DefoldFMOD"
 platforms:
-  arm64-osx:
+  osx:
     context:
       libs: ["fmodbridge"]
   arm64-ios:
