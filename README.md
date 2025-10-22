@@ -2,21 +2,7 @@
 ![](https://img.shields.io/badge/FMOD-2.03.09-green)
 ![](https://img.shields.io/badge/Emscripten-4.0.6+3.1.67-green)
 
-
-<div style="
-border-radius: 10px;
-background: #000000;
-background: linear-gradient(95deg, rgba(0, 0, 0, 1) 0%, rgba(255, 60, 42, 1) 10%, rgba(255, 210, 21, 1) 20%, rgba(28, 104, 236, 1) 30%, rgba(0, 233, 223, 1) 40%, rgba(255, 255, 255, 1) 50%, rgba(0, 0, 0, 1) 100%);
-display: flex;
-justify-content: center;
-align-items: center;
-flex-direction: row;
-padding: 10px;
-gap: 5px;
-">
-        <img src="./docs/logo-ver-classic.svg" style="filter:drop-shadow(-2px 5px 1px #ededed);" width="100" >
-        <img src="./docs/fmod_logo.png" style="filter:drop-shadow(2px 5px 1px #ededed);" width="200" >
-</div>
+![](./docs/defmod_banner.png)
 
 # Defold FMOD Extension
 > [FMOD] sound engine bindings for Defold
