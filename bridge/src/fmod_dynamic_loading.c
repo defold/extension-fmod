@@ -283,6 +283,8 @@ bool FMODBridge_linkLibraries() {
         #define FMB_ARCH "x86_64"
         #elif defined(__i386) || defined(_M_IX86)
         #define FMB_ARCH "x86"
+        #elif defined(__aarch64__) || defined(__arm64__) || defined(_M_ARM64)
+        #define FMB_ARCH "arm64"
         #endif
 
         #if defined(FMB_PLATFORM) && defined(FMB_ARCH)
