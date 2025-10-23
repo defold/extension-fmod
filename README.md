@@ -1,7 +1,10 @@
-![fmod](./docs/fmod_logo.png)
+![](https://img.shields.io/badge/Defold-1.11.2+-green)
+![](https://img.shields.io/badge/FMOD-2.03.09-green)
+![](https://img.shields.io/badge/Emscripten-4.0.6+3.1.67-green)
 
-# FMOD extension for Defold
+![](./docs/defmod_banner.png)
 
+# Defold FMOD Extension
 > [FMOD] sound engine bindings for Defold
 
 **Commercial usage of FMOD products may require a separate license directly with
@@ -15,8 +18,21 @@ least the words "FMOD" (OR "FMOD STUDIO" IF APPLICABLE) AND "FIRELIGHT TECHNOLOG
 
 ## Installation
 
-Go to the [Releases page](https://github.com/dapetcu21/defold-fmod/releases),
+Go to the [Releases page](https://github.com/defold/extension-fmod/releases),
 copy a dependency URL, then add it to your dependencies in `game.project`.
+
+### Running in the editor
+
+The game will bundle fine, but in order for FMOD to be available when running
+from the editor, an extra step is required.
+
+Copy the `fmod/res` directory from this repo to a directory in your project
+and add the path to that directory to your `game.project`:
+
+```
+[fmod]
+lib_path = path/to/fmod/res
+```
 
 ### Set the speaker mode
 
@@ -51,19 +67,6 @@ depends from game to game, but for this example to run, it needs a 512MB heap.
 ```
 [html5]
 heap_size = 512
-```
-
-### Running in the editor
-
-The game will bundle fine, but in order for FMOD to be available when running
-from the editor, an extra step is required.
-
-Copy the `fmod/res` directory from this repo to a directory in your project
-and add the path to that directory to your `game.project`:
-
-```
-[fmod]
-lib_path = path/to/fmod/res
 ```
 
 ## Usage
