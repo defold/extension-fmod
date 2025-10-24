@@ -35,9 +35,9 @@ platforms:
   js-web:
     context:
       libs: ["fmodbridge", "fmodstudio"]
-      emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\"]"]
+      emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]"]
 
   wasm-web:
     context:
       libs: ["fmodbridge", "fmodstudio"]
-      emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\"]"]
+      emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]"]
