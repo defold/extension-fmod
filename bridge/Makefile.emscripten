@@ -1,4 +1,5 @@
 LIBPATH := ../fmod/lib/web/libfmodbridge.a
+LIBPATH_PTHREAD := ../fmod/lib/wasm_pthread-web/libfmodbridge.a
 
 SOURCES = \
 	src/fmod_init.c \
@@ -10,8 +11,11 @@ CC := emcc
 AR := emar
 
 CFLAGS := -O3 -fvisibility=hidden -I./include -s ALLOW_MEMORY_GROWTH=1 -s LEGACY_RUNTIME=1
-all: $(LIBPATH)
+CFLAGS_PTHREAD := -O3 -fvisibility=hidden -I./include -s ALLOW_MEMORY_GROWTH=1 -pthread -s PTHREAD_POOL_SIZE=5
 
+all: $(LIBPATH) $(LIBPATH_PTHREAD)
+
+# Regular build
 OBJECTS = $(patsubst src/%.c,build/js-%.o,$(SOURCES))
 
 build/js-%.o: src/%.c $(HEADERS)
@@ -20,7 +24,16 @@ build/js-%.o: src/%.c $(HEADERS)
 $(LIBPATH): $(OBJECTS)
 	$(AR) rcs $@ $^
 
+# Pthread build
+OBJECTS_PTHREAD = $(patsubst src/%.c,build/js-pthread-%.o,$(SOURCES))
+
+build/js-pthread-%.o: src/%.c $(HEADERS)
+	$(CC) $(CFLAGS_PTHREAD) -c $< -o $@
+
+$(LIBPATH_PTHREAD): $(OBJECTS_PTHREAD)
+	$(AR) rcs $@ $^
+
 clean:
-	rm -f $(LIBPATH) build/js-*.o
+	rm -f $(LIBPATH) $(LIBPATH_PTHREAD) build/js-*.o build/js-pthread-*.o
 
 .PHONY: all clean
