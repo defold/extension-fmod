@@ -83,3 +83,37 @@ common prefix of the files you downloaded as the first argument:
 # For example, if you downloaded FMOD 2.01.07:
 ./update_fmod.sh ~/Downloads/fmodstudioapi20107
 ```
+
+## Testing HTML5/WASM pthread builds locally
+
+WASM pthread builds require specific CORS headers to enable `SharedArrayBuffer`. 
+Regular `python3 -m http.server` will **not** work so please send required headers.
+
+**Required headers:**
+- `Cross-Origin-Opener-Policy: same-origin`
+- `Cross-Origin-Embedder-Policy: require-corp`
+
+So for python serving, you can add the request CORS handler like
+```python3
+class CORSRequestHandler(SimpleHTTPRequestHandler):
+    (...)
+    def end_headers(self):
+        self.send_header('Cross-Origin-Opener-Policy', 'same-origin')
+        self.send_header('Cross-Origin-Embedder-Policy', 'require-corp')
+```
+
+
+**Build with both architectures** (loader needs both for fallback):
+
+```bash
+java -jar bob.jar build bundle --platform js-web \
+  --architectures wasm-web,wasm_pthread-web \
+  --bundle-format html5
+  (...)
+```
+
+Validate in the console
+
+```javascript
+console.log("Pthread:", Module.isWASMPthreadSupported);  // Should be: true
+```

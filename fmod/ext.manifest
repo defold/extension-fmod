@@ -32,12 +32,11 @@ platforms:
     context:
       libs: ["shlwapi.lib"]
 
-  js-web:
+  web:
     context:
       libs: ["fmodbridge", "fmodstudio"]
       emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]"]
 
-  wasm-web:
+  wasm_pthread-web:
     context:
-      libs: ["fmodbridge", "fmodstudio"]
-      emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]"]
+      emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]", "-pthread", "-s PTHREAD_POOL_SIZE=5"]

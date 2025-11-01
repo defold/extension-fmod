@@ -29,17 +29,44 @@ find "$TMPDIR/win" -type f -path "*/api/studio/lib/x64/fmodstudio.dll" -exec cp 
 find "$TMPDIR/win" -type f -path "*/api/core/lib/x86/fmod.dll" -exec cp {} "$REPO/fmod/res/x86-win32/fmod-x86/fmod.dll" \;
 find "$TMPDIR/win" -type f -path "*/api/studio/lib/x86/fmodstudio.dll" -exec cp {} "$REPO/fmod/res/x86-win32/fmod-x86/fmodstudio.dll" \;
 
-# cp "$TMPDIR/win"/*/*/api/core/lib/x64/fmod.dll "$REPO/fmod/res/x86_64-win32/fmod-x86_64/fmod.dll"
-# cp "$TMPDIR/win"/*/*/api/studio/lib/x64/fmodstudio.dll "$REPO/fmod/res/x86_64-win32/fmod-x86_64/fmodstudio.dll"
-# cp "$TMPDIR/win"/*/*/api/core/lib/x86/fmod.dll "$REPO/fmod/res/x86-win32/fmod-x86/fmod.dll"
-# cp "$TMPDIR/win"/*/*/api/studio/lib/x86/fmodstudio.dll "$REPO/fmod/res/x86-win32/fmod-x86/fmodstudio.dll"
-
-
 echo -e "${YELLOW}Updating HTML5 FMOD...${NC}"
 mkdir -p "$TMPDIR/html5"
 unzip "${PREFIX}html5${FMOD_PATCH_POSTFIX}.zip" -d "$TMPDIR/html5"
-# cp "$TMPDIR/html5"/*/api/studio/lib/upstream/w32/fmodstudio.a $REPO/fmod/lib/web/libfmodstudio.a
-find "$TMPDIR/html5" -type f -path "*/api/studio/lib/upstream/w32/fmodstudio.a" -exec cp {} "$REPO/fmod/lib/web/libfmodstudio.a" \;
+
+# Regular WASM libraries (non-pthread)
+# FMOD w32 libs are split - we need both _wasm.a and _bindings.a combined
+echo -e "${YELLOW}Extracting regular WASM libraries...${NC}"
+find "$TMPDIR/html5" -type f -path "*/api/studio/lib/w32/fmodstudio_wasm.a" -exec cp {} "$REPO/fmod/lib/web/libfmodstudio_wasm.a" \;
+find "$TMPDIR/html5" -type f -path "*/api/studio/lib/w32/fmodstudio_bindings.a" -exec cp {} "$REPO/fmod/lib/web/libfmodstudio_bindings.a" \;
+
+# Combine split libraries into single archive
+cd "$REPO/fmod/lib/web"
+ar -M <<EOF
+CREATE libfmodstudio.a
+ADDLIB libfmodstudio_wasm.a
+ADDLIB libfmodstudio_bindings.a
+SAVE
+END
+EOF
+rm libfmodstudio_wasm.a libfmodstudio_bindings.a
+
+# Pthread WASM libraries
+echo -e "${YELLOW}Extracting pthread WASM libraries...${NC}"
+mkdir -p "$REPO/fmod/lib/wasm_pthread-web"
+find "$TMPDIR/html5" -type f -path "*/api/studio/lib/w32/fmodstudioP_wasm.a" -exec cp {} "$REPO/fmod/lib/wasm_pthread-web/libfmodstudio_wasm.a" \;
+find "$TMPDIR/html5" -type f -path "*/api/studio/lib/w32/fmodstudioP_bindings.a" -exec cp {} "$REPO/fmod/lib/wasm_pthread-web/libfmodstudio_bindings.a" \;
+
+# Combine pthread split libraries into single archive
+cd "$REPO/fmod/lib/wasm_pthread-web"
+ar -M <<EOF
+CREATE libfmodstudio.a
+ADDLIB libfmodstudio_wasm.a
+ADDLIB libfmodstudio_bindings.a
+SAVE
+END
+EOF
+rm libfmodstudio_wasm.a libfmodstudio_bindings.a
+cd "$REPO"
 
 
 echo -e "${YELLOW}Updating Android FMOD...${NC}"
