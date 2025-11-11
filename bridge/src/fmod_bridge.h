@@ -93,10 +93,6 @@ extern FMOD_SYSTEM* FMODBridge_lowLevelSystem;
 extern bool FMODBridge_isPaused;
 
 #ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
-extern dlModuleT FMODBridge_dlHandleLL;
-extern dlModuleT FMODBridge_dlHandleST;
-extern bool FMODBridge_isLinked;
-bool FMODBridge_linkLibraries();
 void FMODBridge_cleanupLibraries();
 #endif
 
@@ -120,30 +116,6 @@ void FMODBridge_detachJNI();
 #define detachJNI()
 #endif
 
-#ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
-
-#ifdef _WIN32
-#define getSymbol GetProcAddress
-#define getSymbolPrintError(fname) LOGE("GetProcAddress(\"%s\"): %lu", STRINGIFY(fname), GetLastError())
-#else
-#define getSymbol dlsym
-#define getSymbolPrintError(fname) LOGE("dlsym(\"%s\"): %s", STRINGIFY(fname), dlerror())
-#endif
-
-#define ensure_(lib, fname, retType, ...) \
-    static retType (F_CALL *fname)(__VA_ARGS__) = NULL; \
-    if (!fname) { \
-        fname = (retType (F_CALL *)(__VA_ARGS__))getSymbol(RESOLVE(CONCAT(FMODBridge_dlHandle, lib)), STRINGIFY(fname)); \
-        if (!fname) { \
-            getSymbolPrintError(fname); \
-            abort(); \
-        } \
-    }
-
-#define ensure(lib, fname, retType, ...) ensure_(lib, fname, retType, __VA_ARGS__)
-
-#else
 #define ensure(lib, fname, retType, ...)
-#endif
 
 #endif

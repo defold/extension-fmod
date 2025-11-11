@@ -2,13 +2,10 @@ name: "DefoldFMOD"
 platforms:
   osx:
     context:
-      libs: ["fmodbridge"]
+      dynamicLibs: ["fmod", "fmodstudio"]
+      linkFlags: ["-Wl,-rpath,@executable_path"]
 
   arm64-ios:
-    context:
-      frameworks: ["AVFoundation"]
-
-  armv7-ios:
     context:
       frameworks: ["AVFoundation"]
 
