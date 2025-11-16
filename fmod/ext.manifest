@@ -31,7 +31,10 @@ platforms:
   x86-win32:
     context:
       libs: ["shlwapi.lib"]
-
+  x86_64-linux:
+    context:
+      libs: ["fmodbridge"]
+      dynamicLibs: ["fmod", "fmodstudio"]
   web:
     context:
       libs: ["fmodbridge", "fmodstudio"]
