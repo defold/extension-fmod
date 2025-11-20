@@ -1,8 +1,16 @@
 #ifndef FMOD_BRIDGE_H
 #define FMOD_BRIDGE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <dmsdk/lua/lua.h>
 #include <dmsdk/lua/lauxlib.h>
+
+#ifdef __cplusplus
+}
+#endif
 
 #include <stdint.h>
 #include <stdbool.h>
