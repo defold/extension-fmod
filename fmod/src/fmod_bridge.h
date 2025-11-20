@@ -1,14 +1,14 @@
 #ifndef FMOD_BRIDGE_H
 #define FMOD_BRIDGE_H
 
-#include <luajit-2.0/lua.h>
-#include <luajit-2.0/lauxlib.h>
+#include <dmsdk/lua/lua.h>
+#include <dmsdk/lua/lauxlib.h>
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <fmod_studio.h>
-#include <fmod.h>
+#include <fmod/fmod_studio.h>
+#include <fmod/fmod.h>
 
 #ifdef __APPLE__
     #include "TargetConditionals.h"

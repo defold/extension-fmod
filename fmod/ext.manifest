@@ -2,7 +2,10 @@ name: "DefoldFMOD"
 platforms:
   osx:
     context:
-      libs: ["fmodbridge"]
+      flags: ["-fvisibility=hidden"]
+      defines: ["FMOD_FORCE_STATIC_LINK"]
+      dynamicLibs: ["fmod", "fmodstudio"]
+      linkFlags: ["-Wl,-rpath,@executable_path"]
 
   arm64-ios:
     context:
