@@ -63,6 +63,10 @@
                 TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, ONE, throwaway)
 #define SELECT_10TH(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, ...) a10
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Extension API
 typedef unsigned int FMODBridge_HBuffer;
 int FMODBridge_dmBuffer_GetBytes(FMODBridge_HBuffer, void**, uint32_t*);
@@ -144,6 +148,10 @@ void FMODBridge_detachJNI();
 
 #else
 #define ensure(lib, fname, retType, ...)
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif
