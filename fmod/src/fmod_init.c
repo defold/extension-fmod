@@ -1,5 +1,5 @@
 #include "fmod_bridge.h"
-#include <fmod_errors.h>
+#include <fmod/fmod_errors.h>
 #include <string.h>
 
 #ifdef __EMSCRIPTEN__
@@ -25,9 +25,6 @@ FMOD_STUDIO_SYSTEM* FMODBridge_system = NULL;
 FMOD_SYSTEM* FMODBridge_lowLevelSystem = NULL;
 bool FMODBridge_isPaused = false;
 
-#ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
-bool FMODBridge_isLinked = false;
-#endif
 
 static bool runWhileIconified = false;
 static bool iconified = false;
@@ -59,14 +56,6 @@ static FMOD_SPEAKERMODE speakerModeFromString(const char* str) {
 } while(0)
 
 void FMODBridge_init(lua_State *L) {
-    #ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
-    FMODBridge_isLinked = FMODBridge_linkLibraries();
-    if (!FMODBridge_isLinked) {
-        LOGW("FMOD libraries could not be loaded. FMOD will be disabled for this session");
-        return;
-    }
-    #endif
-
     attachJNI();
 
     ensure(ST, FMOD_Studio_System_Create, FMOD_RESULT, FMOD_STUDIO_SYSTEM**, unsigned int);
@@ -170,10 +159,6 @@ void FMODBridge_finalize() {
 
         detachJNI();
     }
-
-    #ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
-    if (FMODBridge_isLinked) { FMODBridge_cleanupLibraries(); }
-    #endif
 }
 
 void FMODBridge_resumeMixer() {

@@ -1,14 +1,22 @@
 #ifndef FMOD_BRIDGE_H
 #define FMOD_BRIDGE_H
 
-#include <luajit-2.0/lua.h>
-#include <luajit-2.0/lauxlib.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <dmsdk/lua/lua.h>
+#include <dmsdk/lua/lauxlib.h>
+
+#ifdef __cplusplus
+}
+#endif
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <fmod_studio.h>
-#include <fmod.h>
+#include <fmod/fmod_studio.h>
+#include <fmod/fmod.h>
 
 #ifdef __APPLE__
     #include "TargetConditionals.h"
@@ -62,6 +70,10 @@
     SELECT_10TH(__VA_ARGS__, TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE,\
                 TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, ONE, throwaway)
 #define SELECT_10TH(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, ...) a10
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Extension API
 typedef unsigned int FMODBridge_HBuffer;
@@ -144,6 +156,10 @@ void FMODBridge_detachJNI();
 
 #else
 #define ensure(lib, fname, retType, ...)
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif

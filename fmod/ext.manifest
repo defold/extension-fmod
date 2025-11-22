@@ -2,7 +2,10 @@ name: "DefoldFMOD"
 platforms:
   osx:
     context:
-      libs: ["fmodbridge"]
+      flags: ["-fvisibility=hidden"]
+      defines: ["FMOD_FORCE_STATIC_LINK"]
+      dynamicLibs: ["fmod", "fmodstudio"]
+      linkFlags: ["-Wl,-rpath,@executable_path"]
 
   arm64-ios:
     context:
@@ -18,11 +21,11 @@ platforms:
 
   armv7-android:
     context:
-      libs: ["fmodbridge"]
+      libs: []
 
   arm64-android:
     context:
-      libs: ["fmodbridge"]
+      libs: []
 
   x86_64-win32:
     context:
@@ -31,12 +34,18 @@ platforms:
   x86-win32:
     context:
       libs: ["shlwapi.lib"]
-
+  x86_64-linux:
+    context:
+      flags: ["-fvisibility=hidden"]
+      defines: ["FMOD_FORCE_STATIC_LINK"]
+      dynamicLibs: ["fmod", "fmodstudio"]
   web:
     context:
-      libs: ["fmodbridge", "fmodstudio"]
+      defines: ["FMOD_FORCE_STATIC_LINK"]
+      libs: ["fmodstudio"]
       emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]"]
 
   wasm_pthread-web:
     context:
+      defines: ["FMOD_FORCE_STATIC_LINK"]
       emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]", "-pthread", "-s PTHREAD_POOL_SIZE=5"]
