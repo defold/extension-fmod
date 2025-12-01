@@ -1,0 +1,279 @@
+# Auto-generated FMOD API documentation for Defold
+# Generated from FMOD headers using generate_bindings.py
+
+- name: fmod
+  type: table
+  desc: |
+    FMOD Low Level API for audio playback and manipulation.
+
+    This module provides access to FMOD's low-level audio engine, allowing you to:
+    - Create and play sounds
+    - Control audio channels and channel groups
+    - Apply DSP effects
+    - Handle 3D audio positioning
+
+    For more information, see the [FMOD documentation](https://www.fmod.com/docs).
+
+  members:
+{% for enum in enums %}
+  - name: {{ enum }}
+    type: number
+
+{% endfor %}
+
+#*****************************************************************************************************
+
+{% for struct in structs %}
+  {% if not struct.is_class and struct.constructor_table == -2 %}
+  - name: {{ struct.constructor_name }}
+    type: function
+    desc: Creates a new {{ struct.name }} struct
+    returns:
+    - name: struct
+      type: {{ struct.name|lower|replace('fmod_', 'fmod.') }}
+      desc: The created struct instance
+
+  {% endif %}
+{% endfor %}
+
+#*****************************************************************************************************
+
+{% for f in global_functions %}
+  {% if f[0] == -2 %}
+  - name: {{ f[1] }}
+    type: function
+    desc: |
+      {{ f[2].name }}
+    {% if f[2].generated %}
+      {% set inputs = get_input_args(f[2]) %}
+      {% if inputs %}
+    parameters:
+        {% for arg in inputs %}
+    - name: {{ arg.name }}
+      type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
+      desc: {{ get_param_description(arg.name, f[2].name) }}{% if arg.optional %} (optional){% endif %}
+
+        {% endfor %}
+      {% endif %}
+      {% set outputs = get_output_args(f[2]) %}
+      {% if outputs %}
+    returns:
+        {% for arg in outputs %}
+    - name: {{ arg.name }}
+      type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
+
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+
+  {% endif %}
+{% endfor %}
+
+#*****************************************************************************************************
+
+  - name: system
+    type: {{ 'fmod.system' }}
+    desc: The FMOD low-level system instance
+
+  - name: error_code
+    type: table
+    desc: Table mapping error messages to error codes
+
+  - name: s64
+    type: function
+    desc: Creates a signed 64-bit integer value
+    parameters:
+    - name: value
+      type: number
+      desc: The value (or low 32 bits if high is provided)
+    - name: high
+      type: number
+      desc: The high 32 bits (optional)
+    returns:
+    - name: value
+      type: userdata
+      desc: The 64-bit integer value
+
+  - name: u64
+    type: function
+    desc: Creates an unsigned 64-bit integer value
+    parameters:
+    - name: value
+      type: number
+      desc: The value (or low 32 bits if high is provided)
+    - name: high
+      type: number
+      desc: The high 32 bits (optional)
+    returns:
+    - name: value
+      type: userdata
+      desc: The 64-bit integer value
+
+#*****************************************************************************************************
+
+{% for struct in structs %}
+  {% if struct.is_class and not struct.name.startswith('FMOD_STUDIO_') %}
+- name: {{ struct.name|lower|replace('fmod_', 'fmod.') }}
+  type: userdata
+  desc: {{ struct.name }} instance
+
+  members:
+    {% for method in struct.methods %}
+  - name: {{ method[0] }}
+    type: function
+    desc: |
+      {{ method[1].name }}
+    {% if method[1].generated %}
+      {% set inputs = get_input_args(method[1], True) %}
+      {% if inputs %}
+    parameters:
+        {% for arg in inputs %}
+    - name: {{ arg.name }}
+      type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
+      desc: {{ get_param_description(arg.name, method[1].name) }}{% if arg.optional %} (optional){% endif %}
+
+        {% endfor %}
+      {% endif %}
+      {% set outputs = get_output_args(method[1]) %}
+      {% if outputs %}
+    returns:
+        {% for arg in outputs %}
+    - name: {{ arg.name }}
+      type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
+
+        {% endfor %}
+
+      {% endif %}
+    {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+
+#*****************************************************************************************************
+
+- name: fmod.studio
+  type: table
+  desc: |
+    FMOD Studio API for event-based audio.
+
+    This module provides access to FMOD Studio's high-level event system, allowing you to:
+    - Load and manage sound banks
+    - Play and control event instances
+    - Control buses and VCAs
+    - Set parameters and 3D attributes
+
+    For more information, see the [FMOD Studio documentation](https://www.fmod.com/docs).
+
+  members:
+{% for struct in structs %}
+  {% if not struct.is_class and struct.constructor_table == -1 %}
+  - name: {{ struct.constructor_name }}
+    type: function
+    desc: Creates a new {{ struct.name }} struct
+    returns:
+    - name: struct
+      type: {{ struct.name|lower|replace('fmod_studio_', 'fmod.studio.')|replace('fmod_', 'fmod.') }}
+      desc: The created struct instance
+
+  {% endif %}
+{% endfor %}
+
+#*****************************************************************************************************
+
+{% for f in global_functions %}
+  {% if f[0] == -1 %}
+  - name: {{ f[1] }}
+    type: function
+    desc: |
+      {{ f[2].name }}
+    {% if f[2].generated %}
+      {% set inputs = get_input_args(f[2]) %}
+      {% if inputs %}
+    parameters:
+        {% for arg in inputs %}
+    - name: {{ arg.name }}
+      type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
+      desc: {{ get_param_description(arg.name, f[2].name) }}{% if arg.optional %} (optional){% endif %}
+
+        {% endfor %}
+      {% endif %}
+      {% set outputs = get_output_args(f[2]) %}
+      {% if outputs %}
+    returns:
+        {% for arg in outputs %}
+    - name: {{ arg.name }}
+      type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
+
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+
+  {% endif %}
+{% endfor %}
+
+#*****************************************************************************************************
+
+  - name: system
+    type: {{ 'fmod.studio.system' }}
+    desc: The FMOD Studio system instance
+
+#*****************************************************************************************************
+
+{% for struct in structs %}
+  {% if struct.is_class and struct.name.startswith('FMOD_STUDIO_') %}
+- name: {{ struct.name|lower|replace('fmod_studio_', 'fmod.studio.')|replace('fmod_', 'fmod.') }}
+  type: userdata
+  desc: {{ struct.name }} instance
+
+  members:
+    {% for method in struct.methods %}
+  - name: {{ method[0] }}
+    type: function
+    desc: |
+      {{ method[1].name }}
+    {% if method[1].generated %}
+      {% set inputs = get_input_args(method[1], True) %}
+      {% if inputs %}
+    parameters:
+        {% for arg in inputs %}
+    - name: {{ arg.name }}
+      type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
+      desc: {{ get_param_description(arg.name, method[1].name) }}{% if arg.optional %} (optional){% endif %}
+
+        {% endfor %}
+      {% endif %}
+      {% set outputs = get_output_args(method[1]) %}
+      {% if outputs %}
+    returns:
+        {% for arg in outputs %}
+    - name: {{ arg.name }}
+      type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
+
+        {% endfor %}
+
+      {% endif %}
+    {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+
+#*****************************************************************************************************
+
+{% for struct in structs %}
+  {% if not struct.is_class %}
+- name: {{ struct.name|lower|replace('fmod_studio_', 'fmod.studio.')|replace('fmod_', 'fmod.') }}
+  type: userdata
+  desc: {{ struct.name }} struct
+
+  members:
+    {% for property in struct.properties %}
+  - name: {{ property[0] }}
+      {% if property[1].c_type != '__UNKNOWN__' %}
+    type: {{ c_type_to_lua_type(property[1].c_type, property[1].type) }}
+    desc: {{ property[1].c_type }} field
+      {% endif %}
+
+    {% endfor %}
+
+  {% endif %}
+{% endfor %}
