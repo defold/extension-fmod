@@ -115,6 +115,9 @@ inline static void _FMODBridge_push_ptr_FMOD_VECTOR(lua_State *L, const FMOD_VEC
 #define FMODBridge_push_FMOD_DSP_RESAMPLER(L, x) lua_pushnumber(L, (lua_Number)(x))
 #define FMODBridge_check_FMOD_DSP_RESAMPLER(L, index) ((FMOD_DSP_RESAMPLER)luaL_checknumber(L, index))
 
+#define FMODBridge_push_FMOD_DSP_CALLBACK_TYPE(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODBridge_check_FMOD_DSP_CALLBACK_TYPE(L, index) ((FMOD_DSP_CALLBACK_TYPE)luaL_checknumber(L, index))
+
 #define FMODBridge_push_FMOD_DSPCONNECTION_TYPE(L, x) lua_pushnumber(L, (lua_Number)(x))
 #define FMODBridge_check_FMOD_DSPCONNECTION_TYPE(L, index) ((FMOD_DSPCONNECTION_TYPE)luaL_checknumber(L, index))
 
@@ -145,6 +148,9 @@ inline static void _FMODBridge_push_ptr_FMOD_VECTOR(lua_State *L, const FMOD_VEC
 #define FMODBridge_push_FMOD_DSP_ECHO(L, x) lua_pushnumber(L, (lua_Number)(x))
 #define FMODBridge_check_FMOD_DSP_ECHO(L, index) ((FMOD_DSP_ECHO)luaL_checknumber(L, index))
 
+#define FMODBridge_push_FMOD_DSP_ECHO_DELAYCHANGEMODE_TYPE(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODBridge_check_FMOD_DSP_ECHO_DELAYCHANGEMODE_TYPE(L, index) ((FMOD_DSP_ECHO_DELAYCHANGEMODE_TYPE)luaL_checknumber(L, index))
+
 #define FMODBridge_push_FMOD_DSP_FADER(L, x) lua_pushnumber(L, (lua_Number)(x))
 #define FMODBridge_check_FMOD_DSP_FADER(L, index) ((FMOD_DSP_FADER)luaL_checknumber(L, index))
 
@@ -168,6 +174,12 @@ inline static void _FMODBridge_push_ptr_FMOD_VECTOR(lua_State *L, const FMOD_VEC
 
 #define FMODBridge_push_FMOD_DSP_MULTIBAND_EQ_FILTER_TYPE(L, x) lua_pushnumber(L, (lua_Number)(x))
 #define FMODBridge_check_FMOD_DSP_MULTIBAND_EQ_FILTER_TYPE(L, index) ((FMOD_DSP_MULTIBAND_EQ_FILTER_TYPE)luaL_checknumber(L, index))
+
+#define FMODBridge_push_FMOD_DSP_MULTIBAND_DYNAMICS(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODBridge_check_FMOD_DSP_MULTIBAND_DYNAMICS(L, index) ((FMOD_DSP_MULTIBAND_DYNAMICS)luaL_checknumber(L, index))
+
+#define FMODBridge_push_FMOD_DSP_MULTIBAND_DYNAMICS_MODE_TYPE(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODBridge_check_FMOD_DSP_MULTIBAND_DYNAMICS_MODE_TYPE(L, index) ((FMOD_DSP_MULTIBAND_DYNAMICS_MODE_TYPE)luaL_checknumber(L, index))
 
 #define FMODBridge_push_FMOD_DSP_PITCHSHIFT(L, x) lua_pushnumber(L, (lua_Number)(x))
 #define FMODBridge_check_FMOD_DSP_PITCHSHIFT(L, index) ((FMOD_DSP_PITCHSHIFT)luaL_checknumber(L, index))
@@ -223,8 +235,11 @@ inline static void _FMODBridge_push_ptr_FMOD_VECTOR(lua_State *L, const FMOD_VEC
 #define FMODBridge_push_FMOD_DSP_THREE_EQ(L, x) lua_pushnumber(L, (lua_Number)(x))
 #define FMODBridge_check_FMOD_DSP_THREE_EQ(L, index) ((FMOD_DSP_THREE_EQ)luaL_checknumber(L, index))
 
-#define FMODBridge_push_FMOD_DSP_FFT_WINDOW(L, x) lua_pushnumber(L, (lua_Number)(x))
-#define FMODBridge_check_FMOD_DSP_FFT_WINDOW(L, index) ((FMOD_DSP_FFT_WINDOW)luaL_checknumber(L, index))
+#define FMODBridge_push_FMOD_DSP_FFT_WINDOW_TYPE(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODBridge_check_FMOD_DSP_FFT_WINDOW_TYPE(L, index) ((FMOD_DSP_FFT_WINDOW_TYPE)luaL_checknumber(L, index))
+
+#define FMODBridge_push_FMOD_DSP_FFT_DOWNMIX_TYPE(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODBridge_check_FMOD_DSP_FFT_DOWNMIX_TYPE(L, index) ((FMOD_DSP_FFT_DOWNMIX_TYPE)luaL_checknumber(L, index))
 
 #define FMODBridge_push_FMOD_DSP_FFT(L, x) lua_pushnumber(L, (lua_Number)(x))
 #define FMODBridge_check_FMOD_DSP_FFT(L, index) ((FMOD_DSP_FFT)luaL_checknumber(L, index))
@@ -234,9 +249,6 @@ inline static void _FMODBridge_push_ptr_FMOD_VECTOR(lua_State *L, const FMOD_VEC
 
 #define FMODBridge_push_FMOD_DSP_LOUDNESS_METER_STATE_TYPE(L, x) lua_pushnumber(L, (lua_Number)(x))
 #define FMODBridge_check_FMOD_DSP_LOUDNESS_METER_STATE_TYPE(L, index) ((FMOD_DSP_LOUDNESS_METER_STATE_TYPE)luaL_checknumber(L, index))
-
-#define FMODBridge_push_FMOD_DSP_ENVELOPEFOLLOWER(L, x) lua_pushnumber(L, (lua_Number)(x))
-#define FMODBridge_check_FMOD_DSP_ENVELOPEFOLLOWER(L, index) ((FMOD_DSP_ENVELOPEFOLLOWER)luaL_checknumber(L, index))
 
 #define FMODBridge_push_FMOD_DSP_CONVOLUTION_REVERB(L, x) lua_pushnumber(L, (lua_Number)(x))
 #define FMODBridge_check_FMOD_DSP_CONVOLUTION_REVERB(L, index) ((FMOD_DSP_CONVOLUTION_REVERB)luaL_checknumber(L, index))
@@ -401,6 +413,7 @@ static int FMODBridge_registry_FMOD_CREATESOUNDEXINFO = LUA_REFNIL;
 static int FMODBridge_registry_FMOD_REVERB_PROPERTIES = LUA_REFNIL;
 static int FMODBridge_registry_FMOD_ERRORCALLBACK_INFO = LUA_REFNIL;
 static int FMODBridge_registry_FMOD_CPU_USAGE = LUA_REFNIL;
+static int FMODBridge_registry_FMOD_DSP_DATA_PARAMETER_INFO = LUA_REFNIL;
 static int FMODBridge_registry_FMOD_CODEC_STATE = LUA_REFNIL;
 static int FMODBridge_registry_FMOD_CODEC_WAVEFORMAT = LUA_REFNIL;
 static int FMODBridge_registry_FMOD_CODEC_DESCRIPTION = LUA_REFNIL;
@@ -423,6 +436,7 @@ static int FMODBridge_registry_FMOD_DSP_PARAMETER_3DATTRIBUTES_MULTI = LUA_REFNI
 static int FMODBridge_registry_FMOD_DSP_PARAMETER_ATTENUATION_RANGE = LUA_REFNIL;
 static int FMODBridge_registry_FMOD_DSP_PARAMETER_SIDECHAIN = LUA_REFNIL;
 static int FMODBridge_registry_FMOD_DSP_PARAMETER_FFT = LUA_REFNIL;
+static int FMODBridge_registry_FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE = LUA_REFNIL;
 static int FMODBridge_registry_FMOD_DSP_DESCRIPTION = LUA_REFNIL;
 static int FMODBridge_registry_FMOD_DSP_STATE_DFT_FUNCTIONS = LUA_REFNIL;
 static int FMODBridge_registry_FMOD_DSP_STATE_PAN_FUNCTIONS = LUA_REFNIL;
@@ -659,6 +673,9 @@ declarePropertySetter(FMOD_VECTOR, FMOD_VECTOR);
 #define FMODBridge_propertyGet_FMOD_DSP_RESAMPLER FMODBridge_propertyGet_int
 #define FMODBridge_propertySet_FMOD_DSP_RESAMPLER FMODBridge_propertySet_int
 
+#define FMODBridge_propertyGet_FMOD_DSP_CALLBACK_TYPE FMODBridge_propertyGet_int
+#define FMODBridge_propertySet_FMOD_DSP_CALLBACK_TYPE FMODBridge_propertySet_int
+
 #define FMODBridge_propertyGet_FMOD_DSPCONNECTION_TYPE FMODBridge_propertyGet_int
 #define FMODBridge_propertySet_FMOD_DSPCONNECTION_TYPE FMODBridge_propertySet_int
 
@@ -689,6 +706,9 @@ declarePropertySetter(FMOD_VECTOR, FMOD_VECTOR);
 #define FMODBridge_propertyGet_FMOD_DSP_ECHO FMODBridge_propertyGet_int
 #define FMODBridge_propertySet_FMOD_DSP_ECHO FMODBridge_propertySet_int
 
+#define FMODBridge_propertyGet_FMOD_DSP_ECHO_DELAYCHANGEMODE_TYPE FMODBridge_propertyGet_int
+#define FMODBridge_propertySet_FMOD_DSP_ECHO_DELAYCHANGEMODE_TYPE FMODBridge_propertySet_int
+
 #define FMODBridge_propertyGet_FMOD_DSP_FADER FMODBridge_propertyGet_int
 #define FMODBridge_propertySet_FMOD_DSP_FADER FMODBridge_propertySet_int
 
@@ -712,6 +732,12 @@ declarePropertySetter(FMOD_VECTOR, FMOD_VECTOR);
 
 #define FMODBridge_propertyGet_FMOD_DSP_MULTIBAND_EQ_FILTER_TYPE FMODBridge_propertyGet_int
 #define FMODBridge_propertySet_FMOD_DSP_MULTIBAND_EQ_FILTER_TYPE FMODBridge_propertySet_int
+
+#define FMODBridge_propertyGet_FMOD_DSP_MULTIBAND_DYNAMICS FMODBridge_propertyGet_int
+#define FMODBridge_propertySet_FMOD_DSP_MULTIBAND_DYNAMICS FMODBridge_propertySet_int
+
+#define FMODBridge_propertyGet_FMOD_DSP_MULTIBAND_DYNAMICS_MODE_TYPE FMODBridge_propertyGet_int
+#define FMODBridge_propertySet_FMOD_DSP_MULTIBAND_DYNAMICS_MODE_TYPE FMODBridge_propertySet_int
 
 #define FMODBridge_propertyGet_FMOD_DSP_PITCHSHIFT FMODBridge_propertyGet_int
 #define FMODBridge_propertySet_FMOD_DSP_PITCHSHIFT FMODBridge_propertySet_int
@@ -767,8 +793,11 @@ declarePropertySetter(FMOD_VECTOR, FMOD_VECTOR);
 #define FMODBridge_propertyGet_FMOD_DSP_THREE_EQ FMODBridge_propertyGet_int
 #define FMODBridge_propertySet_FMOD_DSP_THREE_EQ FMODBridge_propertySet_int
 
-#define FMODBridge_propertyGet_FMOD_DSP_FFT_WINDOW FMODBridge_propertyGet_int
-#define FMODBridge_propertySet_FMOD_DSP_FFT_WINDOW FMODBridge_propertySet_int
+#define FMODBridge_propertyGet_FMOD_DSP_FFT_WINDOW_TYPE FMODBridge_propertyGet_int
+#define FMODBridge_propertySet_FMOD_DSP_FFT_WINDOW_TYPE FMODBridge_propertySet_int
+
+#define FMODBridge_propertyGet_FMOD_DSP_FFT_DOWNMIX_TYPE FMODBridge_propertyGet_int
+#define FMODBridge_propertySet_FMOD_DSP_FFT_DOWNMIX_TYPE FMODBridge_propertySet_int
 
 #define FMODBridge_propertyGet_FMOD_DSP_FFT FMODBridge_propertyGet_int
 #define FMODBridge_propertySet_FMOD_DSP_FFT FMODBridge_propertySet_int
@@ -778,9 +807,6 @@ declarePropertySetter(FMOD_VECTOR, FMOD_VECTOR);
 
 #define FMODBridge_propertyGet_FMOD_DSP_LOUDNESS_METER_STATE_TYPE FMODBridge_propertyGet_int
 #define FMODBridge_propertySet_FMOD_DSP_LOUDNESS_METER_STATE_TYPE FMODBridge_propertySet_int
-
-#define FMODBridge_propertyGet_FMOD_DSP_ENVELOPEFOLLOWER FMODBridge_propertyGet_int
-#define FMODBridge_propertySet_FMOD_DSP_ENVELOPEFOLLOWER FMODBridge_propertySet_int
 
 #define FMODBridge_propertyGet_FMOD_DSP_CONVOLUTION_REVERB FMODBridge_propertyGet_int
 #define FMODBridge_propertySet_FMOD_DSP_CONVOLUTION_REVERB FMODBridge_propertySet_int
@@ -1125,6 +1151,20 @@ declarePropertyGetterPtr(FMOD_CPU_USAGE, FMOD_CPU_USAGE);
 declarePropertySetterPtr(FMOD_CPU_USAGE, FMOD_CPU_USAGE);
 #endif
 
+#ifndef FMODBridge_push_ptr_FMOD_DSP_DATA_PARAMETER_INFO
+#define FMODBridge_push_ptr_FMOD_DSP_DATA_PARAMETER_INFO(L, structData) ((FMOD_DSP_DATA_PARAMETER_INFO*)pushStruct(L, structData, sizeof(FMOD_DSP_DATA_PARAMETER_INFO), FMODBridge_registry_FMOD_DSP_DATA_PARAMETER_INFO))
+#endif
+#ifndef FMODBridge_check_ptr_FMOD_DSP_DATA_PARAMETER_INFO
+#define FMODBridge_check_ptr_FMOD_DSP_DATA_PARAMETER_INFO(L, index) ((FMOD_DSP_DATA_PARAMETER_INFO*)checkStruct(L, index, FMODBridge_registry_FMOD_DSP_DATA_PARAMETER_INFO, "FMOD_DSP_DATA_PARAMETER_INFO"))
+#endif
+#ifdef FMODBridge_propertyOverride_FMOD_DSP_DATA_PARAMETER_INFO
+FMODBridge_propertyOverride_FMOD_DSP_DATA_PARAMETER_INFO
+#else
+declarePropertyGetter(ptr_FMOD_DSP_DATA_PARAMETER_INFO, FMOD_DSP_DATA_PARAMETER_INFO*);
+declarePropertyGetterPtr(FMOD_DSP_DATA_PARAMETER_INFO, FMOD_DSP_DATA_PARAMETER_INFO);
+declarePropertySetterPtr(FMOD_DSP_DATA_PARAMETER_INFO, FMOD_DSP_DATA_PARAMETER_INFO);
+#endif
+
 #ifndef FMODBridge_push_ptr_FMOD_CODEC_STATE
 #define FMODBridge_push_ptr_FMOD_CODEC_STATE(L, structData) ((FMOD_CODEC_STATE*)pushStruct(L, structData, sizeof(FMOD_CODEC_STATE), FMODBridge_registry_FMOD_CODEC_STATE))
 #endif
@@ -1431,6 +1471,20 @@ FMODBridge_propertyOverride_FMOD_DSP_PARAMETER_FFT
 declarePropertyGetter(ptr_FMOD_DSP_PARAMETER_FFT, FMOD_DSP_PARAMETER_FFT*);
 declarePropertyGetterPtr(FMOD_DSP_PARAMETER_FFT, FMOD_DSP_PARAMETER_FFT);
 declarePropertySetterPtr(FMOD_DSP_PARAMETER_FFT, FMOD_DSP_PARAMETER_FFT);
+#endif
+
+#ifndef FMODBridge_push_ptr_FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE
+#define FMODBridge_push_ptr_FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE(L, structData) ((FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE*)pushStruct(L, structData, sizeof(FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE), FMODBridge_registry_FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE))
+#endif
+#ifndef FMODBridge_check_ptr_FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE
+#define FMODBridge_check_ptr_FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE(L, index) ((FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE*)checkStruct(L, index, FMODBridge_registry_FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE, "FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE"))
+#endif
+#ifdef FMODBridge_propertyOverride_FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE
+FMODBridge_propertyOverride_FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE
+#else
+declarePropertyGetter(ptr_FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE, FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE*);
+declarePropertyGetterPtr(FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE, FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE);
+declarePropertySetterPtr(FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE, FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE);
 #endif
 
 #ifndef FMODBridge_push_ptr_FMOD_DSP_DESCRIPTION
@@ -2961,16 +3015,18 @@ static int _FMODBridge_func_FMOD_System_GetSpeakerModeChannels(lua_State *L) {
 #endif
 
 
-/* FMOD_System_GetVersion(input FMOD_SYSTEM* system, output unsigned int* version, ) */
+/* FMOD_System_GetVersion(input FMOD_SYSTEM* system, output unsigned int* version, output unsigned int* buildnumber, ) */
 #ifndef FMODBridge_func_FMOD_System_GetVersion
 #define FMODBridge_func_FMOD_System_GetVersion _FMODBridge_func_FMOD_System_GetVersion
 static int _FMODBridge_func_FMOD_System_GetVersion(lua_State *L) {
     FMOD_SYSTEM* system = FMODBridge_check_ptr_FMOD_SYSTEM(L, 1);
     unsigned int version;
-    ensure(LL, FMOD_System_GetVersion, FMOD_RESULT, FMOD_SYSTEM*, unsigned int*);
-    errCheck(FMOD_System_GetVersion(system, &version));
+    unsigned int buildnumber;
+    ensure(LL, FMOD_System_GetVersion, FMOD_RESULT, FMOD_SYSTEM*, unsigned int*, unsigned int*);
+    errCheck(FMOD_System_GetVersion(system, &version, &buildnumber));
     FMODBridge_push_unsigned_int(L, version);
-    return 1;
+    FMODBridge_push_unsigned_int(L, buildnumber);
+    return 2;
 }
 #endif
 
@@ -3085,6 +3141,21 @@ static int _FMODBridge_func_FMOD_System_CreateDSPByType(lua_State *L) {
     ensure(LL, FMOD_System_CreateDSPByType, FMOD_RESULT, FMOD_SYSTEM*, FMOD_DSP_TYPE, FMOD_DSP**);
     errCheck(FMOD_System_CreateDSPByType(system, type, &dsp));
     FMODBridge_push_ptr_FMOD_DSP(L, dsp);
+    return 1;
+}
+#endif
+
+
+/* FMOD_System_CreateDSPConnection(input FMOD_SYSTEM* system, input FMOD_DSPCONNECTION_TYPE type, output FMOD_DSPCONNECTION** connection, ) */
+#ifndef FMODBridge_func_FMOD_System_CreateDSPConnection
+#define FMODBridge_func_FMOD_System_CreateDSPConnection _FMODBridge_func_FMOD_System_CreateDSPConnection
+static int _FMODBridge_func_FMOD_System_CreateDSPConnection(lua_State *L) {
+    FMOD_SYSTEM* system = FMODBridge_check_ptr_FMOD_SYSTEM(L, 1);
+    FMOD_DSPCONNECTION_TYPE type = FMODBridge_check_FMOD_DSPCONNECTION_TYPE(L, 2);
+    FMOD_DSPCONNECTION* connection;
+    ensure(LL, FMOD_System_CreateDSPConnection, FMOD_RESULT, FMOD_SYSTEM*, FMOD_DSPCONNECTION_TYPE, FMOD_DSPCONNECTION**);
+    errCheck(FMOD_System_CreateDSPConnection(system, type, &connection));
+    FMODBridge_push_ptr_FMOD_DSPCONNECTION(L, connection);
     return 1;
 }
 #endif
@@ -6526,6 +6597,9 @@ static int _FMODBridge_func_FMOD_DSP_Reset(lua_State *L) {
 #endif
 
 
+/* FMOD_DSP_SetCallback(input FMOD_DSP* dsp, unknown FMOD_DSP_CALLBACK callback, ) */
+
+
 /* FMOD_DSP_SetParameterFloat(input FMOD_DSP* dsp, input int index, input float value, ) */
 #ifndef FMODBridge_func_FMOD_DSP_SetParameterFloat
 #define FMODBridge_func_FMOD_DSP_SetParameterFloat _FMODBridge_func_FMOD_DSP_SetParameterFloat
@@ -8384,6 +8458,20 @@ static int _FMODBridge_func_FMOD_Studio_EventInstance_GetDescription(lua_State *
 #endif
 
 
+/* FMOD_Studio_EventInstance_GetSystem(input FMOD_STUDIO_EVENTINSTANCE* eventinstance, output FMOD_STUDIO_SYSTEM** system, ) */
+#ifndef FMODBridge_func_FMOD_Studio_EventInstance_GetSystem
+#define FMODBridge_func_FMOD_Studio_EventInstance_GetSystem _FMODBridge_func_FMOD_Studio_EventInstance_GetSystem
+static int _FMODBridge_func_FMOD_Studio_EventInstance_GetSystem(lua_State *L) {
+    FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODBridge_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
+    FMOD_STUDIO_SYSTEM* system;
+    ensure(ST, FMOD_Studio_EventInstance_GetSystem, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_STUDIO_SYSTEM**);
+    errCheck(FMOD_Studio_EventInstance_GetSystem(eventinstance, &system));
+    FMODBridge_push_ptr_FMOD_STUDIO_SYSTEM(L, system);
+    return 1;
+}
+#endif
+
+
 /* FMOD_Studio_EventInstance_GetVolume(input FMOD_STUDIO_EVENTINSTANCE* eventinstance, output float* volume, output float* finalvolume, ) */
 #ifndef FMODBridge_func_FMOD_Studio_EventInstance_GetVolume
 #define FMODBridge_func_FMOD_Studio_EventInstance_GetVolume _FMODBridge_func_FMOD_Studio_EventInstance_GetVolume
@@ -9754,6 +9842,8 @@ void FMODBridge_register(lua_State *L) {
     addEnum(OUTPUTTYPE_WINSONIC);
     addEnum(OUTPUTTYPE_AAUDIO);
     addEnum(OUTPUTTYPE_AUDIOWORKLET);
+    addEnum(OUTPUTTYPE_PHASE);
+    addEnum(OUTPUTTYPE_OHAUDIO);
     addEnum(OUTPUTTYPE_MAX);
     addEnum(DEBUG_MODE_TTY);
     addEnum(DEBUG_MODE_FILE);
@@ -9873,10 +9963,13 @@ void FMODBridge_register(lua_State *L) {
     addEnum(DSP_RESAMPLER_CUBIC);
     addEnum(DSP_RESAMPLER_SPLINE);
     addEnum(DSP_RESAMPLER_MAX);
+    addEnum(DSP_CALLBACK_DATAPARAMETERRELEASE);
+    addEnum(DSP_CALLBACK_MAX);
     addEnum(DSPCONNECTION_TYPE_STANDARD);
     addEnum(DSPCONNECTION_TYPE_SIDECHAIN);
     addEnum(DSPCONNECTION_TYPE_SEND);
     addEnum(DSPCONNECTION_TYPE_SEND_SIDECHAIN);
+    addEnum(DSPCONNECTION_TYPE_PREALLOCATED);
     addEnum(DSPCONNECTION_TYPE_MAX);
     addEnum(TAGTYPE_UNKNOWN);
     addEnum(TAGTYPE_ID3V1);
@@ -9905,6 +9998,8 @@ void FMODBridge_register(lua_State *L) {
     addEnum(PORT_TYPE_PERSONAL);
     addEnum(PORT_TYPE_VIBRATION);
     addEnum(PORT_TYPE_AUX);
+    addEnum(PORT_TYPE_PASSTHROUGH);
+    addEnum(PORT_TYPE_VR_VIBRATION);
     addEnum(PORT_TYPE_MAX);
     addEnum(DSP_TYPE_UNKNOWN);
     addEnum(DSP_TYPE_MIXER);
@@ -9921,15 +10016,12 @@ void FMODBridge_register(lua_State *L) {
     addEnum(DSP_TYPE_PARAMEQ);
     addEnum(DSP_TYPE_PITCHSHIFT);
     addEnum(DSP_TYPE_CHORUS);
-    addEnum(DSP_TYPE_VSTPLUGIN);
-    addEnum(DSP_TYPE_WINAMPPLUGIN);
     addEnum(DSP_TYPE_ITECHO);
     addEnum(DSP_TYPE_COMPRESSOR);
     addEnum(DSP_TYPE_SFXREVERB);
     addEnum(DSP_TYPE_LOWPASS_SIMPLE);
     addEnum(DSP_TYPE_DELAY);
     addEnum(DSP_TYPE_TREMOLO);
-    addEnum(DSP_TYPE_LADSPAPLUGIN);
     addEnum(DSP_TYPE_SEND);
     addEnum(DSP_TYPE_RETURN);
     addEnum(DSP_TYPE_HIGHPASS_SIMPLE);
@@ -9937,12 +10029,12 @@ void FMODBridge_register(lua_State *L) {
     addEnum(DSP_TYPE_THREE_EQ);
     addEnum(DSP_TYPE_FFT);
     addEnum(DSP_TYPE_LOUDNESS_METER);
-    addEnum(DSP_TYPE_ENVELOPEFOLLOWER);
     addEnum(DSP_TYPE_CONVOLUTIONREVERB);
     addEnum(DSP_TYPE_CHANNELMIX);
     addEnum(DSP_TYPE_TRANSCEIVER);
     addEnum(DSP_TYPE_OBJECTPAN);
     addEnum(DSP_TYPE_MULTIBAND_EQ);
+    addEnum(DSP_TYPE_MULTIBAND_DYNAMICS);
     addEnum(DSP_TYPE_MAX);
     addEnum(DSP_OSCILLATOR_TYPE);
     addEnum(DSP_OSCILLATOR_RATE);
@@ -9956,6 +10048,10 @@ void FMODBridge_register(lua_State *L) {
     addEnum(DSP_ECHO_FEEDBACK);
     addEnum(DSP_ECHO_DRYLEVEL);
     addEnum(DSP_ECHO_WETLEVEL);
+    addEnum(DSP_ECHO_DELAYCHANGEMODE);
+    addEnum(DSP_ECHO_DELAYCHANGEMODE_FADE);
+    addEnum(DSP_ECHO_DELAYCHANGEMODE_LERP);
+    addEnum(DSP_ECHO_DELAYCHANGEMODE_NONE);
     addEnum(DSP_FADER_GAIN);
     addEnum(DSP_FADER_OVERALL_GAIN);
     addEnum(DSP_FLANGE_MIX);
@@ -10005,6 +10101,41 @@ void FMODBridge_register(lua_State *L) {
     addEnum(DSP_MULTIBAND_EQ_FILTER_BANDPASS);
     addEnum(DSP_MULTIBAND_EQ_FILTER_NOTCH);
     addEnum(DSP_MULTIBAND_EQ_FILTER_ALLPASS);
+    addEnum(DSP_MULTIBAND_EQ_FILTER_LOWPASS_6DB);
+    addEnum(DSP_MULTIBAND_EQ_FILTER_HIGHPASS_6DB);
+    addEnum(DSP_MULTIBAND_DYNAMICS_LOWER_FREQUENCY);
+    addEnum(DSP_MULTIBAND_DYNAMICS_UPPER_FREQUENCY);
+    addEnum(DSP_MULTIBAND_DYNAMICS_LINKED);
+    addEnum(DSP_MULTIBAND_DYNAMICS_USE_SIDECHAIN);
+    addEnum(DSP_MULTIBAND_DYNAMICS_A_MODE);
+    addEnum(DSP_MULTIBAND_DYNAMICS_A_GAIN);
+    addEnum(DSP_MULTIBAND_DYNAMICS_A_THRESHOLD);
+    addEnum(DSP_MULTIBAND_DYNAMICS_A_RATIO);
+    addEnum(DSP_MULTIBAND_DYNAMICS_A_ATTACK);
+    addEnum(DSP_MULTIBAND_DYNAMICS_A_RELEASE);
+    addEnum(DSP_MULTIBAND_DYNAMICS_A_GAIN_MAKEUP);
+    addEnum(DSP_MULTIBAND_DYNAMICS_A_RESPONSE_DATA);
+    addEnum(DSP_MULTIBAND_DYNAMICS_B_MODE);
+    addEnum(DSP_MULTIBAND_DYNAMICS_B_GAIN);
+    addEnum(DSP_MULTIBAND_DYNAMICS_B_THRESHOLD);
+    addEnum(DSP_MULTIBAND_DYNAMICS_B_RATIO);
+    addEnum(DSP_MULTIBAND_DYNAMICS_B_ATTACK);
+    addEnum(DSP_MULTIBAND_DYNAMICS_B_RELEASE);
+    addEnum(DSP_MULTIBAND_DYNAMICS_B_GAIN_MAKEUP);
+    addEnum(DSP_MULTIBAND_DYNAMICS_B_RESPONSE_DATA);
+    addEnum(DSP_MULTIBAND_DYNAMICS_C_MODE);
+    addEnum(DSP_MULTIBAND_DYNAMICS_C_GAIN);
+    addEnum(DSP_MULTIBAND_DYNAMICS_C_THRESHOLD);
+    addEnum(DSP_MULTIBAND_DYNAMICS_C_RATIO);
+    addEnum(DSP_MULTIBAND_DYNAMICS_C_ATTACK);
+    addEnum(DSP_MULTIBAND_DYNAMICS_C_RELEASE);
+    addEnum(DSP_MULTIBAND_DYNAMICS_C_GAIN_MAKEUP);
+    addEnum(DSP_MULTIBAND_DYNAMICS_C_RESPONSE_DATA);
+    addEnum(DSP_MULTIBAND_DYNAMICS_MODE_DISABLED);
+    addEnum(DSP_MULTIBAND_DYNAMICS_MODE_COMPRESS_UP);
+    addEnum(DSP_MULTIBAND_DYNAMICS_MODE_COMPRESS_DOWN);
+    addEnum(DSP_MULTIBAND_DYNAMICS_MODE_EXPAND_UP);
+    addEnum(DSP_MULTIBAND_DYNAMICS_MODE_EXPAND_DOWN);
     addEnum(DSP_PITCHSHIFT_PITCH);
     addEnum(DSP_PITCHSHIFT_FFTSIZE);
     addEnum(DSP_PITCHSHIFT_OVERLAP);
@@ -10120,10 +10251,18 @@ void FMODBridge_register(lua_State *L) {
     addEnum(DSP_FFT_WINDOW_HANNING);
     addEnum(DSP_FFT_WINDOW_BLACKMAN);
     addEnum(DSP_FFT_WINDOW_BLACKMANHARRIS);
+    addEnum(DSP_FFT_DOWNMIX_NONE);
+    addEnum(DSP_FFT_DOWNMIX_MONO);
     addEnum(DSP_FFT_WINDOWSIZE);
-    addEnum(DSP_FFT_WINDOWTYPE);
+    addEnum(DSP_FFT_WINDOW);
+    addEnum(DSP_FFT_BAND_START_FREQ);
+    addEnum(DSP_FFT_BAND_STOP_FREQ);
     addEnum(DSP_FFT_SPECTRUMDATA);
-    addEnum(DSP_FFT_DOMINANT_FREQ);
+    addEnum(DSP_FFT_RMS);
+    addEnum(DSP_FFT_SPECTRAL_CENTROID);
+    addEnum(DSP_FFT_IMMEDIATE_MODE);
+    addEnum(DSP_FFT_DOWNMIX);
+    addEnum(DSP_FFT_CHANNEL);
     addEnum(DSP_LOUDNESS_METER_STATE);
     addEnum(DSP_LOUDNESS_METER_WEIGHTING);
     addEnum(DSP_LOUDNESS_METER_INFO);
@@ -10132,10 +10271,6 @@ void FMODBridge_register(lua_State *L) {
     addEnum(DSP_LOUDNESS_METER_STATE_RESET_ALL);
     addEnum(DSP_LOUDNESS_METER_STATE_PAUSED);
     addEnum(DSP_LOUDNESS_METER_STATE_ANALYZING);
-    addEnum(DSP_ENVELOPEFOLLOWER_ATTACK);
-    addEnum(DSP_ENVELOPEFOLLOWER_RELEASE);
-    addEnum(DSP_ENVELOPEFOLLOWER_ENVELOPE);
-    addEnum(DSP_ENVELOPEFOLLOWER_USESIDECHAIN);
     addEnum(DSP_CONVOLUTION_REVERB_PARAM_IR);
     addEnum(DSP_CONVOLUTION_REVERB_PARAM_WET);
     addEnum(DSP_CONVOLUTION_REVERB_PARAM_DRY);
@@ -10251,6 +10386,7 @@ void FMODBridge_register(lua_State *L) {
     addEnum(DSP_PARAMETER_DATA_TYPE_FFT);
     addEnum(DSP_PARAMETER_DATA_TYPE_3DATTRIBUTES_MULTI);
     addEnum(DSP_PARAMETER_DATA_TYPE_ATTENUATION_RANGE);
+    addEnum(DSP_PARAMETER_DATA_TYPE_DYNAMIC_RESPONSE);
     addEnum(STUDIO_LOADING_STATE_UNLOADING);
     addEnum(STUDIO_LOADING_STATE_UNLOADED);
     addEnum(STUDIO_LOADING_STATE_LOADING);
@@ -10297,6 +10433,7 @@ void FMODBridge_register(lua_State *L) {
     addEnum(STUDIO_INSTANCETYPE_BANK);
     addEnum(STUDIO_INSTANCETYPE_COMMANDREPLAY);
     addEnum(VERSION);
+    addEnum(BUILDNUMBER);
     addEnum(DEBUG_LEVEL_NONE);
     addEnum(DEBUG_LEVEL_ERROR);
     addEnum(DEBUG_LEVEL_WARNING);
@@ -10305,6 +10442,7 @@ void FMODBridge_register(lua_State *L) {
     addEnum(DEBUG_TYPE_FILE);
     addEnum(DEBUG_TYPE_CODEC);
     addEnum(DEBUG_TYPE_TRACE);
+    addEnum(DEBUG_TYPE_VIRTUAL);
     addEnum(DEBUG_DISPLAY_TIMESTAMPS);
     addEnum(DEBUG_DISPLAY_LINENUMBERS);
     addEnum(DEBUG_DISPLAY_THREAD);
@@ -10320,6 +10458,7 @@ void FMODBridge_register(lua_State *L) {
     addEnum(INIT_STREAM_FROM_UPDATE);
     addEnum(INIT_MIX_FROM_UPDATE);
     addEnum(INIT_3D_RIGHTHANDED);
+    addEnum(INIT_CLIP_OUTPUT);
     addEnum(INIT_CHANNEL_LOWPASS);
     addEnum(INIT_CHANNEL_DISTANCEFILTER);
     addEnum(INIT_PROFILE_ENABLE);
@@ -10347,7 +10486,6 @@ void FMODBridge_register(lua_State *L) {
     addEnum(SYSTEM_CALLBACK_PREMIX);
     addEnum(SYSTEM_CALLBACK_POSTMIX);
     addEnum(SYSTEM_CALLBACK_ERROR);
-    addEnum(SYSTEM_CALLBACK_MIDMIX);
     addEnum(SYSTEM_CALLBACK_THREADDESTROYED);
     addEnum(SYSTEM_CALLBACK_PREUPDATE);
     addEnum(SYSTEM_CALLBACK_POSTUPDATE);
@@ -10355,6 +10493,7 @@ void FMODBridge_register(lua_State *L) {
     addEnum(SYSTEM_CALLBACK_BUFFEREDNOMIX);
     addEnum(SYSTEM_CALLBACK_DEVICEREINITIALIZE);
     addEnum(SYSTEM_CALLBACK_OUTPUTUNDERRUN);
+    addEnum(SYSTEM_CALLBACK_RECORDPOSITIONCHANGED);
     addEnum(SYSTEM_CALLBACK_ALL);
     addEnum(DEFAULT);
     addEnum(LOOP_OFF);
@@ -10403,6 +10542,7 @@ void FMODBridge_register(lua_State *L) {
     addEnum(CHANNELMASK_5POINT1_REARS);
     addEnum(CHANNELMASK_7POINT0);
     addEnum(CHANNELMASK_7POINT1);
+    addEnum(PORT_INDEX_NONE);
     addEnum(THREAD_PRIORITY_PLATFORM_MIN);
     addEnum(THREAD_PRIORITY_PLATFORM_MAX);
     addEnum(THREAD_PRIORITY_DEFAULT);
@@ -10477,7 +10617,6 @@ void FMODBridge_register(lua_State *L) {
     addEnum(MAX_SYSTEMS);
     addEnum(MAX_LISTENERS);
     addEnum(REVERB_MAXINSTANCES);
-    addEnum(PORT_INDEX_NONE);
     addEnum(STUDIO_LOAD_MEMORY_ALIGNMENT);
     addEnum(STUDIO_INIT_NORMAL);
     addEnum(STUDIO_INIT_LIVEUPDATE);
@@ -10859,6 +10998,10 @@ void FMODBridge_register(lua_State *L) {
         #ifdef FMODBridge_func_FMOD_System_CreateDSPByType
         lua_pushcfunction(L, &FMODBridge_func_FMOD_System_CreateDSPByType);
         lua_setfield(L, -4, "create_dsp_by_type");
+        #endif
+        #ifdef FMODBridge_func_FMOD_System_CreateDSPConnection
+        lua_pushcfunction(L, &FMODBridge_func_FMOD_System_CreateDSPConnection);
+        lua_setfield(L, -4, "create_dsp_connection");
         #endif
         #ifdef FMODBridge_func_FMOD_System_CreateChannelGroup
         lua_pushcfunction(L, &FMODBridge_func_FMOD_System_CreateChannelGroup);
@@ -11962,6 +12105,10 @@ void FMODBridge_register(lua_State *L) {
         lua_pushcfunction(L, &FMODBridge_func_FMOD_DSP_Reset);
         lua_setfield(L, -4, "reset");
         #endif
+        #ifdef FMODBridge_func_FMOD_DSP_SetCallback
+        lua_pushcfunction(L, &FMODBridge_func_FMOD_DSP_SetCallback);
+        lua_setfield(L, -4, "set_callback");
+        #endif
         #ifdef FMODBridge_func_FMOD_DSP_SetParameterFloat
         lua_pushcfunction(L, &FMODBridge_func_FMOD_DSP_SetParameterFloat);
         lua_setfield(L, -4, "set_parameter_float");
@@ -12284,9 +12431,9 @@ void FMODBridge_register(lua_State *L) {
         /* int maxFADPCMCodecs */
         addPropertyGetter(FMOD_ADVANCEDSETTINGS, maxFADPCMCodecs, int);
         addPropertySetter(FMOD_ADVANCEDSETTINGS, maxFADPCMCodecs, int);
-        /* int maxPCMCodecs */
-        addPropertyGetter(FMOD_ADVANCEDSETTINGS, maxPCMCodecs, int);
-        addPropertySetter(FMOD_ADVANCEDSETTINGS, maxPCMCodecs, int);
+        /* int maxOpusCodecs */
+        addPropertyGetter(FMOD_ADVANCEDSETTINGS, maxOpusCodecs, int);
+        addPropertySetter(FMOD_ADVANCEDSETTINGS, maxOpusCodecs, int);
         /* int ASIONumChannels */
         addPropertyGetter(FMOD_ADVANCEDSETTINGS, ASIONumChannels, int);
         addPropertySetter(FMOD_ADVANCEDSETTINGS, ASIONumChannels, int);
@@ -12322,9 +12469,9 @@ void FMODBridge_register(lua_State *L) {
         /* int maxConvolutionThreads */
         addPropertyGetter(FMOD_ADVANCEDSETTINGS, maxConvolutionThreads, int);
         addPropertySetter(FMOD_ADVANCEDSETTINGS, maxConvolutionThreads, int);
-        /* int maxOpusCodecs */
-        addPropertyGetter(FMOD_ADVANCEDSETTINGS, maxOpusCodecs, int);
-        addPropertySetter(FMOD_ADVANCEDSETTINGS, maxOpusCodecs, int);
+        /* int maxSpatialObjects */
+        addPropertyGetter(FMOD_ADVANCEDSETTINGS, maxSpatialObjects, int);
+        addPropertySetter(FMOD_ADVANCEDSETTINGS, maxSpatialObjects, int);
         #ifdef FMODBridge_extras_FMOD_ADVANCEDSETTINGS
         FMODBridge_extras_FMOD_ADVANCEDSETTINGS
         #endif
@@ -12518,6 +12665,20 @@ void FMODBridge_register(lua_State *L) {
         addPropertySetter(FMOD_CPU_USAGE, convolution2, float);
         #ifdef FMODBridge_extras_FMOD_CPU_USAGE
         FMODBridge_extras_FMOD_CPU_USAGE
+        #endif
+    endStruct();
+    beginStruct(FMOD_DSP_DATA_PARAMETER_INFO);
+        addStructEquality(FMOD_DSP_DATA_PARAMETER_INFO);
+        addStructConstructor(FMOD_DSP_DATA_PARAMETER_INFO, "DSP_DATA_PARAMETER_INFO", -2);
+        /* void* data */
+        /* unsigned int length */
+        addPropertyGetter(FMOD_DSP_DATA_PARAMETER_INFO, length, unsigned_int);
+        addPropertySetter(FMOD_DSP_DATA_PARAMETER_INFO, length, unsigned_int);
+        /* int index */
+        addPropertyGetter(FMOD_DSP_DATA_PARAMETER_INFO, index, int);
+        addPropertySetter(FMOD_DSP_DATA_PARAMETER_INFO, index, int);
+        #ifdef FMODBridge_extras_FMOD_DSP_DATA_PARAMETER_INFO
+        FMODBridge_extras_FMOD_DSP_DATA_PARAMETER_INFO
         #endif
     endStruct();
     beginStruct(FMOD_CODEC_STATE);
@@ -12886,6 +13047,17 @@ void FMODBridge_register(lua_State *L) {
         /* __UNKNOWN__ spectrum */
         #ifdef FMODBridge_extras_FMOD_DSP_PARAMETER_FFT
         FMODBridge_extras_FMOD_DSP_PARAMETER_FFT
+        #endif
+    endStruct();
+    beginStruct(FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE);
+        addStructEquality(FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE);
+        addStructConstructor(FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE, "DSP_PARAMETER_DYNAMIC_RESPONSE", -2);
+        /* int numchannels */
+        addPropertyGetter(FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE, numchannels, int);
+        addPropertySetter(FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE, numchannels, int);
+        /* __UNKNOWN__ rms */
+        #ifdef FMODBridge_extras_FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE
+        FMODBridge_extras_FMOD_DSP_PARAMETER_DYNAMIC_RESPONSE
         #endif
     endStruct();
     beginStruct(FMOD_DSP_DESCRIPTION);
@@ -13437,6 +13609,10 @@ void FMODBridge_register(lua_State *L) {
         #ifdef FMODBridge_func_FMOD_Studio_EventInstance_GetDescription
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_EventInstance_GetDescription);
         lua_setfield(L, -4, "get_description");
+        #endif
+        #ifdef FMODBridge_func_FMOD_Studio_EventInstance_GetSystem
+        lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_EventInstance_GetSystem);
+        lua_setfield(L, -4, "get_system");
         #endif
         #ifdef FMODBridge_func_FMOD_Studio_EventInstance_GetVolume
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_EventInstance_GetVolume);

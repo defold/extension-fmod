@@ -1,5 +1,9 @@
 name: "DefoldFMOD"
 platforms:
+  osx:
+    context:
+      libs: ["fmodbridge"]
+
   arm64-ios:
     context:
       frameworks: ["AVFoundation"]
@@ -12,6 +16,14 @@ platforms:
     context:
       frameworks: ["AVFoundation"]
 
+  armv7-android:
+    context:
+      libs: ["fmodbridge"]
+
+  arm64-android:
+    context:
+      libs: ["fmodbridge"]
+
   x86_64-win32:
     context:
       libs: ["shlwapi.lib"]
@@ -19,3 +31,12 @@ platforms:
   x86-win32:
     context:
       libs: ["shlwapi.lib"]
+
+  web:
+    context:
+      libs: ["fmodbridge", "fmodstudio"]
+      emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]"]
+
+  wasm_pthread-web:
+    context:
+      emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]", "-pthread", "-s PTHREAD_POOL_SIZE=5"]

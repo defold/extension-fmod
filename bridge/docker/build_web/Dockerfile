@@ -1,4 +1,4 @@
-FROM emscripten/emsdk:1.39.17-upstream
+FROM emscripten/emsdk:4.0.16
 
 VOLUME [ "/repo" ]
 WORKDIR /repo/bridge

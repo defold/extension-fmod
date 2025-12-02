@@ -2,6 +2,7 @@ import sys
 import re
 from pycparser import parse_file, c_ast
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from api_from_bindings import write_script_api_file
 
 TypeBasic = 1
 TypeStruct = 2
@@ -371,6 +372,13 @@ def generate_bindings(ast):
 
     with open('src/fmod_generated.c', 'w') as f:
         f.write(output)
+
+    write_script_api_file(
+        '../fmod/api/fmod.script_api',
+        enums,
+        list(structs.values()),
+        global_functions
+    )
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
+#include <emscripten/emscripten.h>
 #endif
 
 #ifdef __linux__
@@ -58,10 +59,6 @@ static FMOD_SPEAKERMODE speakerModeFromString(const char* str) {
 } while(0)
 
 void FMODBridge_init(lua_State *L) {
-    #ifdef __EMSCRIPTEN__
-    EM_ASM(Module.cwrap = Module.cwrap || cwrap);
-    #endif
-
     #ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
     FMODBridge_isLinked = FMODBridge_linkLibraries();
     if (!FMODBridge_isLinked) {
@@ -134,18 +131,6 @@ void FMODBridge_init(lua_State *L) {
         FMODBridge_dmConfigFile_GetInt("engine.run_while_iconified", 0)
     ) != 0;
 
-    #ifdef __EMSCRIPTEN__
-    EM_ASM({
-        Module._FMODBridge_onClick = function () {
-            ccall('FMODBridge_unmuteAfterUserInteraction', null, [], []);
-            Module.canvas.removeEventListener('click', Module._FMODBridge_onClick);
-            Module.canvas.removeEventListener('touchend', Module._FMODBridge_onClick);
-        };
-        Module.canvas.addEventListener('click', Module._FMODBridge_onClick);
-        Module.canvas.addEventListener('touchend', Module._FMODBridge_onClick, false);
-    });
-    #endif
-
     #if TARGET_OS_IPHONE
     FMODBridge_initIOSInterruptionHandler();
     #endif
@@ -186,12 +171,6 @@ void FMODBridge_finalize() {
         detachJNI();
     }
 
-    #ifdef __EMSCRIPTEN__
-    EM_ASM({
-        Module.canvas.removeEventListener('click', Module._FMODBridge_onClick);
-    });
-    #endif
-
     #ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
     if (FMODBridge_isLinked) { FMODBridge_cleanupLibraries(); }
     #endif
@@ -220,6 +199,7 @@ void FMODBridge_suspendMixer() {
 }
 
 #ifdef __EMSCRIPTEN__
+EMSCRIPTEN_KEEPALIVE
 __attribute__((used))
 void FMODBridge_unmuteAfterUserInteraction() {
     if (FMODBridge_system && !FMODBridge_isPaused) {
