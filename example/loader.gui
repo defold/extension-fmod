@@ -1,0 +1,112 @@
+script: "/example/loader.gui_script"
+fonts {
+  name: "default"
+  font: "/example/default.font"
+}
+nodes {
+  position {
+    x: 20.0
+    y: 20.0
+  }
+  size {
+    x: 200.0
+    y: 120.0
+  }
+  color {
+    x: 0.2
+    y: 0.2
+    z: 0.2
+  }
+  type: TYPE_BOX
+  id: "panel_background"
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_BOTTOM
+  pivot: PIVOT_SW
+  inherit_alpha: true
+  alpha: 0.9
+}
+nodes {
+  position {
+    x: 100.0
+    y: 95.0
+  }
+  size {
+    x: 180.0
+    y: 20.0
+  }
+  color {
+    x: 0.5
+    y: 0.8
+    z: 0.5
+  }
+  type: TYPE_TEXT
+  text: "Examples"
+  font: "default"
+  id: "title"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 100.0
+    y: 70.0
+  }
+  size {
+    x: 180.0
+    y: 35.0
+  }
+  color {
+    x: 0.3
+    y: 0.6
+    z: 0.8
+  }
+  type: TYPE_BOX
+  id: "button_example_1"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  size {
+    x: 160.0
+    y: 20.0
+  }
+  type: TYPE_TEXT
+  text: "[1] 3D Audio"
+  font: "default"
+  id: "text_example_1"
+  parent: "button_example_1"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 100.0
+    y: 30.0
+  }
+  size {
+    x: 180.0
+    y: 35.0
+  }
+  color {
+    x: 0.3
+    y: 0.6
+    z: 0.8
+  }
+  type: TYPE_BOX
+  id: "button_example_2"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  size {
+    x: 160.0
+    y: 20.0
+  }
+  type: TYPE_TEXT
+  text: "[2] Parameters"
+  font: "default"
+  id: "text_example_2"
+  parent: "button_example_2"
+  inherit_alpha: true
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

@@ -1,0 +1,139 @@
+-- Color definitions
+local COLORS = {
+	thumb_normal = vmath.vector4(0.5, 0.7, 0.9, 1.0),
+	thumb_active = vmath.vector4(0.6, 0.8, 1.0, 1.0)
+}
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+
+	-- Define all sliders with their properties
+	self.sliders = {
+		{
+			name = "RPM",
+			thumb = gui.get_node("thumb_rpm"),
+			track = gui.get_node("track_rpm"),
+			value_label = gui.get_node("value_rpm"),
+			min = 0,
+			max = 2000,
+			current_value = 650,
+			message_type = "set_parameter",
+			format = "%.0f"
+		},
+		{
+			name = "Volume",
+			thumb = gui.get_node("thumb_volume"),
+			track = gui.get_node("track_volume"),
+			value_label = gui.get_node("value_volume"),
+			min = 0.0,
+			max = 1.0,
+			current_value = 0.75,
+			message_type = "set_volume",
+			format = "%.2f"
+		},
+		{
+			name = "Pitch",
+			thumb = gui.get_node("thumb_pitch"),
+			track = gui.get_node("track_pitch"),
+			value_label = gui.get_node("value_pitch"),
+			min = 0.5,
+			max = 2.0,
+			current_value = 1.0,
+			message_type = "set_pitch",
+			format = "%.1fx"
+		}
+	}
+
+	self.dragging_slider = nil
+
+	-- Initialize all slider positions
+	update_all_sliders(self)
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("click") then
+		if action.pressed then
+			-- Check if any slider thumb was clicked
+			for i, slider in ipairs(self.sliders) do
+				if gui.pick_node(slider.thumb, action.x, action.y) then
+					self.dragging_slider = slider
+					gui.set_color(slider.thumb, COLORS.thumb_active)
+					return true
+				end
+			end
+		end
+
+		if action.released and self.dragging_slider then
+			-- Release slider
+			gui.set_color(self.dragging_slider.thumb, COLORS.thumb_normal)
+			self.dragging_slider = nil
+			return true
+		end
+	end
+
+	-- Handle dragging (runs on every mouse move)
+	if self.dragging_slider and action.x then
+		update_slider_from_mouse(self, self.dragging_slider, action.x)
+		return true
+	end
+
+	return false
+end
+
+-- Helper Functions
+
+function update_slider_from_mouse(self, slider, mouse_x)
+	-- Get track bounds
+	local track_pos = gui.get_position(slider.track)
+	local track_size = gui.get_size(slider.track)
+	local track_left = track_pos.x - track_size.x / 2
+	local track_right = track_pos.x + track_size.x / 2
+
+	-- Clamp mouse position to track bounds
+	local clamped_x = math.max(track_left, math.min(track_right, mouse_x))
+
+	-- Convert to normalized value (0-1)
+	local normalized = (clamped_x - track_left) / (track_right - track_left)
+
+	-- Map to parameter range
+	local param_value = slider.min + normalized * (slider.max - slider.min)
+
+	-- Update slider state
+	slider.current_value = param_value
+
+	-- Update visual position
+	local thumb_pos = gui.get_position(slider.thumb)
+	gui.set_position(slider.thumb, vmath.vector3(clamped_x, thumb_pos.y, thumb_pos.z))
+
+	-- Update value display
+	gui.set_text(slider.value_label, string.format(slider.format, param_value))
+
+	-- Send message to example_2.script
+	if slider.message_type == "set_parameter" then
+		msg.post("example_2:/audio_controller", slider.message_type, {
+			name = slider.name,
+			value = param_value
+		})
+	else
+		msg.post("example_2:/audio_controller", slider.message_type, {
+			value = param_value
+		})
+	end
+end
+
+function update_all_sliders(self)
+	-- Set initial thumb positions and value labels
+	for i, slider in ipairs(self.sliders) do
+		local normalized = (slider.current_value - slider.min) / (slider.max - slider.min)
+		local track_pos = gui.get_position(slider.track)
+		local track_size = gui.get_size(slider.track)
+		local track_left = track_pos.x - track_size.x / 2
+		local track_width = track_size.x
+
+		local thumb_x = track_left + normalized * track_width
+		local thumb_pos = gui.get_position(slider.thumb)
+		gui.set_position(slider.thumb, vmath.vector3(thumb_x, thumb_pos.y, thumb_pos.z))
+
+		gui.set_text(slider.value_label, string.format(slider.format, slider.current_value))
+	end
+end

@@ -1,0 +1,65 @@
+function init(self)
+	if not fmod then
+		print("Sorry! Your platform is not yet supported.")
+		return
+	end
+
+	-- Load FMOD banks
+	self.master_bank = fmod.studio.system:load_bank_memory(resource.load("/example/build/Master.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
+	self.strings_bank = fmod.studio.system:load_bank_memory(resource.load("/example/build/Master.strings.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
+
+	-- Create engine_loop event instance
+	local event_description = fmod.studio.system:get_event("event:/engine_loop")
+	local event = event_description:create_instance()
+	self.event = event
+
+	-- Set initial parameter values
+	event:set_parameter_by_name("RPM", 650.0, false)
+
+	-- Set initial volume and pitch
+	event:set_volume(0.75)  -- 75% volume
+	event:set_pitch(1.0)    -- Normal pitch
+
+	-- Start the event
+	event:start()
+end
+
+function on_message(self, message_id, message, sender)
+	if not fmod or not self.event then return end
+
+	if message_id == hash("set_parameter") then
+		-- Handle parameter changes from GUI (RPM)
+		local ok, err = pcall(function()
+			self.event:set_parameter_by_name(message.name, message.value, false)
+		end)
+		if not ok then
+			print("Parameter '" .. message.name .. "' not found:", err)
+		end
+
+	elseif message_id == hash("set_volume") then
+		-- Handle volume changes from GUI
+		self.event:set_volume(message.value)
+
+	elseif message_id == hash("set_pitch") then
+		-- Handle pitch changes from GUI
+		self.event:set_pitch(message.value)
+	end
+end
+
+function final(self)
+	if not fmod then return end
+
+	-- Stop and release the event instance
+	if self.event then
+		self.event:stop(fmod.STUDIO_STOP_IMMEDIATE)
+		self.event:release()
+	end
+
+	-- Unload banks
+	if self.strings_bank then
+		self.strings_bank:unload()
+	end
+	if self.master_bank then
+		self.master_bank:unload()
+	end
+end

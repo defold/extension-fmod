@@ -1,0 +1,101 @@
+-- State machine states
+local STATE_IDLE = 0
+local STATE_UNLOADING = 1
+local STATE_LOADING = 2
+
+function init(self)
+	-- Acquire input focus for the proxy manager
+	-- This allows input to be routed through the proxy
+	msg.post(".", "acquire_input_focus")
+
+	-- Initialize state
+	self.current_example = 1
+	self.target_example = nil
+	self.state = STATE_LOADING
+
+	-- Load initial example
+	msg.post("#example_1_proxy", "load")
+
+	-- Notify loader GUI of initial state
+	msg.post("loader#loader_gui", "example_active", { example_id = 1 })
+end
+
+function on_input(self, action_id, action)
+	-- We have input focus to route input to the proxy
+	-- But we need to check if the loader GUI should handle it first
+	-- Loader GUI is at bottom-left (20, 20) with size (200, 120)
+	if action_id == hash("click") and action.pressed then
+		-- Check if click is on loader GUI area (approximate bounds check)
+		if action.x >= 20 and action.x <= 220 and action.y >= 20 and action.y <= 140 then
+			-- Forward to loader GUI
+			msg.post("loader#loader_gui", "loader_click", {
+				x = action.x,
+				y = action.y,
+				pressed = action.pressed,
+				released = action.released
+			})
+			return true  -- Consume the input
+		end
+	end
+
+	-- Let input pass through to the proxy
+	return false
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("load_example") then
+		handle_load_request(self, message.example_id)
+
+	elseif message_id == hash("proxy_loaded") then
+		handle_proxy_loaded(self, sender)
+
+	elseif message_id == hash("proxy_unloaded") then
+		handle_proxy_unloaded(self, sender)
+	end
+end
+
+function handle_load_request(self, example_id)
+	-- Ignore if already loading this example
+	if example_id == self.current_example and self.state == STATE_IDLE then
+		return
+	end
+
+	-- Ignore if currently transitioning
+	if self.state ~= STATE_IDLE then
+		return
+	end
+
+	-- Start unloading current example
+	self.target_example = example_id
+	self.state = STATE_UNLOADING
+
+	local proxy_url = "#example_" .. self.current_example .. "_proxy"
+	msg.post(proxy_url, "disable")
+	msg.post(proxy_url, "unload")
+end
+
+function handle_proxy_loaded(self, sender)
+	-- Enable the loaded proxy (this also initializes it)
+	msg.post(sender, "enable")
+
+	-- Set the proxy to receive input
+	msg.post(sender, "set_input_listener")
+
+	-- Update state
+	self.state = STATE_IDLE
+
+	-- Notify loader GUI
+	msg.post("loader#loader_gui", "example_active", {
+		example_id = self.current_example
+	})
+end
+
+function handle_proxy_unloaded(self, sender)
+	-- Start loading target example
+	self.current_example = self.target_example
+	self.target_example = nil
+	self.state = STATE_LOADING
+
+	local proxy_url = "#example_" .. self.current_example .. "_proxy"
+	msg.post(proxy_url, "load")
+end

@@ -1,0 +1,290 @@
+script: "/example/parameters_controls.gui_script"
+fonts {
+  name: "default"
+  font: "/example/default.font"
+}
+nodes {
+  position {
+    x: 320.0
+    y: 300.0
+  }
+  size {
+    x: 400.0
+    y: 250.0
+  }
+  color {
+    x: 0.2
+    y: 0.2
+    z: 0.2
+  }
+  type: TYPE_BOX
+  id: "panel_background"
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_BOTTOM
+  pivot: PIVOT_SW
+  inherit_alpha: true
+  alpha: 0.9
+}
+nodes {
+  position {
+    x: 200.0
+    y: 220.0
+  }
+  size {
+    x: 360.0
+    y: 24.0
+  }
+  color {
+    x: 0.5
+    y: 0.8
+    z: 0.5
+  }
+  type: TYPE_TEXT
+  text: "FMOD Parameter Control"
+  font: "default"
+  id: "title"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 60.0
+    y: 160.0
+  }
+  size {
+    x: 80.0
+    y: 20.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "RPM:"
+  font: "default"
+  id: "label_rpm"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 230.0
+    y: 160.0
+  }
+  size {
+    x: 300.0
+    y: 6.0
+  }
+  color {
+    x: 0.4
+    y: 0.4
+    z: 0.4
+  }
+  type: TYPE_BOX
+  id: "track_rpm"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 230.0
+    y: 160.0
+  }
+  size {
+    x: 20.0
+    y: 20.0
+  }
+  color {
+    x: 0.5
+    y: 0.7
+    z: 0.9
+  }
+  type: TYPE_BOX
+  id: "thumb_rpm"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 360.0
+    y: 160.0
+  }
+  size {
+    x: 60.0
+    y: 20.0
+  }
+  color {
+    x: 0.9
+    y: 0.9
+    z: 0.9
+  }
+  type: TYPE_TEXT
+  text: "650"
+  font: "default"
+  id: "value_rpm"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 60.0
+    y: 100.0
+  }
+  size {
+    x: 80.0
+    y: 20.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "Volume:"
+  font: "default"
+  id: "label_volume"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 230.0
+    y: 100.0
+  }
+  size {
+    x: 300.0
+    y: 6.0
+  }
+  color {
+    x: 0.4
+    y: 0.4
+    z: 0.4
+  }
+  type: TYPE_BOX
+  id: "track_volume"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 230.0
+    y: 100.0
+  }
+  size {
+    x: 20.0
+    y: 20.0
+  }
+  color {
+    x: 0.5
+    y: 0.7
+    z: 0.9
+  }
+  type: TYPE_BOX
+  id: "thumb_volume"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 360.0
+    y: 100.0
+  }
+  size {
+    x: 60.0
+    y: 20.0
+  }
+  color {
+    x: 0.9
+    y: 0.9
+    z: 0.9
+  }
+  type: TYPE_TEXT
+  text: "0.75"
+  font: "default"
+  id: "value_volume"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 60.0
+    y: 40.0
+  }
+  size {
+    x: 80.0
+    y: 20.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "Pitch:"
+  font: "default"
+  id: "label_pitch"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 230.0
+    y: 40.0
+  }
+  size {
+    x: 300.0
+    y: 6.0
+  }
+  color {
+    x: 0.4
+    y: 0.4
+    z: 0.4
+  }
+  type: TYPE_BOX
+  id: "track_pitch"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 230.0
+    y: 40.0
+  }
+  size {
+    x: 20.0
+    y: 20.0
+  }
+  color {
+    x: 0.5
+    y: 0.7
+    z: 0.9
+  }
+  type: TYPE_BOX
+  id: "thumb_pitch"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 360.0
+    y: 40.0
+  }
+  size {
+    x: 60.0
+    y: 20.0
+  }
+  color {
+    x: 0.9
+    y: 0.9
+    z: 0.9
+  }
+  type: TYPE_TEXT
+  text: "1.0x"
+  font: "default"
+  id: "value_pitch"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

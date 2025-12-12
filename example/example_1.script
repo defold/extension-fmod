@@ -1,0 +1,131 @@
+local world_scale = 0.01
+
+function init(self)
+  if not fmod then
+    label.set_text("#label", "Sorry! Your platform is not yet supported.")
+    return
+  end
+
+  self.master_bank = fmod.studio.system:load_bank_memory(resource.load("/example/build/Master.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
+  self.strings_bank = fmod.studio.system:load_bank_memory(resource.load("/example/build/Master.strings.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
+
+  -- You can alternatively use this path to load banks from your bundle_resources dir
+  print(sys.get_application_path())
+
+  local event_description = fmod.studio.system:get_event("event:/engine_loop")
+  local event = event_description:create_instance()
+  self.event = event
+
+  -- Error handling example
+  local ok, err = pcall(function ()
+    fmod.studio.system:get_event("event:/Inexistent event")
+  end)
+  if not ok then
+    print(err)
+    local code = fmod.error_code[err] -- The FMOD error code (a number).
+    print(code)
+    if code == fmod.ERR_EVENT_NOTFOUND then
+      print("Ooops! This event doesn't exist!")
+    end
+  end
+
+  local listener_attr = fmod._3D_ATTRIBUTES()
+  self.listener_attr = listener_attr
+  listener_attr.position = go.get_world_position("listener") * world_scale
+  listener_attr.velocity = vmath.vector3(0.0)
+  listener_attr.forward = vmath.vector3(0.0, 1.0, 0.0)
+  listener_attr.up = vmath.vector3(0.0, 0.0, -1.0)
+  fmod.studio.system:set_listener_attributes(0, listener_attr)
+
+  local source_attr = fmod._3D_ATTRIBUTES()
+  self.source_attr = source_attr
+  source_attr.position = go.get_world_position("source") * world_scale
+  source_attr.velocity = vmath.vector3(0.0)
+  source_attr.forward = vmath.vector3(0.0, 1.0, 0.0)
+  source_attr.up = vmath.vector3(0.0, 0.0, -1.0)
+  event:set_3d_attributes(source_attr)
+
+  event:set_parameter_by_name("RPM", 650.0, false)
+  event:start()
+end
+
+local function update_attributes(attr, dt, new_position)
+  if new_position.x ~= new_position.x or attr.position.x ~= attr.position.x then
+    return
+  end
+  local delta_pos = new_position - attr.position
+  attr.position = new_position
+  attr.velocity = delta_pos * (1.0 / dt)
+end
+
+function update(self, dt)
+  if not fmod then return end
+
+  local listener_pos = go.get_world_position("listener") * world_scale
+  update_attributes(self.listener_attr, dt, listener_pos)
+  fmod.studio.system:set_listener_attributes(0, self.listener_attr)
+
+  local source_pos = go.get_world_position("source") * world_scale
+  update_attributes(self.source_attr, dt, source_pos)
+  self.event:set_3d_attributes(self.source_attr)
+end
+
+function on_message(self, message_id, message, sender)
+  -- Handle clicks/drags forwarded from GUI (outside UI panel)
+  if message_id == hash("click_outside_ui") then
+    -- Move source on any mouse event (click or drag)
+    go.set_position(vmath.vector3(message.x, message.y, 0.0), "source")
+    return
+  end
+
+  if not fmod or not self.event then return end
+
+  if message_id == hash("fmod_control") then
+    -- Handle lifecycle control commands from GUI
+    if message.action == "start_instant" then
+      print("FMOD: Starting event (instant)")
+      self.event:start()
+
+    elseif message.action == "start_fade" then
+      print("FMOD: Starting event (fade) - requires fade-in curve in FMOD Studio")
+      -- FMOD Studio events use fade-in curves configured in the event itself
+      self.event:start()
+    elseif message.action == "stop_instant" then
+      print("FMOD: Stopping event (IMMEDIATE)")
+      self.event:stop(fmod.STUDIO_STOP_IMMEDIATE)
+    elseif message.action == "stop_fade" then
+      print("FMOD: Stopping event (ALLOWFADEOUT) - requires fade-out curve in FMOD Studio")
+      self.event:stop(fmod.STUDIO_STOP_ALLOWFADEOUT)
+    elseif message.action == "toggle_pause" then
+      local paused = self.event:get_paused()
+      print(string.format("FMOD: Toggling pause from %s to %s", tostring(paused), tostring(not paused)))
+      self.event:set_paused(not paused)
+    end
+  elseif message_id == hash("fmod_query_state") then
+    -- Return current playback state to GUI
+    local state = self.event:get_playback_state()
+    local paused = self.event:get_paused()
+    msg.post(sender, "fmod_state_update", {
+      playback_state = state,
+      is_paused = paused
+    })
+  end
+end
+
+function final(self)
+  if not fmod then return end
+
+  -- Stop and release the event instance
+  if self.event then
+    self.event:stop(fmod.STUDIO_STOP_IMMEDIATE)
+    self.event:release()
+  end
+
+  -- Unload banks
+  if self.strings_bank then
+    self.strings_bank:unload()
+  end
+  if self.master_bank then
+    self.master_bank:unload()
+  end
+end

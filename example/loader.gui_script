@@ -1,0 +1,90 @@
+-- Button color definitions
+local COLORS = {
+	button_normal = vmath.vector4(0.3, 0.6, 0.8, 1.0),
+	button_active = vmath.vector4(0.5, 0.8, 1.0, 1.0),
+	button_pressed = vmath.vector4(0.4, 0.7, 0.9, 1.0),
+	button_disabled = vmath.vector4(0.4, 0.4, 0.4, 0.5)
+}
+
+function init(self)
+	-- Note: We don't acquire input focus. Input is handled by proxy_manager
+	-- which forwards clicks to us via messages
+
+	-- Get node references
+	self.button_example_1 = gui.get_node("button_example_1")
+	self.button_example_2 = gui.get_node("button_example_2")
+	self.panel_background = gui.get_node("panel_background")
+
+	-- State tracking
+	self.active_example = 1  -- Start with Example 1
+	self.pressed_button = nil
+	self.transitioning = false
+
+	-- Initial visual state
+	update_button_visuals(self)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("example_active") then
+		self.active_example = message.example_id
+		self.transitioning = false
+		update_button_visuals(self)
+
+	elseif message_id == hash("loader_click") then
+		-- Handle click forwarded from main.script
+		local action = { x = message.x, y = message.y, pressed = true }
+		handle_loader_click(self, action)
+	end
+end
+
+-- Helper Functions
+
+function handle_loader_click(self, action)
+	if self.transitioning then
+		return
+	end
+
+	-- Check which button was clicked
+	if gui.pick_node(self.button_example_1, action.x, action.y) then
+		handle_button_press(self, 1, self.button_example_1)
+	elseif gui.pick_node(self.button_example_2, action.x, action.y) then
+		handle_button_press(self, 2, self.button_example_2)
+	end
+end
+
+function handle_button_press(self, example_id, button_node)
+	-- Don't reload current example
+	if example_id == self.active_example then
+		return
+	end
+
+	-- Visual feedback
+	gui.set_color(button_node, COLORS.button_pressed)
+	self.pressed_button = button_node
+
+	-- Request example load
+	self.transitioning = true
+	msg.post("proxy_manager", "load_example", { example_id = example_id })
+end
+
+function update_button_visuals(self)
+	-- Update button 1
+	if self.active_example == 1 then
+		gui.set_color(self.button_example_1, COLORS.button_active)
+	else
+		gui.set_color(self.button_example_1, COLORS.button_normal)
+	end
+
+	-- Update button 2
+	if self.active_example == 2 then
+		gui.set_color(self.button_example_2, COLORS.button_active)
+	else
+		gui.set_color(self.button_example_2, COLORS.button_normal)
+	end
+
+	-- Disable all buttons during transition
+	if self.transitioning then
+		gui.set_color(self.button_example_1, COLORS.button_disabled)
+		gui.set_color(self.button_example_2, COLORS.button_disabled)
+	end
+end
