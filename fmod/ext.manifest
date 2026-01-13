@@ -34,11 +34,13 @@ platforms:
   x86-win32:
     context:
       libs: ["shlwapi.lib"]
+
   x86_64-linux:
     context:
       flags: ["-fvisibility=hidden"]
       defines: ["FMOD_FORCE_STATIC_LINK"]
       dynamicLibs: ["fmod", "fmodstudio"]
+
   web:
     context:
       defines: ["FMOD_FORCE_STATIC_LINK"]
