@@ -1,5 +1,5 @@
 #include "fmod_bridge.h"
-#include <fmod/fmod_errors.h>
+#include "../include/fmod_errors.h"
 #include <string.h>
 
 #ifdef __EMSCRIPTEN__
@@ -56,6 +56,13 @@ static FMOD_SPEAKERMODE speakerModeFromString(const char* str) {
 } while(0)
 
 void FMODBridge_init(lua_State *L) {
+#ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
+    if (!FMODBridge_linkLibraries()) {
+        LOGE("Failed to link FMOD libraries");
+        return;
+    }
+#endif
+
     attachJNI();
 
     ensure(ST, FMOD_Studio_System_Create, FMOD_RESULT, FMOD_STUDIO_SYSTEM**, unsigned int);

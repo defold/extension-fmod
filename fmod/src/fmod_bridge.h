@@ -15,8 +15,8 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <fmod/fmod_studio.h>
-#include <fmod/fmod.h>
+#include "../include/fmod_studio.h"
+#include "../include/fmod.h"
 
 #ifdef __APPLE__
     #include "TargetConditionals.h"
@@ -26,8 +26,13 @@ extern "C" {
     #include <Windows.h>
 #endif
 
-#if !defined(FMOD_FORCE_STATIC_LINK) && ((defined(__APPLE__) && !TARGET_OS_IPHONE) || (defined(__linux__) && !defined(__ANDROID__)) || defined(__ANDROID__) || defined(_WIN32))
+// Auto-detect dynamic loading for desktop platforms (can be overridden via manifest defines)
+#if !defined(FMOD_BRIDGE_LOAD_DYNAMICALLY) && !defined(FMOD_FORCE_STATIC_LINK) && ((defined(__APPLE__) && !TARGET_OS_IPHONE) || (defined(__linux__) && !defined(__ANDROID__)) || defined(_WIN32))
     #define FMOD_BRIDGE_LOAD_DYNAMICALLY
+#endif
+
+// Setup for dynamic loading
+#ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
     #include <stdlib.h>
     #include <stdio.h>
     #ifndef _WIN32
