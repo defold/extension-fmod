@@ -29,3 +29,6 @@ speaker_mode = 5.1
 
 [html5]
 heap_size = 512
+
+[android]
+package = com.fmod.example
