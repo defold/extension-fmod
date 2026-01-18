@@ -21,12 +21,10 @@ platforms:
 
   armv7-android:
     context:
-      defines: ["FMOD_BRIDGE_LOAD_DYNAMICALLY"]
       dynamicLibs: ["fmod", "fmodstudio"]
 
   arm64-android:
     context:
-      defines: ["FMOD_BRIDGE_LOAD_DYNAMICALLY"]
       dynamicLibs: ["fmod", "fmodstudio"]
 
   x86_64-win32:
