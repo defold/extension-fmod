@@ -44,7 +44,7 @@ platforms:
   web:
     context:
       defines: ["FMOD_FORCE_STATIC_LINK"]
-      libs: ["fmodstudio"]
+      libs: ["fmod","fmodstudio"]
       emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]"]
 
   wasm_pthread-web:
