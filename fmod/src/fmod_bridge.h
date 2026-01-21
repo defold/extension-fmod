@@ -26,23 +26,6 @@ extern "C" {
     #include <Windows.h>
 #endif
 
-// Auto-detect dynamic loading for desktop platforms (can be overridden via manifest defines)
-#if !defined(FMOD_BRIDGE_LOAD_DYNAMICALLY) && !defined(FMOD_FORCE_STATIC_LINK) && ((defined(__APPLE__) && !TARGET_OS_IPHONE) || (defined(__linux__) && !defined(__ANDROID__)) || defined(_WIN32))
-    #define FMOD_BRIDGE_LOAD_DYNAMICALLY
-#endif
-
-// Setup for dynamic loading
-#ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
-    #include <stdlib.h>
-    #include <stdio.h>
-    #ifndef _WIN32
-        #include <dlfcn.h>
-        #define dlModuleT void *
-    #else
-        #define dlModuleT HMODULE
-    #endif
-#endif
-
 #ifdef __ANDROID__
 #include <android/log.h>
 #include <jni.h>
@@ -109,13 +92,8 @@ extern FMOD_STUDIO_SYSTEM* FMODBridge_system;
 extern FMOD_SYSTEM* FMODBridge_lowLevelSystem;
 extern bool FMODBridge_isPaused;
 
-#ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
-extern dlModuleT FMODBridge_dlHandleLL;
-extern dlModuleT FMODBridge_dlHandleST;
-extern bool FMODBridge_isLinked;
 bool FMODBridge_linkLibraries();
 void FMODBridge_cleanupLibraries();
-#endif
 
 void FMODBridge_register(lua_State *L);
 int FMODBridge_getBundleRoot(lua_State *L);
@@ -137,31 +115,7 @@ void FMODBridge_detachJNI();
 #define detachJNI()
 #endif
 
-#ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
-
-#ifdef _WIN32
-#define getSymbol GetProcAddress
-#define getSymbolPrintError(fname) LOGE("GetProcAddress(\"%s\"): %lu", STRINGIFY(fname), GetLastError())
-#else
-#define getSymbol dlsym
-#define getSymbolPrintError(fname) LOGE("dlsym(\"%s\"): %s", STRINGIFY(fname), dlerror())
-#endif
-
-#define ensure_(lib, fname, retType, ...) \
-    static retType (F_CALL *fname)(__VA_ARGS__) = NULL; \
-    if (!fname) { \
-        fname = (retType (F_CALL *)(__VA_ARGS__))getSymbol(RESOLVE(CONCAT(FMODBridge_dlHandle, lib)), STRINGIFY(fname)); \
-        if (!fname) { \
-            getSymbolPrintError(fname); \
-            abort(); \
-        } \
-    }
-
-#define ensure(lib, fname, retType, ...) ensure_(lib, fname, retType, __VA_ARGS__)
-
-#else
 #define ensure(lib, fname, retType, ...)
-#endif
 
 #ifdef __cplusplus
 }

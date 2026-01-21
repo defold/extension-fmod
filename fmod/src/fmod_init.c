@@ -56,12 +56,10 @@ static FMOD_SPEAKERMODE speakerModeFromString(const char* str) {
 } while(0)
 
 void FMODBridge_init(lua_State *L) {
-#ifdef FMOD_BRIDGE_LOAD_DYNAMICALLY
     if (!FMODBridge_linkLibraries()) {
         LOGE("Failed to link FMOD libraries");
         return;
     }
-#endif
 
     attachJNI();
 
@@ -166,6 +164,7 @@ void FMODBridge_finalize() {
 
         detachJNI();
     }
+    FMODBridge_cleanupLibraries();
 }
 
 void FMODBridge_resumeMixer() {

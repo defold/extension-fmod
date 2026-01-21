@@ -21,19 +21,6 @@ least the words "FMOD" (OR "FMOD STUDIO" IF APPLICABLE) AND "FIRELIGHT TECHNOLOG
 Go to the [Releases page](https://github.com/defold/extension-fmod/releases),
 copy a dependency URL, then add it to your dependencies in `game.project`.
 
-### Running in the editor
-
-The game will bundle fine, but in order for FMOD to be available when running
-from the editor, an extra step is required.
-
-Copy the `fmod/res` directory from this repo to a directory in your project
-and add the path to that directory to your `game.project`:
-
-```
-[fmod]
-lib_path = path/to/fmod/res
-```
-
 ### Set the speaker mode
 
 This step is [only required if you use Studio banks][set_software_format].

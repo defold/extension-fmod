@@ -3,7 +3,6 @@ platforms:
   osx:
     context:
       flags: ["-fvisibility=hidden"]
-      defines: ["FMOD_FORCE_STATIC_LINK"]
       dynamicLibs: ["fmod", "fmodstudio"]
       linkFlags: ["-Wl,-rpath,@executable_path"]
 
@@ -29,25 +28,30 @@ platforms:
 
   x86_64-win32:
     context:
+      dynamicLibs: ["fmod", "fmodstudio"]
       libs: ["shlwapi.lib"]
 
   x86-win32:
     context:
+      dynamicLibs: ["fmod", "fmodstudio"]
       libs: ["shlwapi.lib"]
 
   x86_64-linux:
     context:
       flags: ["-fvisibility=hidden"]
-      defines: ["FMOD_FORCE_STATIC_LINK"]
       dynamicLibs: ["fmod", "fmodstudio"]
 
-  web:
+  js-web:
     context:
-      defines: ["FMOD_FORCE_STATIC_LINK"]
-      libs: ["fmod","fmodstudio"]
+      libs: ["fmod", "fmodstudio"]
+      emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]"]
+
+  wasm-web:
+    context:
+      libs: ["fmod", "fmodstudio"]
       emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]"]
 
   wasm_pthread-web:
     context:
-      defines: ["FMOD_FORCE_STATIC_LINK"]
+      libs: ["fmod", "fmodstudio"]
       emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]", "-pthread", "-s PTHREAD_POOL_SIZE=5"]

@@ -15,20 +15,6 @@ To use FMOD in your Defold project, add a version of the  Defold FMOD extension 
 
 Select `Project->Fetch Libraries` once you have added the version to `game.project` to download the version and make it available in your project.
 
-## Running in the editor
-
-![](lib_path.png)
-
-The game will bundle fine, but in order for FMOD to be available when running
-from the editor, an extra step is required.
-The `lib_path` is parameter that takes a reference to the `fmod/res` directory of your library.
-
-After fetching the library, unzip the extension inside `.internal/lib/*/extension-fmod-0.1.0-alpha`, and you'll be able to reference it.
-```
-[fmod]
-lib_path = .internal/lib/*/extension-fmod-0.1.0-alpha/fmod/res
-```
-
 ## Getting started
 
 Check if FMOD is available on your platform:
