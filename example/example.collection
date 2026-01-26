@@ -51,7 +51,7 @@ embedded_instances {
   "pivot: PIVOT_CENTER\\n"
   "blend_mode: BLEND_MODE_ALPHA\\n"
   "line_break: false\\n"
-  "text: \\\"Click to move source\\\"\\n"
+  "text: \\\"Click to move source: look mom no bridge or lib_path\\\"\\n"
   "font: \\\"/example/default.font\\\"\\n"
   "material: \\\"/builtins/fonts/label-df.material\\\"\\n"
   "\"\n"

@@ -34,17 +34,19 @@ dmExtension::Result FinalizeDefoldFMOD(dmExtension::Params* params) {
 
 void OnEventDefoldFMOD(dmExtension::Params* params, const dmExtension::Event* event) {
     switch (event->m_Event) {
-        case dmExtension::EVENT_ID_ACTIVATEAPP:
+        case EXTENSION_EVENT_ID_ACTIVATEAPP:
             FMODBridge_activateApp();
             break;
-        case dmExtension::EVENT_ID_DEACTIVATEAPP:
+        case EXTENSION_EVENT_ID_DEACTIVATEAPP:
             FMODBridge_deactivateApp();
             break;
-        case dmExtension::EVENT_ID_ICONIFYAPP:
+        case EXTENSION_EVENT_ID_ICONIFYAPP:
             FMODBridge_iconifyApp();
             break;
-        case dmExtension::EVENT_ID_DEICONIFYAPP:
+        case EXTENSION_EVENT_ID_DEICONIFYAPP:
             FMODBridge_deiconifyApp();
+            break;
+        default:
             break;
     }
 }
