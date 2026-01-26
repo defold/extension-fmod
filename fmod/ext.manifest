@@ -8,15 +8,13 @@ platforms:
 
   arm64-ios:
     context:
-      frameworks: ["AVFoundation"]
-
-  armv7-ios:
-    context:
-      frameworks: ["AVFoundation"]
+      frameworks: ["AVFoundation", "AudioToolbox"]
+      libs: ["fmod", "fmodstudio"]
 
   x86_64-ios:
     context:
-      frameworks: ["AVFoundation"]
+      frameworks: ["AVFoundation", "AudioToolbox"]
+      libs: ["fmod", "fmodstudio"]
 
   armv7-android:
     context:
