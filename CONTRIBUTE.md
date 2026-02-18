@@ -6,22 +6,16 @@ Please stick to the indentation style used throughout the project (K&R-like).
 
 ## External dependencies
 
-| Tool | Required by | Platform | Notes |
-|------|-------------|----------|-------|
-| `gcc` | `build` | All | C preprocessor for parsing FMOD headers |
-| `codesign` | `update` | macOS only | Ad-hoc signs extracted `.dylib` and `.a` files to prevent Gatekeeper issues |
-| `hdiutil` | `update` | macOS only | Mounts `.dmg` archives for macOS/iOS libraries |
-| `7z` or `unar` | `update` | All | Extracts Windows `.exe` installers (auto-detected) |
-| `ar` | `update` | All | Combines split WASM `.a` archives for HTML5 |
-| `patchelf` | `update` | Linux only | Workaround: strips versioned SONAME from `.so` files (e.g. `libfmod.so.14` → `libfmod.so`) so Defold's `dynamicLibs` can resolve them |
+| Tool | Platform | Description |
+|------|----------|-------|
+| `gcc` | All | C preprocessor for parsing FMOD headers |
+| `codesign` | macOS only | Signs extracted `.dylib` and `.a` |
+| `hdiutil` | macOS only | Mounts `.dmg` archives for macOS/iOS libraries |
+| `7z` or `unar` | All | Extracts Windows `.exe` installers (auto-detected) |
+| `ar` | All | Combines split WASM `.a` archives for HTML5 |
+| `patchelf` | Linux only | Workaround: strips versioned SONAME from `.so` files (e.g. `libfmod.so.14` → `libfmod.so`) so Defold's `dynamicLibs` can resolve them |
 
 Python packages (install with `pip install -r cicd/requirements.txt`):
-
-| Package | Required by |
-|---------|-------------|
-| `pycparser` | `build` |
-| `jinja2` | `build` |
-| `ruff` | `lint`, `format` |
 
 ## CI/CD tool
 
@@ -44,12 +38,11 @@ missing, along with install hints.
 
 ### Generating bindings
 
-The C/Lua bindings are auto-generated from FMOD headers. To regenerate, install
-the dependencies and run:
+The C/Lua bindings are auto-generated from FMOD headers. To regenerate:
 
 ```bash
 pip install -r cicd/requirements.txt
-python cicd/build.py build
+python cicd/build.py generate
 ```
 
 This produces `fmod/src/fmod_generated.c` and `fmod/api/fmod.script_api`.
@@ -58,6 +51,22 @@ This produces `fmod/src/fmod_generated.c` and `fmod/api/fmod.script_api`.
 
 ```bash
 python cicd/build.py test
+```
+
+### Linting code
+
+```
+./cicd/build.py lint
+or
+python cicd/build.py lint
+```
+
+### Format code
+
+```
+./cicd/build.py format
+or
+python cicd/build.py format
 ```
 
 ## Updating FMOD to a newer version
@@ -82,7 +91,7 @@ python cicd/build.py update --ignore-apple ~/Downloads/fmod20309/
 After updating, regenerate the bindings:
 
 ```bash
-python cicd/build.py build
+python cicd/build.py generate
 ```
 
 ## Testing HTML5/WASM pthread builds locally
