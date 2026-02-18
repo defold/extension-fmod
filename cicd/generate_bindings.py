@@ -1,8 +1,13 @@
-import sys
 import re
-from pycparser import parse_file, c_ast
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from pathlib import Path
+
+from jinja2 import Environment, FileSystemLoader
+from pycparser import c_ast, parse_file
+
 from api_from_bindings import write_script_api_file
+
+_SCRIPT_DIR = Path(__file__).resolve().parent
+_REPO_ROOT = _SCRIPT_DIR.parent
 
 TypeBasic = 1
 TypeStruct = 2
@@ -25,21 +30,13 @@ accessors = {
 }
 
 arg_usage_overrides = {
-    "FMOD_System_CreateSound": {
-        "exinfo": "input"
-    },
-    "FMOD_System_CreateStream": {
-        "exinfo": "input"
-    },
+    "FMOD_System_CreateSound": {"exinfo": "input"},
+    "FMOD_System_CreateStream": {"exinfo": "input"},
 }
 
 optional_arguments = {
-    "FMOD_System_CreateSound": {
-        "exinfo": True
-    },
-    "FMOD_System_CreateStream": {
-        "exinfo": True
-    },
+    "FMOD_System_CreateSound": {"exinfo": True},
+    "FMOD_System_CreateStream": {"exinfo": True},
     "FMOD_System_PlaySound": {
         "channelgroup": True,
         "paused": True,
@@ -47,30 +44,39 @@ optional_arguments = {
 }
 
 valid = re.compile(r"^_*(IDs|[A-Z][a-z]+|[A-Z0-9]+(?![a-z]))")
+
+
 def to_snake_case(s):
     components = []
     while True:
         match = valid.match(s)
-        if match == None:
+        if match is None:
             break
         components.append(match.group(1).lower())
-        s = s[match.end():]
+        s = s[match.end() :]
     return "_".join(components)
+
 
 enum_re = re.compile(r"^\s*#define FMOD_([a-zA-Z0-9_]+)")
 enum_exceptions = {"STUDIO_COMMON_H": True, "STUDIO_H": True}
+
+
 def add_defined_enums(enums):
-    headers = ["include/fmod_common.h", "include/fmod_studio_common.h"]
+    headers = [
+        str(_REPO_ROOT / "fmod" / "include" / "fmod_common.h"),
+        str(_REPO_ROOT / "fmod" / "include" / "fmod_studio_common.h"),
+    ]
     for filename in headers:
-        with open(filename, "r") as f:
+        with open(filename) as f:
             line = f.readline()
             while line:
                 match = enum_re.match(line)
-                if match != None:
+                if match is not None:
                     enum = match.group(1)
-                    if not enum.startswith("PRESET_") and not enum in enum_exceptions:
+                    if not enum.startswith("PRESET_") and enum not in enum_exceptions:
                         enums.append(enum)
                 line = f.readline()
+
 
 def generate_bindings(ast):
     types = {}
@@ -82,8 +88,17 @@ def generate_bindings(ast):
     enum_types = []
 
     class ParsedTypeDecl:
-        def __init__(self, *, node=None, name=None, c_type="", type=TypeBasic, readable=True, writeable=True):
-            if node != None:
+        def __init__(
+            self,
+            *,
+            node=None,
+            name=None,
+            c_type="",
+            type=TypeBasic,
+            readable=True,
+            writeable=True,
+        ):
+            if node is not None:
                 if isinstance(node, c_ast.PtrDecl):
                     child = ParsedTypeDecl(node=node.type)
                     self.name = "ptr_" + child.name
@@ -95,7 +110,9 @@ def generate_bindings(ast):
                         self.c_type = self.c_type + " const"
 
                     base_type = types[child.name] if child.name in types else TypeUnknown
-                    self.readable = base_type == TypeStruct or base_type == TypeClass or child.c_type == "char"
+                    self.readable = (
+                        base_type == TypeStruct or base_type == TypeClass or child.c_type == "char"
+                    )
                     self.writeable = False
 
                     self.child = child
@@ -104,7 +121,7 @@ def generate_bindings(ast):
                 if isinstance(node, c_ast.TypeDecl) and isinstance(node.type, c_ast.IdentifierType):
                     name = "_".join(node.type.names)
                     c_type = " ".join(node.type.names)
-                    const = ("const" in node.quals)
+                    const = "const" in node.quals
 
                     if const:
                         c_type = "const " + c_type
@@ -126,8 +143,8 @@ def generate_bindings(ast):
                     self.writeable = self.type == TypeStruct
                     return
 
-                self.name = '__UNKNOWN__'
-                self.c_type = '__UNKNOWN__'
+                self.name = "__UNKNOWN__"
+                self.c_type = "__UNKNOWN__"
                 self.const = False
                 self.type = TypeUnknown
                 self.readable = False
@@ -135,7 +152,7 @@ def generate_bindings(ast):
 
             else:
                 self.c_type = c_type
-                self.name = name if name != None else re.sub(" ", "_", c_type)
+                self.name = name if name is not None else re.sub(" ", "_", c_type)
                 self.const = False
                 self.type = type
                 self.readable = readable
@@ -161,9 +178,10 @@ def generate_bindings(ast):
             self.constructor_name = constructor_name
 
             properties = self.properties
+
             class StructVisitor(c_ast.NodeVisitor):
                 def visit_Decl(self, node):
-                    if node.name != None:
+                    if node.name is not None:
                         type_decl = ParsedTypeDecl(node=node.type)
                         properties.append((node.name, type_decl))
 
@@ -189,15 +207,18 @@ def generate_bindings(ast):
             elif type.type == TypePointer:
                 if type.child.type == TypeClass:
                     self.usage = "input"
-                elif (type.child.type == TypeStruct and type.child.const):
+                elif type.child.type == TypeStruct and type.child.const:
                     self.usage = "input"
-                elif (type.child.type == TypeBasic and type.child.const):
+                elif type.child.type == TypeBasic and type.child.const:
                     self.usage = "input_ptr"
                 elif not type.child.const:
                     child = type.child
                     if child.type == TypeStruct:
                         self.usage = "output_ptr"
-                    if (child.name in basic_types and child.name != "char") or (child.type == TypePointer and (child.child.type == TypeClass or child.child.type == TypeStruct)):
+                    if (child.name in basic_types and child.name != "char") or (
+                        child.type == TypePointer
+                        and (child.child.type == TypeClass or child.child.type == TypeStruct)
+                    ):
                         self.usage = "output"
 
     class ParsedMethod:
@@ -207,7 +228,9 @@ def generate_bindings(ast):
             self.args = []
             self.library = "UK"
             self.struct = None
-
+            ret_type = ParsedTypeDecl(node=node.type.type)
+            self.return_type = ret_type.c_type
+            self.returns_bool = ret_type.name == "FMOD_BOOL"
 
         def parse_arguments(self):
             arg_overrides = arg_usage_overrides.get(self.name, {})
@@ -222,11 +245,11 @@ def generate_bindings(ast):
         def detect_scope(self):
             first_arg = self.args[0]
             caps_name = self.name.upper()
-            if first_arg != None:
+            if first_arg is not None:
                 if first_arg.type.type == TypePointer and first_arg.type.child.type == TypeClass:
                     type_name = first_arg.type.child.name
                     if caps_name.startswith(type_name + "_"):
-                        method_name = self.name[len(type_name) + 1:]
+                        method_name = self.name[len(type_name) + 1 :]
                         struct = structs[type_name]
                         self.struct = struct
                         struct.methods.append((to_snake_case(method_name), self))
@@ -241,10 +264,10 @@ def generate_bindings(ast):
             if caps_name.startswith("FMOD_STUDIO_"):
                 table_index = -1
                 self.library = "ST"
-                method_name = self.name[len("FMOD_STUDIO_"):]
+                method_name = self.name[len("FMOD_STUDIO_") :]
             elif caps_name.startswith("FMOD_"):
                 self.library = "LL"
-                method_name = self.name[len("FMOD_"):]
+                method_name = self.name[len("FMOD_") :]
             global_functions.append((table_index, to_snake_case(method_name), self))
 
         def derive_template_data(self):
@@ -268,7 +291,11 @@ def generate_bindings(ast):
                 arg.accessor = accessors[arg.usage] if arg.usage in accessors else ""
             self.return_count = return_count
             self.output_ptr_count = output_ptr_count
-            self.refcount_release = (self.struct and self.struct.name in ref_counted and self.struct.name + "_RELEASE" == self.name.upper())
+            self.refcount_release = (
+                self.struct
+                and self.struct.name in ref_counted
+                and self.struct.name + "_RELEASE" == self.name.upper()
+            )
             if self.refcount_release:
                 self.struct.release_name = self.name
             if not self.generated:
@@ -282,7 +309,7 @@ def generate_bindings(ast):
     def parse_struct(struct):
         if struct.name in exclusions:
             return
-        if struct.decls == None:
+        if struct.decls is None:
             if struct.name not in structs:
                 types[struct.name] = TypeClass
                 parsed_class = ParsedStruct()
@@ -305,10 +332,10 @@ def generate_bindings(ast):
     basic_types["FMOD_BOOL"] = ParsedTypeDecl(c_type="FMOD_BOOL")
     basic_types["float"] = ParsedTypeDecl(c_type="float")
     basic_types["double"] = ParsedTypeDecl(c_type="double")
-    basic_types["ptr_char"] = ParsedTypeDecl(name="ptr_char", c_type="char*", writeable=False, type=TypePointer)
+    basic_types["ptr_char"] = ParsedTypeDecl(
+        name="ptr_char", c_type="char*", writeable=False, type=TypePointer
+    )
     basic_types["FMOD_VECTOR"] = ParsedTypeDecl(c_type="FMOD_VECTOR")
-
-    int_type = basic_types["int"]
 
     for key in basic_types.keys():
         types[key] = TypeBasic
@@ -322,7 +349,7 @@ def generate_bindings(ast):
                     enum_types.append(node.name)
                     for enumlist in node.type.type:
                         for enum in enumlist:
-                            if re.search("_FORCEINT$", enum.name) == None:
+                            if re.search("_FORCEINT$", enum.name) is None:
                                 enums.append(re.sub("^FMOD_", "", enum.name))
 
                 elif isinstance(node.type.type, c_ast.Struct):
@@ -357,36 +384,38 @@ def generate_bindings(ast):
         function.parse()
 
     env = Environment(
-        loader = FileSystemLoader('.'),
-        autoescape = False,
+        loader=FileSystemLoader(str(_SCRIPT_DIR / "templates")),
+        autoescape=False,
     )
-    template = env.get_template('fmod_generated_template.c')
+    template = env.get_template("fmod_generated_template.c")
 
     output = template.render(
-        enums = enums,
-        structs = list(structs.values()),
-        functions = functions,
-        global_functions = global_functions,
-        enum_types = enum_types,
+        enums=enums,
+        structs=list(structs.values()),
+        functions=functions,
+        global_functions=global_functions,
+        enum_types=enum_types,
     )
 
-    with open('src/fmod_generated.c', 'w') as f:
+    with open(str(_REPO_ROOT / "fmod" / "src" / "fmod_generated.c"), "w") as f:
         f.write(output)
 
     write_script_api_file(
-        '../fmod/api/fmod.script_api',
+        str(_REPO_ROOT / "fmod" / "api" / "fmod.script_api"),
         enums,
         list(structs.values()),
-        global_functions
+        global_functions,
     )
 
 
-if __name__ == "__main__":
-    filename = 'include/fmod_studio.h'
+def write_generated_bindings():
+    filename = str(_REPO_ROOT / "fmod" / "include" / "fmod_studio.h")
+    include_dir = str(_REPO_ROOT / "fmod" / "include")
 
-    ast = parse_file(filename, use_cpp=True,
-            cpp_path='gcc',
-            cpp_args=['-E'])
+    ast = parse_file(filename, use_cpp=True, cpp_path="gcc", cpp_args=["-E", f"-I{include_dir}"])
 
     generate_bindings(ast)
-    # ast.show()
+
+
+if __name__ == "__main__":
+    write_generated_bindings()

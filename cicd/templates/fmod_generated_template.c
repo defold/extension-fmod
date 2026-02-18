@@ -700,8 +700,9 @@ static int _FMODBridge_func_{{ f.name }}(lua_State *L) {
     {% elif arg.usage == "input_ptr" %}{{ arg.type.child.c_type }} {{ arg.name }} = {% if arg.optional %}optional(L, {{ arg.arg_index }}, {{ arg.type.child.c_type }}, {% endif %}FMODBridge_check_{{ arg.type.child.name }}(L, {{ arg.arg_index }}){% if arg.optional %}){% endif %};
     {% elif arg.usage == "output" %}{{ arg.type.child.c_type }} {{ arg.name }};
     {% elif arg.usage == "output_ptr" %}{{ arg.type.c_type }} {{ arg.name }} = FMODBridge_push_{{ arg.type.name }}(L, NULL);
-    {% endif %}{% endfor %}ensure({{ f.library }}, {{ f.name }}, FMOD_RESULT{% for arg in f.args %}, {{ arg.type.c_type }}{% endfor %});
-    errCheck({{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %}));
+    {% endif %}{% endfor %}ensure({{ f.library }}, {{ f.name }}, {{ f.return_type }}{% for arg in f.args %}, {{ arg.type.c_type }}{% endfor %});
+    {% if f.returns_bool %}lua_pushboolean(L, {{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %}));
+    return 1;{% else %}errCheck({{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %}));
     {% for arg in f.args %}{% if arg.usage == "output" %}FMODBridge_push_{{ arg.type.child.name }}(L, {{ arg.name }});
     {% elif arg.usage == "output_ptr" %}lua_pushvalue(L, {{ arg.output_ptr_index - f.output_ptr_count - arg.output_index }});
     {% endif %}{% endfor %}{% if f.refcount_release %}
@@ -710,7 +711,7 @@ static int _FMODBridge_func_{{ f.name }}(lua_State *L) {
     lua_pushnil(L);
     lua_rawset(L, -3);
     lua_pop(L, 1);
-    {% endif %}return {{ f.return_count }};
+    {% endif %}return {{ f.return_count }};{% endif %}
 }
 #endif
 {% endif %}

@@ -4,89 +4,90 @@ If you have some improvements to bring the project, feel free to open a PR.
 
 Please stick to the indentation style used throughout the project (K&R-like).
 
-## Compiling the bridge library
+## External dependencies
 
-Most of the extension is implemented in a separately-compiled bridge library.
-When changing something, the bridge library must be recompiled for all the
-platforms affected by the change.
+| Tool | Required by | Platform | Notes |
+|------|-------------|----------|-------|
+| `gcc` | `build` | All | C preprocessor for parsing FMOD headers |
+| `codesign` | `update` | macOS only | Ad-hoc signs extracted `.dylib` and `.a` files to prevent Gatekeeper issues |
+| `hdiutil` | `update` | macOS only | Mounts `.dmg` archives for macOS/iOS libraries |
+| `7z` or `unar` | `update` | All | Extracts Windows `.exe` installers (auto-detected) |
+| `ar` | `update` | All | Combines split WASM `.a` archives for HTML5 |
+| `patchelf` | `update` | Linux only | Workaround: strips versioned SONAME from `.so` files (e.g. `libfmod.so.14` → `libfmod.so`) so Defold's `dynamicLibs` can resolve them |
 
-The implementation of this library is generated from the FMOD headers by a
-Python script. To re-generate it, you will need Python 3 with the `pycparser`
-and `jinja2` packages installed from PiP:
+Python packages (install with `pip install -r cicd/requirements.txt`):
 
-```
-cd bridge
-python generate_bindings.py
-```
+| Package | Required by |
+|---------|-------------|
+| `pycparser` | `build` |
+| `jinja2` | `build` |
+| `ruff` | `lint`, `format` |
 
-Alternatively, if you don't want to install Python on your system, you can run
-it through Docker:
+## CI/CD tool
 
-```
-docker compose -f bridge/docker-compose.generate_bindings.yml up
-```
-
-The bridge library comes with compilation scripts for each platform:
-
-### macOS & iOS
-
-For both iOS and macOS, you'll need to install Xcode, open it, then accept the
-license agreement and let it install the CLI tools. Then:
+All build, update, and test tasks are managed through `cicd/build.py`:
 
 ```bash
-cd bridge
-./build_darwin.sh
+python cicd/build.py --help
 ```
 
-Or, for iOS and macOS separately:
+### Checking your environment
+
+Run the health check to verify all required tools are installed:
 
 ```bash
-cd bridge
-make -f Makefile.osx
-make -f Makefile.ios
+python cicd/build.py health
 ```
 
-### Windows
+This checks for every external dependency listed above and reports any that are
+missing, along with install hints.
 
-Install [Visual Studio 2019 Build Tools](https://visualstudio.microsoft.com/downloads/)
-and [GNU Make](http://gnuwin32.sourceforge.net/packages/make.htm), then run `build_windows.bat`.
+### Generating bindings
 
-### Linux, Android, HTML5
-
-You can build all of these in one go with Docker:
+The C/Lua bindings are auto-generated from FMOD headers. To regenerate, install
+the dependencies and run:
 
 ```bash
-cd bridge
-docker compose up
+pip install -r cicd/requirements.txt
+python cicd/build.py build
 ```
 
-Or use the respective Makefiles to build manually. Make sure to match
-the SDK versions that the Docker containers use.
+This produces `fmod/src/fmod_generated.c` and `fmod/api/fmod.script_api`.
+
+### Running tests
+
+```bash
+python cicd/build.py test
+```
 
 ## Updating FMOD to a newer version
 
-This just boils down to downloading all the FMOD distributions and copying the
-libraries to the appropriate locations. A script is provided for the second part.
-
-You need to be on macOS and have `unar` (The Unarchiver's CLI tool) installed:
+Download all the platform distributions from https://fmod.com/download into
+a single directory, then point the update command at it:
 
 ```bash
-brew install unar
+python cicd/build.py update ~/Downloads/fmod20309/
 ```
 
-Download all the distributions to the same directory from 
-https://fmod.com/download (make sure to uncheck "Open safe files after 
-downloading" if using Safari), then run `update_fmod.sh` with the
-common prefix of the files you downloaded as the first argument:
+The script discovers archives by filename pattern. Platforms
+without a matching archive are skipped.
+
+On non-macOS systems (where `hdiutil` is unavailable), skip Apple platforms
+with `--ignore-apple`:
 
 ```bash
-# For example, if you downloaded FMOD 2.01.07:
-./update_fmod.sh ~/Downloads/fmodstudioapi20107
+python cicd/build.py update --ignore-apple ~/Downloads/fmod20309/
+```
+
+After updating, regenerate the bindings:
+
+```bash
+python cicd/build.py build
 ```
 
 ## Testing HTML5/WASM pthread builds locally
 
-WASM pthread builds require specific CORS headers to enable `SharedArrayBuffer`. 
+WASM pthread builds require specific CORS headers to enable `SharedArrayBuffer`.
 Regular `python3 -m http.server` will **not** work so please send required headers.
 
 **Required headers:**
