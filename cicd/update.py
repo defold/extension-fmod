@@ -8,6 +8,11 @@ from pathlib import Path
 
 from util import REPO_ROOT, log
 
+
+class UpdateError(Exception):
+    pass
+
+
 PLATFORM_PATTERNS = {
     "mac": "*mac*-installer.dmg",
     "ios": "*ios*-installer.dmg",
@@ -84,6 +89,10 @@ def _extract_tar(archive: Path, dest: Path, *, strip: int = 0) -> None:
 def _extract_zip(archive: Path, dest: Path) -> None:
     dest.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(archive) as zf:
+        for member in zf.namelist():
+            target = (dest / member).resolve()
+            if not target.is_relative_to(dest.resolve()):
+                raise ValueError(f"Zip path traversal detected: {member}")
         zf.extractall(dest)
 
 
@@ -91,8 +100,9 @@ def _extract_exe(installer: Path, dest: Path) -> None:
     dest.mkdir(parents=True, exist_ok=True)
     tool = shutil.which("7z") or shutil.which("unar")
     if not tool:
-        log.error("Neither '7z' nor 'unar' found. One is required to extract Windows installers.")
-        sys.exit(1)
+        raise UpdateError(
+            "Neither '7z' nor 'unar' found. One is required to extract Windows installers."
+        )
     if "7z" in Path(tool).name:
         _run(["7z", "x", str(installer), f"-o{dest}"])
     else:
@@ -161,11 +171,10 @@ def update_ios(archive: Path, tmpdir: Path) -> None:
 def _require_patchelf() -> str:
     patchelf = shutil.which("patchelf")
     if not patchelf:
-        log.error(
+        raise UpdateError(
             "'patchelf' not found. It is required to fix Linux SONAME versioning.\n"
             "Install it with: sudo apt install patchelf  (or equivalent)"
         )
-        sys.exit(1)
     return patchelf
 
 
@@ -301,17 +310,15 @@ APPLE_PLATFORMS = {"mac", "ios"}
 def run_update(directory: Path, ignore_apple: bool) -> None:
     directory = directory.resolve()
     if not directory.is_dir():
-        log.error("Not a directory: %s", directory)
-        sys.exit(1)
+        raise UpdateError(f"Not a directory: {directory}")
 
     archives = _discover_archives(directory)
 
     if not archives:
-        log.error("No FMOD distribution files found in %s", directory)
-        log.error("Expected files matching:")
-        for platform, pattern in PLATFORM_PATTERNS.items():
-            log.error("  %s: %s", platform, pattern)
-        sys.exit(1)
+        patterns = "\n".join(f"  {p}: {pat}" for p, pat in PLATFORM_PATTERNS.items())
+        raise UpdateError(
+            f"No FMOD distribution files found in {directory}\nExpected files matching:\n{patterns}"
+        )
 
     log.debug("Discovered archives:")
     for platform, path in sorted(archives.items()):
@@ -319,38 +326,38 @@ def run_update(directory: Path, ignore_apple: bool) -> None:
 
     if not ignore_apple and APPLE_PLATFORMS & archives.keys():
         if not shutil.which("hdiutil"):
-            log.error(
+            raise UpdateError(
                 "'hdiutil' not found. macOS/iOS updates require macOS.\n"
                 "Re-run with --ignore-apple / -ia to skip them:\n"
-                "  python %s update --ignore-apple %s",
-                sys.argv[0],
-                directory,
+                f"  python {sys.argv[0]} update --ignore-apple {directory}"
             )
-            sys.exit(1)
 
     skip = APPLE_PLATFORMS if ignore_apple else set()
 
-    with tempfile.TemporaryDirectory() as tmpdir_str:
-        tmpdir = Path(tmpdir_str)
+    try:
+        with tempfile.TemporaryDirectory() as tmpdir_str:
+            tmpdir = Path(tmpdir_str)
 
-        for platform, handler in PLATFORM_HANDLERS.items():
-            if platform in skip:
-                continue
-            if platform not in archives:
-                log.debug("Skipping %s (no archive found)", platform)
-                continue
-            try:
-                handler(archives[platform], tmpdir)
-            except subprocess.CalledProcessError as e:
-                log.error("%s failed: %s", platform, e)
-                sys.exit(1)
-            except (OSError, FileNotFoundError) as e:
-                log.error("%s failed: %s", platform, e)
-                sys.exit(1)
-            log.info("Updated %s", platform)
+            for platform, handler in PLATFORM_HANDLERS.items():
+                if platform in skip:
+                    continue
+                if platform not in archives:
+                    log.debug("Skipping %s (no archive found)", platform)
+                    continue
+                try:
+                    handler(archives[platform], tmpdir)
+                except subprocess.CalledProcessError as e:
+                    raise UpdateError(f"{platform} failed: {e}") from e
+                except (OSError, FileNotFoundError) as e:
+                    raise UpdateError(f"{platform} failed: {e}") from e
+                log.info("Updated %s", platform)
 
-        # update_linux must precede update_headers (headers come from the linux archive)
-        if "linux" in archives:
-            update_headers(tmpdir)
+            # update_linux must precede update_headers (headers come from the linux archive)
+            if "linux" in archives:
+                update_headers(tmpdir)
 
-    log.info("Done!")
+        log.info("Done!")
+    finally:
+        if _LOG_FILE is not None:
+            log.info("Command output log: %s", _LOG_FILE.name)
+            _LOG_FILE.close()

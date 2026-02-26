@@ -51,7 +51,7 @@
         {% for arg in inputs %}
     - name: {{ arg.name }}
       type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
-      desc: {{ get_param_description(arg.name, f[2].name) }}{% if arg.optional %} (optional){% endif %}
+      desc: {{ get_param_description(arg.name) }}{% if arg.optional %} (optional){% endif %}
 
         {% endfor %}
       {% endif %}
@@ -130,7 +130,7 @@
         {% for arg in inputs %}
     - name: {{ arg.name }}
       type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
-      desc: {{ get_param_description(arg.name, method[1].name) }}{% if arg.optional %} (optional){% endif %}
+      desc: {{ get_param_description(arg.name) }}{% if arg.optional %} (optional){% endif %}
 
         {% endfor %}
       {% endif %}
@@ -193,7 +193,7 @@
         {% for arg in inputs %}
     - name: {{ arg.name }}
       type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
-      desc: {{ get_param_description(arg.name, f[2].name) }}{% if arg.optional %} (optional){% endif %}
+      desc: {{ get_param_description(arg.name) }}{% if arg.optional %} (optional){% endif %}
 
         {% endfor %}
       {% endif %}
@@ -238,7 +238,7 @@
         {% for arg in inputs %}
     - name: {{ arg.name }}
       type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
-      desc: {{ get_param_description(arg.name, method[1].name) }}{% if arg.optional %} (optional){% endif %}
+      desc: {{ get_param_description(arg.name) }}{% if arg.optional %} (optional){% endif %}
 
         {% endfor %}
       {% endif %}

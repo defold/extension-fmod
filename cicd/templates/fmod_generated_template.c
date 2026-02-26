@@ -701,7 +701,10 @@ static int _FMODBridge_func_{{ f.name }}(lua_State *L) {
     {% elif arg.usage == "output" %}{{ arg.type.child.c_type }} {{ arg.name }};
     {% elif arg.usage == "output_ptr" %}{{ arg.type.c_type }} {{ arg.name }} = FMODBridge_push_{{ arg.type.name }}(L, NULL);
     {% endif %}{% endfor %}ensure({{ f.library }}, {{ f.name }}, {{ f.return_type }}{% for arg in f.args %}, {{ arg.type.c_type }}{% endfor %});
-    {% if f.returns_bool %}lua_pushboolean(L, {{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %}));
+    {% if f.returns_bool %}attachJNI();
+    FMOD_BOOL retval = {{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %});
+    detachJNI();
+    lua_pushboolean(L, retval);
     return 1;{% else %}errCheck({{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %}));
     {% for arg in f.args %}{% if arg.usage == "output" %}FMODBridge_push_{{ arg.type.child.name }}(L, {{ arg.name }});
     {% elif arg.usage == "output_ptr" %}lua_pushvalue(L, {{ arg.output_ptr_index - f.output_ptr_count - arg.output_index }});

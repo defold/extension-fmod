@@ -24,13 +24,13 @@ class ColorFormatter(logging.Formatter):
         return msg
 
 
-def get_logger(name: str = "cicd") -> logging.Logger:
+def get_logger(name: str = "cicd", level: int = logging.INFO) -> logging.Logger:
     logger = logging.getLogger(name)
     if not logger.handlers:
         handler = logging.StreamHandler()
         handler.setFormatter(ColorFormatter("%(levelname)s %(message)s"))
         logger.addHandler(handler)
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(level)
     return logger
 
 

@@ -148,7 +148,7 @@ def generate_bindings(ast):
                 self.const = False
                 self.type = TypeUnknown
                 self.readable = False
-                self.writable = False
+                self.writeable = False
 
             else:
                 self.c_type = c_type
@@ -190,7 +190,7 @@ def generate_bindings(ast):
         def make_class(self, name):
             self.name = name
             self.is_class = True
-            self.ref_counted = node.name in ref_counted
+            self.ref_counted = name in ref_counted
 
     class MethodArgument:
         def __init__(self, node):
@@ -386,6 +386,7 @@ def generate_bindings(ast):
     env = Environment(
         loader=FileSystemLoader(str(_SCRIPT_DIR / "templates")),
         autoescape=False,
+        keep_trailing_newline=True,
     )
     template = env.get_template("fmod_generated_template.c")
 

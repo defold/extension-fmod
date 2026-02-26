@@ -30,6 +30,8 @@ TYPE_STRUCT = 2
 TYPE_CLASS = 3
 TYPE_POINTER = 4
 
+_SNAKE_CASE_RE = re.compile(r"^_*(IDs|[A-Z][a-z]+|[A-Z0-9]+(?![a-z]))")
+
 INPUT_USAGES = ("input", "input_ptr", "input_deref")
 OUTPUT_USAGES = ("output", "output_ptr")
 
@@ -91,11 +93,10 @@ def _convert_struct_type(c_type: str) -> str:
 
 
 def convert_to_snake_case(text: str) -> str:
-    valid_pattern = re.compile(r"^_*(IDs|[A-Z][a-z]+|[A-Z0-9]+(?![a-z]))")
     components = []
     remaining = text
     while True:
-        match = valid_pattern.match(remaining)
+        match = _SNAKE_CASE_RE.match(remaining)
         if match is None:
             break
         components.append(match.group(1).lower())
@@ -110,7 +111,7 @@ def convert_c_type_to_lua_type(c_type: str, type_enum: int) -> str:
     return "any"
 
 
-def generate_parameter_description(param_name: str, function_name: str) -> str:
+def generate_parameter_description(param_name: str) -> str:
     param_lower = param_name.lower()
 
     if param_lower in PARAM_DESCRIPTIONS:

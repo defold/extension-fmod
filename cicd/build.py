@@ -1,21 +1,43 @@
 #!/usr/bin/env python3
 import argparse
+import logging
 import shutil
 import subprocess
 import sys
 import unittest
 from pathlib import Path
 
-from util import SCRIPT_DIR, log
+from util import REPO_ROOT, SCRIPT_DIR, log
+
+_FMOD_SRC = REPO_ROOT / "fmod" / "src"
+_FMOD_INCLUDE = REPO_ROOT / "fmod" / "include"
+_GENERATED = {_FMOD_SRC / "fmod_generated.c"}
+
+
+def _c_source_files() -> list[Path]:
+    exts = (".c", ".cpp", ".h", ".hpp", ".m")
+    return [f for f in sorted(_FMOD_SRC.iterdir()) if f.suffix in exts and f not in _GENERATED]
+
+
+def _lua_files() -> list[Path]:
+    exts = ("*.script", "*.gui_script", "*.render_script", "*.lua")
+    files: list[Path] = []
+    for ext in exts:
+        files.extend((REPO_ROOT / "example").rglob(ext))
+    return sorted(files)
 
 
 def update(args: argparse.Namespace) -> None:
-    from update import run_update
+    from update import UpdateError, run_update
 
-    run_update(Path(args.directory), args.ignore_apple)
+    try:
+        run_update(Path(args.directory), args.ignore_apple)
+    except UpdateError as e:
+        log.error("%s", e)
+        sys.exit(1)
 
 
-def generate(args: argparse.Namespace) -> None:
+def generate(_: argparse.Namespace) -> None:
     log.debug("Generating bindings...")
     from generate_bindings import write_generated_bindings
 
@@ -23,18 +45,113 @@ def generate(args: argparse.Namespace) -> None:
     log.info("Bindings generated.")
 
 
-def lint(args: argparse.Namespace) -> None:
+def lint(_: argparse.Namespace) -> None:
     log.debug("Running ruff lint...")
     result = subprocess.run(["ruff", "check", str(SCRIPT_DIR)])
     if result.returncode != 0:
         sys.exit(1)
-    log.info("Lint passed.")
+    log.info("Ruff lint passed.")
+
+    if shutil.which("luacheck"):
+        lua_files = _lua_files()
+        if lua_files:
+            log.debug("Running luacheck...")
+            result = subprocess.run(["luacheck"] + [str(f) for f in lua_files])
+            if result.returncode != 0:
+                sys.exit(1)
+            log.info("Luacheck passed.")
+        else:
+            log.debug("No Lua files found to check.")
+    else:
+        log.debug("luacheck not found, skipping Lua lint.")
+
+    if shutil.which("cppcheck"):
+        log.debug("Running cppcheck...")
+        cppcheck_files = [f for f in _c_source_files() if f.suffix != ".m"]
+        result = subprocess.run(
+            [
+                "cppcheck",
+                "--enable=warning,performance,portability",
+                "--error-exitcode=1",
+                "--suppress=missingIncludeSystem",
+                "--suppress=toomanyconfigs",
+                f"-I{_FMOD_INCLUDE}",
+                f"-I{_FMOD_SRC}",
+            ]
+            + [str(f) for f in cppcheck_files]
+        )
+        if result.returncode != 0:
+            sys.exit(1)
+        log.info("cppcheck passed.")
+    else:
+        log.debug("cppcheck not found, skipping C/C++ static analysis.")
 
 
-def format_code(args: argparse.Namespace) -> None:
+def format_check(_: argparse.Namespace) -> None:
+    log.debug("Running ruff format check...")
+    result = subprocess.run(["ruff", "format", "--check", str(SCRIPT_DIR)])
+    if result.returncode != 0:
+        log.error("ruff format check failed. Run 'python cicd/build.py format' to fix.")
+        sys.exit(1)
+    log.info("ruff format check passed.")
+
+    if shutil.which("stylua"):
+        lua_files = _lua_files()
+        if lua_files:
+            log.debug("Running stylua check...")
+            result = subprocess.run(["stylua", "--check"] + [str(f) for f in lua_files])
+            if result.returncode != 0:
+                log.error("stylua check failed. Run 'python cicd/build.py format' to fix.")
+                sys.exit(1)
+            log.info("stylua check passed.")
+        else:
+            log.debug("No Lua files found to check.")
+    else:
+        log.debug("stylua not found, skipping Lua format check.")
+
+    if shutil.which("clang-format"):
+        log.debug("Running clang-format check...")
+        c_files = _c_source_files()
+        result = subprocess.run(
+            ["clang-format", "--dry-run", "--Werror"] + [str(f) for f in c_files]
+        )
+        if result.returncode != 0:
+            log.error("clang-format check failed. Run 'python cicd/build.py format' to fix.")
+            sys.exit(1)
+        log.info("clang-format check passed.")
+    else:
+        log.debug("clang-format not found, skipping C/C++ format check.")
+
+
+def format_code(_: argparse.Namespace) -> None:
     log.debug("Running ruff format...")
-    subprocess.run(["ruff", "format", str(SCRIPT_DIR)])
-    log.info("Format done.")
+    result = subprocess.run(["ruff", "format", str(SCRIPT_DIR)])
+    if result.returncode != 0:
+        sys.exit(1)
+    log.info("Ruff format done.")
+
+    if shutil.which("stylua"):
+        lua_files = _lua_files()
+        if lua_files:
+            log.debug("Running stylua...")
+            result = subprocess.run(["stylua"] + [str(f) for f in lua_files])
+            if result.returncode != 0:
+                sys.exit(1)
+            log.info("stylua done.")
+        else:
+            log.debug("No Lua files found to format.")
+    else:
+        log.debug("stylua not found, skipping Lua formatting.")
+
+    if shutil.which("clang-format"):
+        log.debug("Running clang-format...")
+        c_files = _c_source_files()
+        result = subprocess.run(["clang-format", "-i"] + [str(f) for f in c_files])
+        if result.returncode != 0:
+            sys.exit(1)
+        log.info("clang-format done.")
+    else:
+        log.debug("clang-format not found, skipping C/C++ formatting.")
 
 
 DEPENDENCIES = {
@@ -66,11 +183,15 @@ DEPENDENCIES = {
     },
     "lint/format": {
         "ruff": {"cmd": "ruff", "hint": "pip install -r cicd/requirements.txt"},
+        "luacheck": {"cmd": "luacheck", "hint": "luarocks install luacheck"},
+        "stylua": {"cmd": "stylua", "hint": "cargo install stylua"},
+        "clang-format": {"cmd": "clang-format", "hint": "apt install clang-format"},
+        "cppcheck": {"cmd": "cppcheck", "hint": "apt install cppcheck"},
     },
 }
 
 
-def _check_dep(name: str, dep: dict) -> bool:
+def _check_dep(_: str, dep: dict) -> bool:
     if "module" in dep:
         try:
             __import__(dep["module"])
@@ -81,7 +202,7 @@ def _check_dep(name: str, dep: dict) -> bool:
     return any(shutil.which(c) for c in cmds)
 
 
-def health(args: argparse.Namespace) -> None:
+def health(_: argparse.Namespace) -> None:
     ok = True
     for group, deps in DEPENDENCIES.items():
         log.debug("[%s]", group)
@@ -101,7 +222,7 @@ def health(args: argparse.Namespace) -> None:
     log.info("All dependencies found.")
 
 
-def test(args: argparse.Namespace) -> None:
+def test(_: argparse.Namespace) -> None:
     log.debug("Running tests...")
     import test_api_from_bindings
 
@@ -124,6 +245,12 @@ def parse_args() -> argparse.Namespace:
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Enable debug logging output.",
+    )
 
     subparsers = parser.add_subparsers(
         title="commands",
@@ -135,7 +262,7 @@ def parse_args() -> argparse.Namespace:
         "update",
         help="Extract FMOD libraries from platform distribution archives.",
         description=(
-            "Scan a directory for FMOD distribution archives and copies it by "
+            "Scan a directory for FMOD distribution archives and copies them by "
             "filename pattern (e.g. *linux*.tar.gz, *win*-installer.exe). Platforms "
             "without a matching archive are skipped."
         ),
@@ -155,21 +282,25 @@ def parse_args() -> argparse.Namespace:
     generate_parser = subparsers.add_parser(
         "generate",
         help="Generate C and Lua bindings from FMOD headers.",
-        description=(
-            "Parses FMOD C headers, generate C, Lua bindings and fmod.script_api.\n"
-        ),
+        description=("Parses FMOD C headers, generate C, Lua bindings and fmod.script_api.\n"),
     )
     generate_parser.set_defaults(func=generate)
 
     lint_parser = subparsers.add_parser(
         "lint",
-        help="Run ruff linter on cicd/ Python files.",
+        help="Run linters (ruff, luacheck, cppcheck).",
     )
     lint_parser.set_defaults(func=lint)
 
+    format_check_parser = subparsers.add_parser(
+        "format-check",
+        help="Check formatting (ruff, stylua, clang-format).",
+    )
+    format_check_parser.set_defaults(func=format_check)
+
     format_parser = subparsers.add_parser(
         "format",
-        help="Format cicd/ Python files with ruff.",
+        help="Format code (ruff for Python, stylua for Lua, clang-format for C/C++).",
     )
     format_parser.set_defaults(func=format_code)
 
@@ -196,6 +327,8 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    if args.verbose:
+        log.setLevel(logging.DEBUG)
     args.func(args)
 
 
