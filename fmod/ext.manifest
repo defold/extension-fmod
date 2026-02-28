@@ -39,6 +39,11 @@ platforms:
       flags: ["-fvisibility=hidden"]
       dynamicLibs: ["fmod", "fmodstudio"]
 
+  arm64-linux:
+    context:
+      flags: ["-fvisibility=hidden"]
+      dynamicLibs: ["fmod", "fmodstudio"]
+
   js-web:
     context:
       libs: ["fmod", "fmodstudio"]
