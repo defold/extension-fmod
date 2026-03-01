@@ -50,7 +50,6 @@ static FMOD_SPEAKERMODE speakerModeFromString(const char* str) {
         LOGE("%s", FMOD_ErrorString(res)); \
         FMOD_Studio_System_Release(FMODBridge_system); \
         FMODBridge_system = NULL; \
-        detachJNI(); \
         return; \
     } \
 } while(0)
@@ -60,8 +59,6 @@ void FMODBridge_init(lua_State *L) {
         LOGE("Failed to link FMOD libraries");
         return;
     }
-
-    attachJNI();
 
     ensure(ST, FMOD_Studio_System_Create, FMOD_RESULT, FMOD_STUDIO_SYSTEM**, unsigned int);
     ensure(ST, FMOD_Studio_System_GetCoreSystem, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_SYSTEM**);
@@ -75,7 +72,6 @@ void FMODBridge_init(lua_State *L) {
     if (res != FMOD_OK) {
         LOGE("%s", FMOD_ErrorString(res));
         FMODBridge_system = NULL;
-        detachJNI();
         return;
     }
 
@@ -130,8 +126,6 @@ void FMODBridge_init(lua_State *L) {
     #endif
 
     FMODBridge_register(L);
-
-    detachJNI();
 }
 
 void FMODBridge_update() {
@@ -140,52 +134,40 @@ void FMODBridge_update() {
     ensure(ST, FMOD_Studio_System_Update, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
     ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
 
-    attachJNI();
-
     FMOD_RESULT res = FMOD_Studio_System_Update(FMODBridge_system);
     if (res != FMOD_OK) {
         LOGE("%s", FMOD_ErrorString(res));
         FMOD_Studio_System_Release(FMODBridge_system);
         FMODBridge_system = NULL;
     }
-
-    detachJNI();
 }
 
 void FMODBridge_finalize() {
     if (FMODBridge_system) {
         ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
 
-        attachJNI();
-
         FMOD_RESULT res = FMOD_Studio_System_Release(FMODBridge_system);
         if (res != FMOD_OK) { LOGE("%s", FMOD_ErrorString(res)); }
         FMODBridge_system = NULL;
-
-        detachJNI();
     }
     FMODBridge_cleanupLibraries();
 }
 
 void FMODBridge_resumeMixer() {
     if (FMODBridge_system && FMODBridge_isPaused) {
-        attachJNI();
         ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
         ensure(LL, FMOD_System_MixerResume, FMOD_RESULT, FMOD_SYSTEM*);
         check(FMOD_System_MixerResume(FMODBridge_lowLevelSystem));
         FMODBridge_isPaused = false;
-        detachJNI();
     }
 }
 
 void FMODBridge_suspendMixer() {
     if (FMODBridge_system && !FMODBridge_isPaused) {
-        attachJNI();
         ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
         ensure(LL, FMOD_System_MixerSuspend, FMOD_RESULT, FMOD_SYSTEM*);
         check(FMOD_System_MixerSuspend(FMODBridge_lowLevelSystem));
         FMODBridge_isPaused = true;
-        detachJNI();
     }
 }
 
@@ -194,13 +176,11 @@ EMSCRIPTEN_KEEPALIVE
 __attribute__((used))
 void FMODBridge_unmuteAfterUserInteraction() {
     if (FMODBridge_system && !FMODBridge_isPaused) {
-        attachJNI();
         ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
         ensure(LL, FMOD_System_MixerSuspend, FMOD_RESULT, FMOD_SYSTEM*);
         ensure(LL, FMOD_System_MixerResume, FMOD_RESULT, FMOD_SYSTEM*);
         check(FMOD_System_MixerSuspend(FMODBridge_lowLevelSystem));
         check(FMOD_System_MixerResume(FMODBridge_lowLevelSystem));
-        detachJNI();
     }
 }
 #endif
@@ -222,7 +202,6 @@ void FMODBridge_iconifyApp() {
     iconified = true;
 
     if (!runWhileIconified && FMODBridge_lowLevelSystem) {
-        attachJNI();
         ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
         ensure(LL, FMOD_System_GetMasterChannelGroup, FMOD_RESULT, FMOD_SYSTEM*, FMOD_CHANNELGROUP**);
         ensure(LL, FMOD_ChannelGroup_GetPaused, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL*);
@@ -232,8 +211,6 @@ void FMODBridge_iconifyApp() {
         check(FMOD_System_GetMasterChannelGroup(FMODBridge_lowLevelSystem, &channelGroup));
         check(FMOD_ChannelGroup_GetPaused(channelGroup, &masterChannelGroupPaused));
         check(FMOD_ChannelGroup_SetPaused(channelGroup, true));
-
-        detachJNI();
     }
 }
 
@@ -242,7 +219,6 @@ void FMODBridge_deiconifyApp() {
     iconified = false;
 
     if (!runWhileIconified && FMODBridge_lowLevelSystem) {
-        attachJNI();
         ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
         ensure(LL, FMOD_System_GetMasterChannelGroup, FMOD_RESULT, FMOD_SYSTEM*, FMOD_CHANNELGROUP**);
         ensure(LL, FMOD_ChannelGroup_SetPaused, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL);
@@ -250,8 +226,6 @@ void FMODBridge_deiconifyApp() {
         FMOD_CHANNELGROUP *channelGroup;
         check(FMOD_System_GetMasterChannelGroup(FMODBridge_lowLevelSystem, &channelGroup));
         check(FMOD_ChannelGroup_SetPaused(channelGroup, masterChannelGroupPaused));
-
-        detachJNI();
     }
 }
 

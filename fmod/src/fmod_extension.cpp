@@ -10,6 +10,10 @@
 
 #include "fmod_bridge_interface.hpp"
 
+#ifdef DM_PLATFORM_ANDROID
+#include <dmsdk/dlib/android.h>
+#endif
+
 static dmConfigFile::HConfig appConfig;
 
 dmExtension::Result AppInitializeDefoldFMOD(dmExtension::AppParams* params) {
@@ -18,21 +22,33 @@ dmExtension::Result AppInitializeDefoldFMOD(dmExtension::AppParams* params) {
 }
 
 dmExtension::Result InitializeDefoldFMOD(dmExtension::Params* params) {
+    #ifdef DM_PLATFORM_ANDROID
+    dmAndroid::ThreadAttacher thread;
+    #endif
     FMODBridge_init(params->m_L);
     return dmExtension::RESULT_OK;
 }
 
 dmExtension::Result UpdateDefoldFMOD(dmExtension::Params* params) {
+    #ifdef DM_PLATFORM_ANDROID
+    dmAndroid::ThreadAttacher thread;
+    #endif
     FMODBridge_update();
     return dmExtension::RESULT_OK;
 }
 
 dmExtension::Result FinalizeDefoldFMOD(dmExtension::Params* params) {
+    #ifdef DM_PLATFORM_ANDROID
+    dmAndroid::ThreadAttacher thread;
+    #endif
     FMODBridge_finalize();
     return dmExtension::RESULT_OK;
 }
 
 void OnEventDefoldFMOD(dmExtension::Params* params, const dmExtension::Event* event) {
+    #ifdef DM_PLATFORM_ANDROID
+    dmAndroid::ThreadAttacher thread;
+    #endif
     switch (event->m_Event) {
         case EXTENSION_EVENT_ID_ACTIVATEAPP:
             FMODBridge_activateApp();
@@ -124,15 +140,6 @@ int32_t FMODBridge_dmConfigFile_GetInt(const char* config, int32_t defaultValue)
     return value;
 }
 
-#ifdef DM_PLATFORM_ANDROID
-JavaVM* FMODBridge_dmGraphics_GetNativeAndroidJavaVM() {
-    return dmGraphics::GetNativeAndroidJavaVM();
-}
-
-jobject FMODBridge_dmGraphics_GetNativeAndroidActivity() {
-    return dmGraphics::GetNativeAndroidActivity();
-}
-#endif
 
 #else
 

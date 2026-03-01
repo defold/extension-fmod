@@ -15,11 +15,6 @@ extern "C" {
     FMODBridge_Vector3 FMODBridge_dmScript_CheckVector3(lua_State* L, int index);
     const char* FMODBridge_dmConfigFile_GetString(const char*, const char*);
     int32_t FMODBridge_dmConfigFile_GetInt(const char*, int32_t);
-    #ifdef DM_PLATFORM_ANDROID
-    JavaVM* FMODBridge_dmGraphics_GetNativeAndroidJavaVM();
-    jobject FMODBridge_dmGraphics_GetNativeAndroidActivity();
-    #endif
-
     void FMODBridge_init(lua_State* L);
     void FMODBridge_update();
     void FMODBridge_finalize();
