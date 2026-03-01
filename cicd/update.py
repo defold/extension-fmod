@@ -209,10 +209,16 @@ def update_linux(archive: Path, tmpdir: Path) -> None:
     log.debug("Updating Linux...")
     d = tmpdir / "linux"
     _extract_tar(archive, d, strip=1)
-    dest = REPO_ROOT / "fmod" / "lib" / "x86_64-linux"
-    _copy(d / "api" / "core" / "lib" / "x86_64" / "libfmod.so", dest / "libfmod.so")
-    _copy(d / "api" / "studio" / "lib" / "x86_64" / "libfmodstudio.so", dest / "libfmodstudio.so")
-    _patch_linux_sonames(dest)
+
+    dest_x86_64 = REPO_ROOT / "fmod" / "lib" / "x86_64-linux"
+    _copy(d / "api" / "core" / "lib" / "x86_64" / "libfmod.so", dest_x86_64 / "libfmod.so")
+    _copy(d / "api" / "studio" / "lib" / "x86_64" / "libfmodstudio.so", dest_x86_64 / "libfmodstudio.so")
+    _patch_linux_sonames(dest_x86_64)
+
+    dest_arm64 = REPO_ROOT / "fmod" / "lib" / "arm64-linux"
+    _copy(d / "api" / "core" / "lib" / "arm64" / "libfmod.so", dest_arm64 / "libfmod.so")
+    _copy(d / "api" / "studio" / "lib" / "arm64" / "libfmodstudio.so", dest_arm64 / "libfmodstudio.so")
+    _patch_linux_sonames(dest_arm64)
 
 
 def update_windows(archive: Path, tmpdir: Path) -> None:
