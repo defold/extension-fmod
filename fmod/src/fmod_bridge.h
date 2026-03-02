@@ -19,11 +19,11 @@ extern "C" {
 #include "../include/fmod.h"
 
 #ifdef __APPLE__
-    #include "TargetConditionals.h"
+#include "TargetConditionals.h"
 #endif
 
 #ifdef _WIN32
-    #include <Windows.h>
+#include <Windows.h>
 #endif
 
 #ifdef __ANDROID__
@@ -44,7 +44,7 @@ extern "C" {
 
 #define STRINGIFY(x) #x
 #define RESOLVE(x) x
-#define CONCAT_(a, b) a ## b
+#define CONCAT_(a, b) a##b
 #define CONCAT(a, b) CONCAT_(a, b)
 
 #define FIRST(...) FIRST_HELPER(__VA_ARGS__, throwaway)
@@ -54,9 +54,9 @@ extern "C" {
 #define REST_HELPER2(qty, ...) REST_HELPER_##qty(__VA_ARGS__)
 #define REST_HELPER_ONE(first)
 #define REST_HELPER_TWOORMORE(first, ...) , __VA_ARGS__
-#define NUM(...) \
-    SELECT_10TH(__VA_ARGS__, TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE,\
-                TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, ONE, throwaway)
+#define NUM(...)                                                                                                     \
+    SELECT_10TH(__VA_ARGS__, TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, \
+                ONE, throwaway)
 #define SELECT_10TH(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, ...) a10
 
 #ifdef __cplusplus
@@ -90,8 +90,8 @@ extern bool FMODBridge_isPaused;
 bool FMODBridge_linkLibraries();
 void FMODBridge_cleanupLibraries();
 
-void FMODBridge_register(lua_State *L);
-int FMODBridge_getBundleRoot(lua_State *L);
+void FMODBridge_register(lua_State* L);
+int FMODBridge_getBundleRoot(lua_State* L);
 
 void FMODBridge_suspendMixer();
 void FMODBridge_resumeMixer();

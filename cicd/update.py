@@ -212,12 +212,17 @@ def update_linux(archive: Path, tmpdir: Path) -> None:
 
     dest_x86_64 = REPO_ROOT / "fmod" / "lib" / "x86_64-linux"
     _copy(d / "api" / "core" / "lib" / "x86_64" / "libfmod.so", dest_x86_64 / "libfmod.so")
-    _copy(d / "api" / "studio" / "lib" / "x86_64" / "libfmodstudio.so", dest_x86_64 / "libfmodstudio.so")
+    _copy(
+        d / "api" / "studio" / "lib" / "x86_64" / "libfmodstudio.so",
+        dest_x86_64 / "libfmodstudio.so",
+    )
     _patch_linux_sonames(dest_x86_64)
 
     dest_arm64 = REPO_ROOT / "fmod" / "lib" / "arm64-linux"
     _copy(d / "api" / "core" / "lib" / "arm64" / "libfmod.so", dest_arm64 / "libfmod.so")
-    _copy(d / "api" / "studio" / "lib" / "arm64" / "libfmodstudio.so", dest_arm64 / "libfmodstudio.so")
+    _copy(
+        d / "api" / "studio" / "lib" / "arm64" / "libfmodstudio.so", dest_arm64 / "libfmodstudio.so"
+    )
     _patch_linux_sonames(dest_arm64)
 
 

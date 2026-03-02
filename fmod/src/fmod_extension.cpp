@@ -6,7 +6,9 @@
 #endif
 #include <dmsdk/sdk.h>
 
-#if defined(DM_PLATFORM_OSX) || defined(DM_PLATFORM_WINDOWS) || defined(DM_PLATFORM_LINUX) || defined(DM_PLATFORM_IOS) || defined(DM_PLATFORM_HTML5) || defined(DM_PLATFORM_ANDROID) || defined(DM_PLATFORM_SWITCH)
+#if defined(DM_PLATFORM_OSX) || defined(DM_PLATFORM_WINDOWS) || defined(DM_PLATFORM_LINUX) || \
+    defined(DM_PLATFORM_IOS) || defined(DM_PLATFORM_HTML5) || defined(DM_PLATFORM_ANDROID) || \
+    defined(DM_PLATFORM_SWITCH)
 
 #include "fmod_bridge_interface.hpp"
 
@@ -22,48 +24,48 @@ dmExtension::Result AppInitializeDefoldFMOD(dmExtension::AppParams* params) {
 }
 
 dmExtension::Result InitializeDefoldFMOD(dmExtension::Params* params) {
-    #ifdef DM_PLATFORM_ANDROID
+#ifdef DM_PLATFORM_ANDROID
     dmAndroid::ThreadAttacher thread;
-    #endif
+#endif
     FMODBridge_init(params->m_L);
     return dmExtension::RESULT_OK;
 }
 
 dmExtension::Result UpdateDefoldFMOD(dmExtension::Params* params) {
-    #ifdef DM_PLATFORM_ANDROID
+#ifdef DM_PLATFORM_ANDROID
     dmAndroid::ThreadAttacher thread;
-    #endif
+#endif
     FMODBridge_update();
     return dmExtension::RESULT_OK;
 }
 
 dmExtension::Result FinalizeDefoldFMOD(dmExtension::Params* params) {
-    #ifdef DM_PLATFORM_ANDROID
+#ifdef DM_PLATFORM_ANDROID
     dmAndroid::ThreadAttacher thread;
-    #endif
+#endif
     FMODBridge_finalize();
     return dmExtension::RESULT_OK;
 }
 
 void OnEventDefoldFMOD(dmExtension::Params* params, const dmExtension::Event* event) {
-    #ifdef DM_PLATFORM_ANDROID
+#ifdef DM_PLATFORM_ANDROID
     dmAndroid::ThreadAttacher thread;
-    #endif
+#endif
     switch (event->m_Event) {
-        case EXTENSION_EVENT_ID_ACTIVATEAPP:
-            FMODBridge_activateApp();
-            break;
-        case EXTENSION_EVENT_ID_DEACTIVATEAPP:
-            FMODBridge_deactivateApp();
-            break;
-        case EXTENSION_EVENT_ID_ICONIFYAPP:
-            FMODBridge_iconifyApp();
-            break;
-        case EXTENSION_EVENT_ID_DEICONIFYAPP:
-            FMODBridge_deiconifyApp();
-            break;
-        default:
-            break;
+    case EXTENSION_EVENT_ID_ACTIVATEAPP:
+        FMODBridge_activateApp();
+        break;
+    case EXTENSION_EVENT_ID_DEACTIVATEAPP:
+        FMODBridge_deactivateApp();
+        break;
+    case EXTENSION_EVENT_ID_ICONIFYAPP:
+        FMODBridge_iconifyApp();
+        break;
+    case EXTENSION_EVENT_ID_DEICONIFYAPP:
+        FMODBridge_deiconifyApp();
+        break;
+    default:
+        break;
     }
 }
 
@@ -85,7 +87,7 @@ void FMODBridge_dmScript_PushVector3(lua_State* L, float x, float y, float z) {
 }
 
 FMODBridge_Vector3 FMODBridge_dmScript_CheckVector3(lua_State* L, int index) {
-    Vectormath::Aos::Vector3 * vec = dmScript::CheckVector3(L, index);
+    Vectormath::Aos::Vector3* vec = dmScript::CheckVector3(L, index);
     FMODBridge_Vector3 result = {
         .x = vec->getX(),
         .y = vec->getY(),
@@ -116,7 +118,7 @@ const char* FMODBridge_dmConfigFile_GetString(const char* config, const char* de
     const char* value = dmConfigFile::GetString(appConfig, config, defaultValue);
 
     size_t configLen = strlen(config);
-    char *platformKey = new char[configLen + strlen(CONFIG_SUFFIX) + 1];
+    char* platformKey = new char[configLen + strlen(CONFIG_SUFFIX) + 1];
     strcpy(platformKey, config);
     strcpy(platformKey + configLen, CONFIG_SUFFIX);
 
@@ -130,7 +132,7 @@ int32_t FMODBridge_dmConfigFile_GetInt(const char* config, int32_t defaultValue)
     int32_t value = dmConfigFile::GetInt(appConfig, config, defaultValue);
 
     size_t configLen = strlen(config);
-    char *platformKey = new char[configLen + strlen(CONFIG_SUFFIX) + 1];
+    char* platformKey = new char[configLen + strlen(CONFIG_SUFFIX) + 1];
     strcpy(platformKey, config);
     strcpy(platformKey + configLen, CONFIG_SUFFIX);
 
@@ -139,7 +141,6 @@ int32_t FMODBridge_dmConfigFile_GetInt(const char* config, int32_t defaultValue)
     delete[] platformKey;
     return value;
 }
-
 
 #else
 
@@ -157,4 +158,5 @@ dmExtension::Result FinalizeDefoldFMOD(dmExtension::Params* params) {
 
 #endif
 
-DM_DECLARE_EXTENSION(DefoldFMOD, LIB_NAME, AppInitializeDefoldFMOD, 0, InitializeDefoldFMOD, UpdateDefoldFMOD, OnEventDefoldFMOD, FinalizeDefoldFMOD)
+DM_DECLARE_EXTENSION(DefoldFMOD, LIB_NAME, AppInitializeDefoldFMOD, 0, InitializeDefoldFMOD, UpdateDefoldFMOD,
+                     OnEventDefoldFMOD, FinalizeDefoldFMOD)
