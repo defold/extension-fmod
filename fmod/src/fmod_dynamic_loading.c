@@ -19,7 +19,7 @@ static void jniLogException(JNIEnv* env) {
     jclass clazz = env->GetObjectClass(e);
     jmethodID getMessage = env->GetMethodID(clazz, "getMessage", "()Ljava/lang/String;");
     jstring message = (jstring)env->CallObjectMethod(e, getMessage);
-    const char *mstr = env->GetStringUTFChars(message, NULL);
+    const char* mstr = env->GetStringUTFChars(message, NULL);
     LOGE("%s", mstr);
     env->ReleaseStringUTFChars(message, mstr);
     env->DeleteLocalRef(message);
@@ -63,9 +63,7 @@ void FMODBridge_cleanupLibraries() {
     jmethodID closeMethod = env->GetStaticMethodID(fmodClass, "close", "()V");
     env->CallStaticVoidMethod(fmodClass, closeMethod);
 
-    if (env->ExceptionCheck()) {
-        jniLogException(env);
-    }
+    if (env->ExceptionCheck()) { jniLogException(env); }
 }
 
 // =============================================================================
@@ -78,7 +76,6 @@ bool FMODBridge_linkLibraries() {
     return true;
 }
 
-void FMODBridge_cleanupLibraries() {
-}
+void FMODBridge_cleanupLibraries() {}
 
 #endif
