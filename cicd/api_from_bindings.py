@@ -1,13 +1,17 @@
 import re
-from typing import List, Tuple, Any, Protocol
+from pathlib import Path
+from typing import Any, Protocol
+
 from jinja2 import Environment, FileSystemLoader
+
+_SCRIPT_DIR = Path(__file__).resolve().parent
 
 
 class ParsedStruct(Protocol):
     name: str
     is_class: bool
-    methods: List[Tuple[str, Any]]
-    properties: List[Any]
+    methods: list[tuple[str, Any]]
+    properties: list[Any]
 
 
 class ParsedTypeDecl(Protocol):
@@ -17,7 +21,7 @@ class ParsedTypeDecl(Protocol):
 
 class ParsedMethod(Protocol):
     name: str
-    args: List[Any]
+    args: list[Any]
     generated: bool
 
 
@@ -25,6 +29,8 @@ TYPE_BASIC = 1
 TYPE_STRUCT = 2
 TYPE_CLASS = 3
 TYPE_POINTER = 4
+
+_SNAKE_CASE_RE = re.compile(r"^_*(IDs|[A-Z][a-z]+|[A-Z0-9]+(?![a-z]))")
 
 INPUT_USAGES = ("input", "input_ptr", "input_deref")
 OUTPUT_USAGES = ("output", "output_ptr")
@@ -87,15 +93,14 @@ def _convert_struct_type(c_type: str) -> str:
 
 
 def convert_to_snake_case(text: str) -> str:
-    valid_pattern = re.compile(r"^_*(IDs|[A-Z][a-z]+|[A-Z0-9]+(?![a-z]))")
     components = []
     remaining = text
     while True:
-        match = valid_pattern.match(remaining)
+        match = _SNAKE_CASE_RE.match(remaining)
         if match is None:
             break
         components.append(match.group(1).lower())
-        remaining = remaining[match.end():]
+        remaining = remaining[match.end() :]
     return "_".join(components)
 
 
@@ -106,29 +111,29 @@ def convert_c_type_to_lua_type(c_type: str, type_enum: int) -> str:
     return "any"
 
 
-def generate_parameter_description(param_name: str, function_name: str) -> str:
+def generate_parameter_description(param_name: str) -> str:
     param_lower = param_name.lower()
-    
+
     if param_lower in PARAM_DESCRIPTIONS:
         return PARAM_DESCRIPTIONS[param_lower]
-    
+
     for key, description in PARAM_DESCRIPTIONS.items():
         if key in param_lower:
             return description
-    
+
     return param_name
 
 
-def get_input_args(method: ParsedMethod, skip_self: bool = False) -> List[Any]:
+def get_input_args(method: ParsedMethod, skip_self: bool = False) -> list[Any]:
     args = method.args[1:] if skip_self else method.args
     return [arg for arg in args if arg.usage in INPUT_USAGES]
 
 
-def get_output_args(method: ParsedMethod) -> List[Any]:
+def get_output_args(method: ParsedMethod) -> list[Any]:
     return [arg for arg in method.args if arg.usage in OUTPUT_USAGES]
 
 
-def get_arg_type_info(arg: Any) -> Tuple[str, int]:
+def get_arg_type_info(arg: Any) -> tuple[str, int]:
     if arg.usage == "output_ptr":
         child = getattr(arg.type, "child", None)
         if child is not None:
@@ -138,32 +143,32 @@ def get_arg_type_info(arg: Any) -> Tuple[str, int]:
 
 def write_script_api_file(
     output_path: str,
-    enums: List[str],
-    structs: List[ParsedStruct],
-    global_functions: List[Tuple[int, str, ParsedMethod]]
+    enums: list[str],
+    structs: list[ParsedStruct],
+    global_functions: list[tuple[int, str, ParsedMethod]],
 ) -> None:
     env = Environment(
-        loader=FileSystemLoader('.'),
+        loader=FileSystemLoader(str(_SCRIPT_DIR / "templates")),
         autoescape=False,
         trim_blocks=True,
         lstrip_blocks=True,
     )
-    
-    env.globals['c_type_to_lua_type'] = convert_c_type_to_lua_type
-    env.globals['get_param_description'] = generate_parameter_description
-    env.globals['get_input_args'] = get_input_args
-    env.globals['get_output_args'] = get_output_args
-    env.globals['get_arg_type_info'] = get_arg_type_info
-    
-    template = env.get_template('fmod_script_api_template.yaml')
-    
+
+    env.globals["c_type_to_lua_type"] = convert_c_type_to_lua_type
+    env.globals["get_param_description"] = generate_parameter_description
+    env.globals["get_input_args"] = get_input_args
+    env.globals["get_output_args"] = get_output_args
+    env.globals["get_arg_type_info"] = get_arg_type_info
+
+    template = env.get_template("fmod_script_api_template.yaml")
+
     rendered_output = template.render(
         enums=enums,
         structs=structs,
         global_functions=global_functions,
     )
-    
-    with open(output_path, 'w') as output_file:
+
+    with open(output_path, "w") as output_file:
         output_file.write(rendered_output)
-    
+
     print(f"Generated {output_path}")

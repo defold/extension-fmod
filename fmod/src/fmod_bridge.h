@@ -19,11 +19,11 @@ extern "C" {
 #include "../include/fmod.h"
 
 #ifdef __APPLE__
-    #include "TargetConditionals.h"
+#include "TargetConditionals.h"
 #endif
 
 #ifdef _WIN32
-    #include <Windows.h>
+#include <Windows.h>
 #endif
 
 #ifdef __ANDROID__
@@ -44,7 +44,7 @@ extern "C" {
 
 #define STRINGIFY(x) #x
 #define RESOLVE(x) x
-#define CONCAT_(a, b) a ## b
+#define CONCAT_(a, b) a##b
 #define CONCAT(a, b) CONCAT_(a, b)
 
 #define FIRST(...) FIRST_HELPER(__VA_ARGS__, throwaway)
@@ -54,9 +54,9 @@ extern "C" {
 #define REST_HELPER2(qty, ...) REST_HELPER_##qty(__VA_ARGS__)
 #define REST_HELPER_ONE(first)
 #define REST_HELPER_TWOORMORE(first, ...) , __VA_ARGS__
-#define NUM(...) \
-    SELECT_10TH(__VA_ARGS__, TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE,\
-                TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, ONE, throwaway)
+#define NUM(...)                                                                                                     \
+    SELECT_10TH(__VA_ARGS__, TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, TWOORMORE, \
+                ONE, throwaway)
 #define SELECT_10TH(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, ...) a10
 
 #ifdef __cplusplus
@@ -72,11 +72,6 @@ void FMODBridge_dmScript_PushVector3(lua_State* L, float x, float y, float z);
 FMOD_VECTOR FMODBridge_dmScript_CheckVector3(lua_State* L, int index);
 const char* FMODBridge_dmConfigFile_GetString(const char*, const char*);
 int32_t FMODBridge_dmConfigFile_GetInt(const char*, int32_t);
-
-#ifdef __ANDROID__
-JavaVM* FMODBridge_dmGraphics_GetNativeAndroidJavaVM();
-jobject FMODBridge_dmGraphics_GetNativeAndroidActivity();
-#endif
 
 // Lifecycle functions
 void FMODBridge_init(lua_State* L);
@@ -95,24 +90,14 @@ extern bool FMODBridge_isPaused;
 bool FMODBridge_linkLibraries();
 void FMODBridge_cleanupLibraries();
 
-void FMODBridge_register(lua_State *L);
-int FMODBridge_getBundleRoot(lua_State *L);
+void FMODBridge_register(lua_State* L);
+int FMODBridge_getBundleRoot(lua_State* L);
 
 void FMODBridge_suspendMixer();
 void FMODBridge_resumeMixer();
 
 #if TARGET_OS_IPHONE
 void FMODBridge_initIOSInterruptionHandler();
-#endif
-
-#ifdef __ANDROID__
-void FMODBridge_attachJNI();
-void FMODBridge_detachJNI();
-#define attachJNI() FMODBridge_attachJNI()
-#define detachJNI() FMODBridge_detachJNI()
-#else
-#define attachJNI()
-#define detachJNI()
 #endif
 
 #define ensure(lib, fname, retType, ...)

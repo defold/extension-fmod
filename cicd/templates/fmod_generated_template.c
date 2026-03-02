@@ -16,7 +16,7 @@ inline static void throwError(FMOD_RESULT res, lua_State* L) {
     lua_pop(L, 1);
     lua_error(L);
 }
-#define errCheckBegin(expr) do { attachJNI(); FMOD_RESULT res = (expr); detachJNI(); if (res != FMOD_OK) {
+#define errCheckBegin(expr) do { FMOD_RESULT res = (expr); if (res != FMOD_OK) {
 #define errCheckEnd throwError(res, L); } } while (0)
 #define errCheck(res) errCheckBegin(res); errCheckEnd
 
@@ -609,16 +609,12 @@ static int _FMODBridge_func_FMOD_Studio_System_LookupPath(lua_State *L) {
     const FMOD_GUID* id = FMODBridge_check_ptr_FMOD_GUID(L, 2);
     int retrieved;
     ensure(ST, FMOD_Studio_System_LookupPath, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const FMOD_GUID*, char*, int, int*);
-    attachJNI();
-    errCheckBegin(FMOD_Studio_System_LookupPath(system, id, NULL, 0, &retrieved)) {
-        detachJNI();
-    } errCheckEnd;
+    errCheckBegin(FMOD_Studio_System_LookupPath(system, id, NULL, 0, &retrieved));
+    errCheckEnd;
     char *path = (char*)malloc(retrieved);
     errCheckBegin(FMOD_Studio_System_LookupPath(system, id, path, retrieved, &retrieved)) {
-        detachJNI();
         free(path);
     } errCheckEnd;
-    detachJNI();
     lua_pushstring(L, path);
     free(path);
     return 1;
@@ -628,16 +624,12 @@ static int _FMODBridge_func_FMOD_Studio_System_LookupPath(lua_State *L) {
     type1* arg1 = CONCAT(FMODBridge_check_ptr_, type1)(L, 1); \
     int retrieved; \
     ensure(ST, fname, FMOD_RESULT, type1*, char*, int, int*); \
-    attachJNI(); \
-    errCheckBegin(fname(arg1, NULL, 0, &retrieved)) { \
-        detachJNI(); \
-    } errCheckEnd; \
+    errCheckBegin(fname(arg1, NULL, 0, &retrieved)); \
+    errCheckEnd; \
     char *path = (char*)malloc(retrieved); \
     errCheckBegin(fname(arg1, path, retrieved, &retrieved)) { \
-        detachJNI(); \
         free(path); \
     } errCheckEnd; \
-    detachJNI(); \
     lua_pushstring(L, path); \
     free(path); \
     return 1; \
@@ -662,16 +654,12 @@ static int _FMODBridge_func_FMOD_Studio_Bank_GetStringInfo(lua_State *L) {
     FMOD_GUID* id = FMODBridge_push_ptr_FMOD_GUID(L, NULL);
     int retrieved;
     ensure(ST, FMOD_Studio_Bank_GetStringInfo, FMOD_RESULT, FMOD_STUDIO_BANK*, int, FMOD_GUID*, char*, int, int*);
-    attachJNI();
-    errCheckBegin(FMOD_Studio_Bank_GetStringInfo(bank, index, id, NULL, 0, &retrieved)) {
-        detachJNI();
-    } errCheckEnd;
+    errCheckBegin(FMOD_Studio_Bank_GetStringInfo(bank, index, id, NULL, 0, &retrieved));
+    errCheckEnd;
     char *path = (char*)malloc(retrieved);
     errCheckBegin(FMOD_Studio_Bank_GetStringInfo(bank, index, id, path, retrieved, &retrieved)) {
-        detachJNI();
         free(path);
     } errCheckEnd;
-    detachJNI();
     lua_pushstring(L, path);
     free(path);
     return 2;
@@ -700,8 +688,10 @@ static int _FMODBridge_func_{{ f.name }}(lua_State *L) {
     {% elif arg.usage == "input_ptr" %}{{ arg.type.child.c_type }} {{ arg.name }} = {% if arg.optional %}optional(L, {{ arg.arg_index }}, {{ arg.type.child.c_type }}, {% endif %}FMODBridge_check_{{ arg.type.child.name }}(L, {{ arg.arg_index }}){% if arg.optional %}){% endif %};
     {% elif arg.usage == "output" %}{{ arg.type.child.c_type }} {{ arg.name }};
     {% elif arg.usage == "output_ptr" %}{{ arg.type.c_type }} {{ arg.name }} = FMODBridge_push_{{ arg.type.name }}(L, NULL);
-    {% endif %}{% endfor %}ensure({{ f.library }}, {{ f.name }}, FMOD_RESULT{% for arg in f.args %}, {{ arg.type.c_type }}{% endfor %});
-    errCheck({{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %}));
+    {% endif %}{% endfor %}ensure({{ f.library }}, {{ f.name }}, {{ f.return_type }}{% for arg in f.args %}, {{ arg.type.c_type }}{% endfor %});
+    {% if f.returns_bool %}FMOD_BOOL retval = {{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %});
+    lua_pushboolean(L, retval);
+    return 1;{% else %}errCheck({{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %}));
     {% for arg in f.args %}{% if arg.usage == "output" %}FMODBridge_push_{{ arg.type.child.name }}(L, {{ arg.name }});
     {% elif arg.usage == "output_ptr" %}lua_pushvalue(L, {{ arg.output_ptr_index - f.output_ptr_count - arg.output_index }});
     {% endif %}{% endfor %}{% if f.refcount_release %}
@@ -710,7 +700,7 @@ static int _FMODBridge_func_{{ f.name }}(lua_State *L) {
     lua_pushnil(L);
     lua_rawset(L, -3);
     lua_pop(L, 1);
-    {% endif %}return {{ f.return_count }};
+    {% endif %}return {{ f.return_count }};{% endif %}
 }
 #endif
 {% endif %}

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include "fmod_bridge.h"
-#include "../include/fmod_errors.h"
+#include "fmod_errors.h"
 
 /* Error handling */
 
@@ -16,7 +16,7 @@ inline static void throwError(FMOD_RESULT res, lua_State* L) {
     lua_pop(L, 1);
     lua_error(L);
 }
-#define errCheckBegin(expr) do { attachJNI(); FMOD_RESULT res = (expr); detachJNI(); if (res != FMOD_OK) {
+#define errCheckBegin(expr) do { FMOD_RESULT res = (expr); if (res != FMOD_OK) {
 #define errCheckEnd throwError(res, L); } } while (0)
 #define errCheck(res) errCheckBegin(res); errCheckEnd
 
@@ -2187,16 +2187,12 @@ static int _FMODBridge_func_FMOD_Studio_System_LookupPath(lua_State *L) {
     const FMOD_GUID* id = FMODBridge_check_ptr_FMOD_GUID(L, 2);
     int retrieved;
     ensure(ST, FMOD_Studio_System_LookupPath, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const FMOD_GUID*, char*, int, int*);
-    attachJNI();
-    errCheckBegin(FMOD_Studio_System_LookupPath(system, id, NULL, 0, &retrieved)) {
-        detachJNI();
-    } errCheckEnd;
+    errCheckBegin(FMOD_Studio_System_LookupPath(system, id, NULL, 0, &retrieved));
+    errCheckEnd;
     char *path = (char*)malloc(retrieved);
     errCheckBegin(FMOD_Studio_System_LookupPath(system, id, path, retrieved, &retrieved)) {
-        detachJNI();
         free(path);
     } errCheckEnd;
-    detachJNI();
     lua_pushstring(L, path);
     free(path);
     return 1;
@@ -2206,16 +2202,12 @@ static int _FMODBridge_func_FMOD_Studio_System_LookupPath(lua_State *L) {
     type1* arg1 = CONCAT(FMODBridge_check_ptr_, type1)(L, 1); \
     int retrieved; \
     ensure(ST, fname, FMOD_RESULT, type1*, char*, int, int*); \
-    attachJNI(); \
-    errCheckBegin(fname(arg1, NULL, 0, &retrieved)) { \
-        detachJNI(); \
-    } errCheckEnd; \
+    errCheckBegin(fname(arg1, NULL, 0, &retrieved)); \
+    errCheckEnd; \
     char *path = (char*)malloc(retrieved); \
     errCheckBegin(fname(arg1, path, retrieved, &retrieved)) { \
-        detachJNI(); \
         free(path); \
     } errCheckEnd; \
-    detachJNI(); \
     lua_pushstring(L, path); \
     free(path); \
     return 1; \
@@ -2240,16 +2232,12 @@ static int _FMODBridge_func_FMOD_Studio_Bank_GetStringInfo(lua_State *L) {
     FMOD_GUID* id = FMODBridge_push_ptr_FMOD_GUID(L, NULL);
     int retrieved;
     ensure(ST, FMOD_Studio_Bank_GetStringInfo, FMOD_RESULT, FMOD_STUDIO_BANK*, int, FMOD_GUID*, char*, int, int*);
-    attachJNI();
-    errCheckBegin(FMOD_Studio_Bank_GetStringInfo(bank, index, id, NULL, 0, &retrieved)) {
-        detachJNI();
-    } errCheckEnd;
+    errCheckBegin(FMOD_Studio_Bank_GetStringInfo(bank, index, id, NULL, 0, &retrieved));
+    errCheckEnd;
     char *path = (char*)malloc(retrieved);
     errCheckBegin(FMOD_Studio_Bank_GetStringInfo(bank, index, id, path, retrieved, &retrieved)) {
-        detachJNI();
         free(path);
     } errCheckEnd;
-    detachJNI();
     lua_pushstring(L, path);
     free(path);
     return 2;
@@ -7309,6 +7297,19 @@ static int _FMODBridge_func_FMOD_Studio_System_Create(lua_State *L) {
 #endif
 
 
+/* FMOD_Studio_System_IsValid(input FMOD_STUDIO_SYSTEM* system, ) */
+#ifndef FMODBridge_func_FMOD_Studio_System_IsValid
+#define FMODBridge_func_FMOD_Studio_System_IsValid _FMODBridge_func_FMOD_Studio_System_IsValid
+static int _FMODBridge_func_FMOD_Studio_System_IsValid(lua_State *L) {
+    FMOD_STUDIO_SYSTEM* system = FMODBridge_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
+    ensure(ST, FMOD_Studio_System_IsValid, FMOD_BOOL, FMOD_STUDIO_SYSTEM*);
+    FMOD_BOOL retval = FMOD_Studio_System_IsValid(system);
+    lua_pushboolean(L, retval);
+    return 1;
+}
+#endif
+
+
 /* FMOD_Studio_System_SetAdvancedSettings(input FMOD_STUDIO_SYSTEM* system, output_ptr FMOD_STUDIO_ADVANCEDSETTINGS* settings, ) */
 #ifndef FMODBridge_func_FMOD_Studio_System_SetAdvancedSettings
 #define FMODBridge_func_FMOD_Studio_System_SetAdvancedSettings _FMODBridge_func_FMOD_Studio_System_SetAdvancedSettings
@@ -8047,6 +8048,19 @@ static int _FMODBridge_func_FMOD_Studio_System_GetMemoryUsage(lua_State *L) {
 #endif
 
 
+/* FMOD_Studio_EventDescription_IsValid(input FMOD_STUDIO_EVENTDESCRIPTION* eventdescription, ) */
+#ifndef FMODBridge_func_FMOD_Studio_EventDescription_IsValid
+#define FMODBridge_func_FMOD_Studio_EventDescription_IsValid _FMODBridge_func_FMOD_Studio_EventDescription_IsValid
+static int _FMODBridge_func_FMOD_Studio_EventDescription_IsValid(lua_State *L) {
+    FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODBridge_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
+    ensure(ST, FMOD_Studio_EventDescription_IsValid, FMOD_BOOL, FMOD_STUDIO_EVENTDESCRIPTION*);
+    FMOD_BOOL retval = FMOD_Studio_EventDescription_IsValid(eventdescription);
+    lua_pushboolean(L, retval);
+    return 1;
+}
+#endif
+
+
 /* FMOD_Studio_EventDescription_GetID(input FMOD_STUDIO_EVENTDESCRIPTION* eventdescription, output_ptr FMOD_GUID* id, ) */
 #ifndef FMODBridge_func_FMOD_Studio_EventDescription_GetID
 #define FMODBridge_func_FMOD_Studio_EventDescription_GetID _FMODBridge_func_FMOD_Studio_EventDescription_GetID
@@ -8408,6 +8422,19 @@ static int _FMODBridge_func_FMOD_Studio_EventDescription_ReleaseAllInstances(lua
 /* FMOD_Studio_EventDescription_SetUserData(input FMOD_STUDIO_EVENTDESCRIPTION* eventdescription, unknown void* userdata, ) */
 
 
+/* FMOD_Studio_EventInstance_IsValid(input FMOD_STUDIO_EVENTINSTANCE* eventinstance, ) */
+#ifndef FMODBridge_func_FMOD_Studio_EventInstance_IsValid
+#define FMODBridge_func_FMOD_Studio_EventInstance_IsValid _FMODBridge_func_FMOD_Studio_EventInstance_IsValid
+static int _FMODBridge_func_FMOD_Studio_EventInstance_IsValid(lua_State *L) {
+    FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODBridge_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
+    ensure(ST, FMOD_Studio_EventInstance_IsValid, FMOD_BOOL, FMOD_STUDIO_EVENTINSTANCE*);
+    FMOD_BOOL retval = FMOD_Studio_EventInstance_IsValid(eventinstance);
+    lua_pushboolean(L, retval);
+    return 1;
+}
+#endif
+
+
 /* FMOD_Studio_EventInstance_GetDescription(input FMOD_STUDIO_EVENTINSTANCE* eventinstance, output FMOD_STUDIO_EVENTDESCRIPTION** description, ) */
 #ifndef FMODBridge_func_FMOD_Studio_EventInstance_GetDescription
 #define FMODBridge_func_FMOD_Studio_EventInstance_GetDescription _FMODBridge_func_FMOD_Studio_EventInstance_GetDescription
@@ -8737,7 +8764,7 @@ static int _FMODBridge_func_FMOD_Studio_EventInstance_Release(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODBridge_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     ensure(ST, FMOD_Studio_EventInstance_Release, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*);
     errCheck(FMOD_Studio_EventInstance_Release(eventinstance));
-
+    
     lua_rawgeti(L, LUA_REGISTRYINDEX, FMODBridge_registry_refcount);
     lua_pushlightuserdata(L, eventinstance);
     lua_pushnil(L);
@@ -8919,6 +8946,19 @@ static int _FMODBridge_func_FMOD_Studio_EventInstance_GetMemoryUsage(lua_State *
     ensure(ST, FMOD_Studio_EventInstance_GetMemoryUsage, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_STUDIO_MEMORY_USAGE*);
     errCheck(FMOD_Studio_EventInstance_GetMemoryUsage(eventinstance, memoryusage));
     lua_pushvalue(L, -1);
+    return 1;
+}
+#endif
+
+
+/* FMOD_Studio_Bus_IsValid(input FMOD_STUDIO_BUS* bus, ) */
+#ifndef FMODBridge_func_FMOD_Studio_Bus_IsValid
+#define FMODBridge_func_FMOD_Studio_Bus_IsValid _FMODBridge_func_FMOD_Studio_Bus_IsValid
+static int _FMODBridge_func_FMOD_Studio_Bus_IsValid(lua_State *L) {
+    FMOD_STUDIO_BUS* bus = FMODBridge_check_ptr_FMOD_STUDIO_BUS(L, 1);
+    ensure(ST, FMOD_Studio_Bus_IsValid, FMOD_BOOL, FMOD_STUDIO_BUS*);
+    FMOD_BOOL retval = FMOD_Studio_Bus_IsValid(bus);
+    lua_pushboolean(L, retval);
     return 1;
 }
 #endif
@@ -9132,6 +9172,19 @@ static int _FMODBridge_func_FMOD_Studio_Bus_GetMemoryUsage(lua_State *L) {
 #endif
 
 
+/* FMOD_Studio_VCA_IsValid(input FMOD_STUDIO_VCA* vca, ) */
+#ifndef FMODBridge_func_FMOD_Studio_VCA_IsValid
+#define FMODBridge_func_FMOD_Studio_VCA_IsValid _FMODBridge_func_FMOD_Studio_VCA_IsValid
+static int _FMODBridge_func_FMOD_Studio_VCA_IsValid(lua_State *L) {
+    FMOD_STUDIO_VCA* vca = FMODBridge_check_ptr_FMOD_STUDIO_VCA(L, 1);
+    ensure(ST, FMOD_Studio_VCA_IsValid, FMOD_BOOL, FMOD_STUDIO_VCA*);
+    FMOD_BOOL retval = FMOD_Studio_VCA_IsValid(vca);
+    lua_pushboolean(L, retval);
+    return 1;
+}
+#endif
+
+
 /* FMOD_Studio_VCA_GetID(input FMOD_STUDIO_VCA* vca, output_ptr FMOD_GUID* id, ) */
 #ifndef FMODBridge_func_FMOD_Studio_VCA_GetID
 #define FMODBridge_func_FMOD_Studio_VCA_GetID _FMODBridge_func_FMOD_Studio_VCA_GetID
@@ -9174,6 +9227,19 @@ static int _FMODBridge_func_FMOD_Studio_VCA_SetVolume(lua_State *L) {
     ensure(ST, FMOD_Studio_VCA_SetVolume, FMOD_RESULT, FMOD_STUDIO_VCA*, float);
     errCheck(FMOD_Studio_VCA_SetVolume(vca, volume));
     return 0;
+}
+#endif
+
+
+/* FMOD_Studio_Bank_IsValid(input FMOD_STUDIO_BANK* bank, ) */
+#ifndef FMODBridge_func_FMOD_Studio_Bank_IsValid
+#define FMODBridge_func_FMOD_Studio_Bank_IsValid _FMODBridge_func_FMOD_Studio_Bank_IsValid
+static int _FMODBridge_func_FMOD_Studio_Bank_IsValid(lua_State *L) {
+    FMOD_STUDIO_BANK* bank = FMODBridge_check_ptr_FMOD_STUDIO_BANK(L, 1);
+    ensure(ST, FMOD_Studio_Bank_IsValid, FMOD_BOOL, FMOD_STUDIO_BANK*);
+    FMOD_BOOL retval = FMOD_Studio_Bank_IsValid(bank);
+    lua_pushboolean(L, retval);
+    return 1;
 }
 #endif
 
@@ -9373,6 +9439,19 @@ static int _FMODBridge_func_FMOD_Studio_Bank_GetVCAList(lua_State *L) {
 
 
 /* FMOD_Studio_Bank_SetUserData(input FMOD_STUDIO_BANK* bank, unknown void* userdata, ) */
+
+
+/* FMOD_Studio_CommandReplay_IsValid(input FMOD_STUDIO_COMMANDREPLAY* replay, ) */
+#ifndef FMODBridge_func_FMOD_Studio_CommandReplay_IsValid
+#define FMODBridge_func_FMOD_Studio_CommandReplay_IsValid _FMODBridge_func_FMOD_Studio_CommandReplay_IsValid
+static int _FMODBridge_func_FMOD_Studio_CommandReplay_IsValid(lua_State *L) {
+    FMOD_STUDIO_COMMANDREPLAY* replay = FMODBridge_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
+    ensure(ST, FMOD_Studio_CommandReplay_IsValid, FMOD_BOOL, FMOD_STUDIO_COMMANDREPLAY*);
+    FMOD_BOOL retval = FMOD_Studio_CommandReplay_IsValid(replay);
+    lua_pushboolean(L, retval);
+    return 1;
+}
+#endif
 
 
 /* FMOD_Studio_CommandReplay_GetSystem(input FMOD_STUDIO_COMMANDREPLAY* replay, output FMOD_STUDIO_SYSTEM** system, ) */
@@ -10583,7 +10662,7 @@ void FMODBridge_register(lua_State *L) {
     addEnum(STUDIO_COMMANDREPLAY_SKIP_CLEANUP);
     addEnum(STUDIO_COMMANDREPLAY_FAST_FORWARD);
     addEnum(STUDIO_COMMANDREPLAY_SKIP_BANK_LOAD);
-
+    
 
     #define beginStruct(structName) \
         lua_newtable(L); \
@@ -13149,6 +13228,10 @@ void FMODBridge_register(lua_State *L) {
     endStruct();
     beginStruct(FMOD_STUDIO_SYSTEM);
         addClassEquality(FMOD_STUDIO_SYSTEM);
+        #ifdef FMODBridge_func_FMOD_Studio_System_IsValid
+        lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_System_IsValid);
+        lua_setfield(L, -4, "is_valid");
+        #endif
         #ifdef FMODBridge_func_FMOD_Studio_System_SetAdvancedSettings
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_System_SetAdvancedSettings);
         lua_setfield(L, -4, "set_advanced_settings");
@@ -13379,6 +13462,10 @@ void FMODBridge_register(lua_State *L) {
     endStruct();
     beginStruct(FMOD_STUDIO_EVENTDESCRIPTION);
         addClassEquality(FMOD_STUDIO_EVENTDESCRIPTION);
+        #ifdef FMODBridge_func_FMOD_Studio_EventDescription_IsValid
+        lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_EventDescription_IsValid);
+        lua_setfield(L, -4, "is_valid");
+        #endif
         #ifdef FMODBridge_func_FMOD_Studio_EventDescription_GetID
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_EventDescription_GetID);
         lua_setfield(L, -4, "get_id");
@@ -13510,6 +13597,10 @@ void FMODBridge_register(lua_State *L) {
     beginStruct(FMOD_STUDIO_EVENTINSTANCE);
         addClassEquality(FMOD_STUDIO_EVENTINSTANCE);
         addDestructor(FMOD_STUDIO_EVENTINSTANCE, FMOD_Studio_EventInstance_Release);
+        #ifdef FMODBridge_func_FMOD_Studio_EventInstance_IsValid
+        lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_EventInstance_IsValid);
+        lua_setfield(L, -4, "is_valid");
+        #endif
         #ifdef FMODBridge_func_FMOD_Studio_EventInstance_GetDescription
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_EventInstance_GetDescription);
         lua_setfield(L, -4, "get_description");
@@ -13668,6 +13759,10 @@ void FMODBridge_register(lua_State *L) {
     endStruct();
     beginStruct(FMOD_STUDIO_BUS);
         addClassEquality(FMOD_STUDIO_BUS);
+        #ifdef FMODBridge_func_FMOD_Studio_Bus_IsValid
+        lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_Bus_IsValid);
+        lua_setfield(L, -4, "is_valid");
+        #endif
         #ifdef FMODBridge_func_FMOD_Studio_Bus_GetID
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_Bus_GetID);
         lua_setfield(L, -4, "get_id");
@@ -13738,6 +13833,10 @@ void FMODBridge_register(lua_State *L) {
     endStruct();
     beginStruct(FMOD_STUDIO_VCA);
         addClassEquality(FMOD_STUDIO_VCA);
+        #ifdef FMODBridge_func_FMOD_Studio_VCA_IsValid
+        lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_VCA_IsValid);
+        lua_setfield(L, -4, "is_valid");
+        #endif
         #ifdef FMODBridge_func_FMOD_Studio_VCA_GetID
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_VCA_GetID);
         lua_setfield(L, -4, "get_id");
@@ -13760,6 +13859,10 @@ void FMODBridge_register(lua_State *L) {
     endStruct();
     beginStruct(FMOD_STUDIO_BANK);
         addClassEquality(FMOD_STUDIO_BANK);
+        #ifdef FMODBridge_func_FMOD_Studio_Bank_IsValid
+        lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_Bank_IsValid);
+        lua_setfield(L, -4, "is_valid");
+        #endif
         #ifdef FMODBridge_func_FMOD_Studio_Bank_GetID
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_Bank_GetID);
         lua_setfield(L, -4, "get_id");
@@ -13834,6 +13937,10 @@ void FMODBridge_register(lua_State *L) {
     endStruct();
     beginStruct(FMOD_STUDIO_COMMANDREPLAY);
         addClassEquality(FMOD_STUDIO_COMMANDREPLAY);
+        #ifdef FMODBridge_func_FMOD_Studio_CommandReplay_IsValid
+        lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_CommandReplay_IsValid);
+        lua_setfield(L, -4, "is_valid");
+        #endif
         #ifdef FMODBridge_func_FMOD_Studio_CommandReplay_GetSystem
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_CommandReplay_GetSystem);
         lua_setfield(L, -4, "get_system");
@@ -14198,54 +14305,54 @@ void FMODBridge_register(lua_State *L) {
         FMODBridge_extras_FMOD_STUDIO_MEMORY_USAGE
         #endif
     endStruct();
+    
 
-
-
+    
         #ifdef FMODBridge_func_FMOD_Memory_Initialize
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Memory_Initialize);
         lua_setfield(L, -2 - 1, "memory_initialize");
         #endif
-
+    
         #ifdef FMODBridge_func_FMOD_Memory_GetStats
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Memory_GetStats);
         lua_setfield(L, -2 - 1, "memory_get_stats");
         #endif
-
+    
         #ifdef FMODBridge_func_FMOD_Debug_Initialize
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Debug_Initialize);
         lua_setfield(L, -2 - 1, "debug_initialize");
         #endif
-
+    
         #ifdef FMODBridge_func_FMOD_File_SetDiskBusy
         lua_pushcfunction(L, &FMODBridge_func_FMOD_File_SetDiskBusy);
         lua_setfield(L, -2 - 1, "file_set_disk_busy");
         #endif
-
+    
         #ifdef FMODBridge_func_FMOD_File_GetDiskBusy
         lua_pushcfunction(L, &FMODBridge_func_FMOD_File_GetDiskBusy);
         lua_setfield(L, -2 - 1, "file_get_disk_busy");
         #endif
-
+    
         #ifdef FMODBridge_func_FMOD_Thread_SetAttributes
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Thread_SetAttributes);
         lua_setfield(L, -2 - 1, "thread_set_attributes");
         #endif
-
+    
         #ifdef FMODBridge_func_FMOD_System_Create
         lua_pushcfunction(L, &FMODBridge_func_FMOD_System_Create);
         lua_setfield(L, -2 - 1, "system_create");
         #endif
-
+    
         #ifdef FMODBridge_func_FMOD_Studio_ParseID
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_ParseID);
         lua_setfield(L, -1 - 1, "parse_id");
         #endif
-
+    
         #ifdef FMODBridge_func_FMOD_Studio_System_Create
         lua_pushcfunction(L, &FMODBridge_func_FMOD_Studio_System_Create);
         lua_setfield(L, -1 - 1, "system_create");
         #endif
-
+    
 
     FMODBridge_push_ptr_FMOD_STUDIO_SYSTEM(L, FMODBridge_system);
     lua_setfield(L, -2, "system");
