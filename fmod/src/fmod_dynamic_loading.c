@@ -10,42 +10,7 @@
 #ifdef __ANDROID__
 
 #include <jni.h>
-
-static JNIEnv* FMODBridge_jni_env = NULL;
-static int FMODBridge_jni_refcount = 0;
-
-void FMODBridge_attachJNI()
-{
-    if (FMODBridge_jni_refcount == 0) {
-        JavaVM* vm = FMODBridge_dmGraphics_GetNativeAndroidJavaVM();
-        vm->AttachCurrentThread(&FMODBridge_jni_env, NULL);
-    }
-    FMODBridge_jni_refcount += 1;
-}
-
-void FMODBridge_detachJNI()
-{
-    FMODBridge_jni_refcount -= 1;
-    if (FMODBridge_jni_refcount == 0) {
-        JNIEnv* env = FMODBridge_jni_env;
-        env->ExceptionClear();
-        JavaVM* vm = FMODBridge_dmGraphics_GetNativeAndroidJavaVM();
-        vm->DetachCurrentThread();
-    }
-}
-
-static jclass jniGetClass(JNIEnv* env, const char* classname) {
-    jclass activity_class = env->FindClass("android/app/NativeActivity");
-    jmethodID get_class_loader = env->GetMethodID(activity_class, "getClassLoader", "()Ljava/lang/ClassLoader;");
-    jobject cls = env->CallObjectMethod(FMODBridge_dmGraphics_GetNativeAndroidActivity(), get_class_loader);
-    jclass class_loader = env->FindClass("java/lang/ClassLoader");
-    jmethodID find_class = env->GetMethodID(class_loader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
-
-    jstring str_class_name = env->NewStringUTF(classname);
-    jclass outcls = (jclass)env->CallObjectMethod(cls, find_class, str_class_name);
-    env->DeleteLocalRef(str_class_name);
-    return outcls;
-}
+#include <dmsdk/dlib/android.h>
 
 static void jniLogException(JNIEnv* env) {
     jthrowable e = env->ExceptionOccurred();
@@ -62,51 +27,45 @@ static void jniLogException(JNIEnv* env) {
     env->DeleteLocalRef(e);
 }
 
-// Android: Initialize FMOD Java library (required for both static and dynamic linking)
 bool FMODBridge_linkLibraries() {
-    attachJNI();
-    JNIEnv* env = FMODBridge_jni_env;
+    dmAndroid::ThreadAttacher thread;
+    JNIEnv* env = thread.GetEnv();
+    if (!env) return false;
 
     if (env->ExceptionCheck()) {
         jniLogException(env);
-        detachJNI();
         return false;
     }
 
-    // Initialize the FMOD Java lib - this loads libfmod.so and libfmodstudio.so
-    jclass fmodClass = jniGetClass(env, "org.fmod.FMOD");
+    jclass fmodClass = dmAndroid::LoadClass(env, "org.fmod.FMOD");
     jmethodID initMethod = env->GetStaticMethodID(fmodClass, "init", "(Landroid/content/Context;)V");
     if (env->ExceptionCheck()) {
         jniLogException(env);
-        detachJNI();
         return false;
     }
-    env->CallStaticVoidMethod(fmodClass, initMethod, FMODBridge_dmGraphics_GetNativeAndroidActivity());
+    env->CallStaticVoidMethod(fmodClass, initMethod, thread.GetActivity()->clazz);
 
     if (env->ExceptionCheck()) {
         jniLogException(env);
-        detachJNI();
         return false;
     }
 
     LOGI("FMOD Java library initialized successfully");
-    detachJNI();
     return true;
 }
 
 void FMODBridge_cleanupLibraries() {
-    attachJNI();
-    JNIEnv* env = FMODBridge_jni_env;
+    dmAndroid::ThreadAttacher thread;
+    JNIEnv* env = thread.GetEnv();
+    if (!env) return;
 
-    jclass fmodClass = jniGetClass(env, "org.fmod.FMOD");
+    jclass fmodClass = dmAndroid::LoadClass(env, "org.fmod.FMOD");
     jmethodID closeMethod = env->GetStaticMethodID(fmodClass, "close", "()V");
     env->CallStaticVoidMethod(fmodClass, closeMethod);
 
     if (env->ExceptionCheck()) {
         jniLogException(env);
     }
-
-    detachJNI();
 }
 
 // =============================================================================

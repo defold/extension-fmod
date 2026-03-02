@@ -73,11 +73,6 @@ FMOD_VECTOR FMODBridge_dmScript_CheckVector3(lua_State* L, int index);
 const char* FMODBridge_dmConfigFile_GetString(const char*, const char*);
 int32_t FMODBridge_dmConfigFile_GetInt(const char*, int32_t);
 
-#ifdef __ANDROID__
-JavaVM* FMODBridge_dmGraphics_GetNativeAndroidJavaVM();
-jobject FMODBridge_dmGraphics_GetNativeAndroidActivity();
-#endif
-
 // Lifecycle functions
 void FMODBridge_init(lua_State* L);
 void FMODBridge_update();
@@ -103,16 +98,6 @@ void FMODBridge_resumeMixer();
 
 #if TARGET_OS_IPHONE
 void FMODBridge_initIOSInterruptionHandler();
-#endif
-
-#ifdef __ANDROID__
-void FMODBridge_attachJNI();
-void FMODBridge_detachJNI();
-#define attachJNI() FMODBridge_attachJNI()
-#define detachJNI() FMODBridge_detachJNI()
-#else
-#define attachJNI()
-#define detachJNI()
 #endif
 
 #define ensure(lib, fname, retType, ...)
