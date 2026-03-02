@@ -2,7 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "fmod_bridge.h"
+#include "fmod_ext.h"
 
 // =============================================================================
 // Android JNI initialization (required regardless of linking mode)
@@ -27,7 +27,7 @@ static void jniLogException(JNIEnv* env) {
     env->DeleteLocalRef(e);
 }
 
-bool FMODBridge_linkLibraries() {
+bool FMODExt_linkLibraries() {
     dmAndroid::ThreadAttacher thread;
     JNIEnv* env = thread.GetEnv();
     if (!env) return false;
@@ -54,7 +54,7 @@ bool FMODBridge_linkLibraries() {
     return true;
 }
 
-void FMODBridge_cleanupLibraries() {
+void FMODExt_cleanupLibraries() {
     dmAndroid::ThreadAttacher thread;
     JNIEnv* env = thread.GetEnv();
     if (!env) return;
@@ -72,10 +72,10 @@ void FMODBridge_cleanupLibraries() {
 #else
 
 // No-op for platforms with static linking
-bool FMODBridge_linkLibraries() {
+bool FMODExt_linkLibraries() {
     return true;
 }
 
-void FMODBridge_cleanupLibraries() {}
+void FMODExt_cleanupLibraries() {}
 
 #endif

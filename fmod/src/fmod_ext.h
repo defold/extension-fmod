@@ -1,5 +1,5 @@
-#ifndef FMOD_BRIDGE_H
-#define FMOD_BRIDGE_H
+#ifndef FMOD_EXT_H
+#define FMOD_EXT_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -64,40 +64,40 @@ extern "C" {
 #endif
 
 // Extension API
-typedef unsigned int FMODBridge_HBuffer;
-int FMODBridge_dmBuffer_GetBytes(FMODBridge_HBuffer, void**, uint32_t*);
-void FMODBridge_dmScript_PushBuffer(lua_State* L, FMODBridge_HBuffer);
-FMODBridge_HBuffer FMODBridge_dmScript_CheckBuffer(lua_State* L, int);
-void FMODBridge_dmScript_PushVector3(lua_State* L, float x, float y, float z);
-FMOD_VECTOR FMODBridge_dmScript_CheckVector3(lua_State* L, int index);
-const char* FMODBridge_dmConfigFile_GetString(const char*, const char*);
-int32_t FMODBridge_dmConfigFile_GetInt(const char*, int32_t);
+typedef unsigned int FMODExt_HBuffer;
+int FMODExt_dmBuffer_GetBytes(FMODExt_HBuffer, void**, uint32_t*);
+void FMODExt_dmScript_PushBuffer(lua_State* L, FMODExt_HBuffer);
+FMODExt_HBuffer FMODExt_dmScript_CheckBuffer(lua_State* L, int);
+void FMODExt_dmScript_PushVector3(lua_State* L, float x, float y, float z);
+FMOD_VECTOR FMODExt_dmScript_CheckVector3(lua_State* L, int index);
+const char* FMODExt_dmConfigFile_GetString(const char*, const char*);
+int32_t FMODExt_dmConfigFile_GetInt(const char*, int32_t);
 
 // Lifecycle functions
-void FMODBridge_init(lua_State* L);
-void FMODBridge_update();
-void FMODBridge_finalize();
-void FMODBridge_activateApp();
-void FMODBridge_deactivateApp();
-void FMODBridge_iconifyApp();
-void FMODBridge_deiconifyApp();
+void FMODExt_init(lua_State* L);
+void FMODExt_update();
+void FMODExt_finalize();
+void FMODExt_activateApp();
+void FMODExt_deactivateApp();
+void FMODExt_iconifyApp();
+void FMODExt_deiconifyApp();
 
 // Internal functions and members
-extern FMOD_STUDIO_SYSTEM* FMODBridge_system;
-extern FMOD_SYSTEM* FMODBridge_lowLevelSystem;
-extern bool FMODBridge_isPaused;
+extern FMOD_STUDIO_SYSTEM* FMODExt_system;
+extern FMOD_SYSTEM* FMODExt_lowLevelSystem;
+extern bool FMODExt_isPaused;
 
-bool FMODBridge_linkLibraries();
-void FMODBridge_cleanupLibraries();
+bool FMODExt_linkLibraries();
+void FMODExt_cleanupLibraries();
 
-void FMODBridge_register(lua_State* L);
-int FMODBridge_getBundleRoot(lua_State* L);
+void FMODExt_register(lua_State* L);
+int FMODExt_getBundleRoot(lua_State* L);
 
-void FMODBridge_suspendMixer();
-void FMODBridge_resumeMixer();
+void FMODExt_suspendMixer();
+void FMODExt_resumeMixer();
 
 #if TARGET_OS_IPHONE
-void FMODBridge_initIOSInterruptionHandler();
+void FMODExt_initIOSInterruptionHandler();
 #endif
 
 #define ensure(lib, fname, retType, ...)
