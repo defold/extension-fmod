@@ -2,9 +2,9 @@
 .DS_Store
 
 # Defold
-build/
+/build
 builtins/
-.internal/
+/.internal
 .lock-wscript
 /.editor_settings
 
