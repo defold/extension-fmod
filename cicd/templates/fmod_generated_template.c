@@ -417,7 +417,6 @@ static int _FMODExt_func_FMOD_Studio_System_LoadBankMemory(lua_State *L) {
 
     FMOD_STUDIO_BANK *bank;
 
-    ensure(ST, FMOD_Studio_System_LoadBankMemory, FMOD_RESULT, FMOD_STUDIO_SYSTEM *system, const char *buffer, int length, FMOD_STUDIO_LOAD_MEMORY_MODE mode, FMOD_STUDIO_LOAD_BANK_FLAGS flags, FMOD_STUDIO_BANK **bank);
     errCheck(FMOD_Studio_System_LoadBankMemory(system, buffer, (int)length, FMOD_STUDIO_LOAD_MEMORY, flags, &bank));
 
     FMODExt_push_ptr_FMOD_STUDIO_BANK(L, bank);
@@ -434,7 +433,6 @@ static int _FMODExt_func_FMOD_Studio_System_SetListenerAttributes(lua_State *L) 
     if (hasAttenuationPosition) {
         attenuationposition = FMODExt_check_FMOD_VECTOR(L, 4);
     }
-    ensure(ST, FMOD_Studio_System_SetListenerAttributes, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, int, const FMOD_3D_ATTRIBUTES*, const FMOD_VECTOR*);
     errCheck(FMOD_Studio_System_SetListenerAttributes(system, index, attributes, hasAttenuationPosition ? &attenuationposition : NULL));
     return 0;
 }
@@ -443,7 +441,6 @@ static int _FMODExt_func_FMOD_Studio_System_SetListenerAttributes(lua_State *L) 
 static int _FMODExt_func_FMOD_Studio_EventInstance_Set3DAttributes(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_3D_ATTRIBUTES* attributes = FMODExt_check_ptr_FMOD_3D_ATTRIBUTES(L, 2);
-    ensure(ST, FMOD_Studio_EventInstance_Set3DAttributes, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_3D_ATTRIBUTES*);
     errCheck(FMOD_Studio_EventInstance_Set3DAttributes(eventinstance, attributes));
     return 0;
 }
@@ -461,7 +458,6 @@ static int _FMODExt_func_FMOD_DSP_GetParameterFloat(lua_State *L) {
     int index = FMODExt_check_int(L, 2);
     float value;
     char valuestr[FMOD_DSP_GETPARAM_VALUESTR_LENGTH];
-    ensure(LL, FMOD_DSP_GetParameterFloat, FMOD_RESULT, FMOD_DSP*, int, float*, char*, int);
     errCheck(FMOD_DSP_GetParameterFloat(dsp, index, &value, valuestr, FMOD_DSP_GETPARAM_VALUESTR_LENGTH));
     FMODExt_push_float(L, value);
     FMODExt_push_ptr_char(L, valuestr);
@@ -474,7 +470,6 @@ static int _FMODExt_func_FMOD_DSP_GetParameterInt(lua_State *L) {
     int index = FMODExt_check_int(L, 2);
     int value;
     char valuestr[FMOD_DSP_GETPARAM_VALUESTR_LENGTH];
-    ensure(LL, FMOD_DSP_GetParameterInt, FMOD_RESULT, FMOD_DSP*, int, int*, char*, int);
     errCheck(FMOD_DSP_GetParameterInt(dsp, index, &value, valuestr, FMOD_DSP_GETPARAM_VALUESTR_LENGTH));
     FMODExt_push_int(L, value);
     FMODExt_push_ptr_char(L, valuestr);
@@ -488,7 +483,6 @@ static int _FMODExt_func_FMOD_DSP_GetParameterBool(lua_State *L) {
     int index = FMODExt_check_int(L, 2);
     FMOD_BOOL value;
     char valuestr[FMOD_DSP_GETPARAM_VALUESTR_LENGTH];
-    ensure(LL, FMOD_DSP_GetParameterBool, FMOD_RESULT, FMOD_DSP*, int, FMOD_BOOL*, char*, int);
     errCheck(FMOD_DSP_GetParameterBool(dsp, index, &value, valuestr, FMOD_DSP_GETPARAM_VALUESTR_LENGTH));
     FMODExt_push_FMOD_BOOL(L, value);
     FMODExt_push_ptr_char(L, valuestr);
@@ -504,7 +498,6 @@ static int _FMODExt_func_FMOD_System_GetDriverInfo(lua_State *L) {
     int systemrate;
     FMOD_SPEAKERMODE speakermode;
     int speakermodechannels;
-    ensure(LL, FMOD_System_GetDriverInfo, FMOD_RESULT, FMOD_SYSTEM*, int, char*, int, FMOD_GUID*, int*, FMOD_SPEAKERMODE*, int*);
     errCheck(FMOD_System_GetDriverInfo(system, id, name, 256, guid, &systemrate, &speakermode, &speakermodechannels));
     lua_pushstring(L, name);
     lua_pushvalue(L, -2);
@@ -521,7 +514,6 @@ static int _FMODExt_func_FMOD_System_GetPluginInfo(lua_State *L) {
     FMOD_PLUGINTYPE plugintype;
     char name[256];
     unsigned int version;
-    ensure(LL, FMOD_System_GetPluginInfo, FMOD_RESULT, FMOD_SYSTEM*, unsigned int, FMOD_PLUGINTYPE*, char*, int, unsigned int*);
     errCheck(FMOD_System_GetPluginInfo(system, handle, &plugintype, name, 256, &version));
     FMODExt_push_FMOD_PLUGINTYPE(L, plugintype);
     lua_pushstring(L, name);
@@ -539,7 +531,6 @@ static int _FMODExt_func_FMOD_System_GetRecordDriverInfo(lua_State *L) {
     FMOD_SPEAKERMODE speakermode;
     int speakermodechannels;
     unsigned int state;
-    ensure(LL, FMOD_System_GetRecordDriverInfo, FMOD_RESULT, FMOD_SYSTEM*, int, char*, int, FMOD_GUID*, int*, FMOD_SPEAKERMODE*, int*, unsigned int*);
     errCheck(FMOD_System_GetRecordDriverInfo(system, id, name, 256, guid, &systemrate, &speakermode, &speakermodechannels, &state));
     lua_pushstring(L, name);
     lua_pushvalue(L, -2);
@@ -553,7 +544,6 @@ static int _FMODExt_func_FMOD_System_GetRecordDriverInfo(lua_State *L) {
 #define nameGetter(fname, type1, size) static int CONCAT(_FMODExt_func_, fname)(lua_State *L) { \
     type1* arg1 = CONCAT(FMODExt_check_ptr_, type1)(L, 1); \
     char name[size]; \
-    ensure(LL, fname, FMOD_RESULT, type1*, char*, int); \
     errCheck(fname(arg1, name, size)); \
     lua_pushstring(L, name); \
     return 1; \
@@ -572,7 +562,6 @@ static int _FMODExt_func_FMOD_Sound_GetSyncPointInfo(lua_State *L) {
     char name[256];
     unsigned int offset;
     unsigned int offsettype = FMODExt_check_unsigned_int(L, 3);
-    ensure(LL, FMOD_Sound_GetSyncPointInfo, FMOD_RESULT, FMOD_SOUND*, FMOD_SYNCPOINT*, char*, int, unsigned int*, unsigned int);
     errCheck(FMOD_Sound_GetSyncPointInfo(sound, point, name, 256, &offset, offsettype));
     lua_pushstring(L, name);
     FMODExt_push_unsigned_int(L, offset);
@@ -593,7 +582,6 @@ static int _FMODExt_func_FMOD_DSP_GetInfo(lua_State *L) {
     int channels;
     int configwidth;
     int configheight;
-    ensure(LL, FMOD_DSP_GetInfo, FMOD_RESULT, FMOD_DSP*, char*, unsigned int*, int*, int*, int*);
     errCheck(FMOD_DSP_GetInfo(dsp, name, &version, &channels, &configwidth, &configheight));
     lua_pushstring(L, name);
     FMODExt_push_unsigned_int(L, version);
@@ -608,7 +596,6 @@ static int _FMODExt_func_FMOD_Studio_System_LookupPath(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const FMOD_GUID* id = FMODExt_check_ptr_FMOD_GUID(L, 2);
     int retrieved;
-    ensure(ST, FMOD_Studio_System_LookupPath, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const FMOD_GUID*, char*, int, int*);
     errCheckBegin(FMOD_Studio_System_LookupPath(system, id, NULL, 0, &retrieved));
     errCheckEnd;
     char *path = (char*)malloc(retrieved);
@@ -623,7 +610,6 @@ static int _FMODExt_func_FMOD_Studio_System_LookupPath(lua_State *L) {
 #define pathGetter(fname, type1) static int CONCAT(_FMODExt_func_, fname)(lua_State *L) { \
     type1* arg1 = CONCAT(FMODExt_check_ptr_, type1)(L, 1); \
     int retrieved; \
-    ensure(ST, fname, FMOD_RESULT, type1*, char*, int, int*); \
     errCheckBegin(fname(arg1, NULL, 0, &retrieved)); \
     errCheckEnd; \
     char *path = (char*)malloc(retrieved); \
@@ -653,7 +639,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_GetStringInfo(lua_State *L) {
     int index = FMODExt_check_int(L, 2);
     FMOD_GUID* id = FMODExt_push_ptr_FMOD_GUID(L, NULL);
     int retrieved;
-    ensure(ST, FMOD_Studio_Bank_GetStringInfo, FMOD_RESULT, FMOD_STUDIO_BANK*, int, FMOD_GUID*, char*, int, int*);
     errCheckBegin(FMOD_Studio_Bank_GetStringInfo(bank, index, id, NULL, 0, &retrieved));
     errCheckEnd;
     char *path = (char*)malloc(retrieved);
@@ -670,7 +655,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_GetCommandString(lua_State *L
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     int commandindex = FMODExt_check_int(L, 2);
     char buffer[512];
-    ensure(ST, FMOD_Studio_CommandReplay_GetCommandString, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, int, char*, int);
     errCheck(FMOD_Studio_CommandReplay_GetCommandString(replay, commandindex, buffer, 512));
     lua_pushstring(L, buffer);
     return 1;
@@ -688,8 +672,7 @@ static int _FMODExt_func_{{ f.name }}(lua_State *L) {
     {% elif arg.usage == "input_ptr" %}{{ arg.type.child.c_type }} {{ arg.name }} = {% if arg.optional %}optional(L, {{ arg.arg_index }}, {{ arg.type.child.c_type }}, {% endif %}FMODExt_check_{{ arg.type.child.name }}(L, {{ arg.arg_index }}){% if arg.optional %}){% endif %};
     {% elif arg.usage == "output" %}{{ arg.type.child.c_type }} {{ arg.name }};
     {% elif arg.usage == "output_ptr" %}{{ arg.type.c_type }} {{ arg.name }} = FMODExt_push_{{ arg.type.name }}(L, NULL);
-    {% endif %}{% endfor %}ensure({{ f.library }}, {{ f.name }}, {{ f.return_type }}{% for arg in f.args %}, {{ arg.type.c_type }}{% endfor %});
-    {% if f.returns_bool %}FMOD_BOOL retval = {{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %});
+    {% endif %}{% endfor %}{% if f.returns_bool %}FMOD_BOOL retval = {{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %});
     lua_pushboolean(L, retval);
     return 1;{% else %}errCheck({{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %}));
     {% for arg in f.args %}{% if arg.usage == "output" %}FMODExt_push_{{ arg.type.child.name }}(L, {{ arg.name }});

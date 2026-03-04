@@ -100,8 +100,6 @@ void FMODExt_resumeMixer();
 void FMODExt_initIOSInterruptionHandler();
 #endif
 
-#define ensure(lib, fname, retType, ...)
-
 #ifdef __cplusplus
 }
 #endif

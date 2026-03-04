@@ -1995,7 +1995,6 @@ static int _FMODExt_func_FMOD_Studio_System_LoadBankMemory(lua_State *L) {
 
     FMOD_STUDIO_BANK *bank;
 
-    ensure(ST, FMOD_Studio_System_LoadBankMemory, FMOD_RESULT, FMOD_STUDIO_SYSTEM *system, const char *buffer, int length, FMOD_STUDIO_LOAD_MEMORY_MODE mode, FMOD_STUDIO_LOAD_BANK_FLAGS flags, FMOD_STUDIO_BANK **bank);
     errCheck(FMOD_Studio_System_LoadBankMemory(system, buffer, (int)length, FMOD_STUDIO_LOAD_MEMORY, flags, &bank));
 
     FMODExt_push_ptr_FMOD_STUDIO_BANK(L, bank);
@@ -2012,7 +2011,6 @@ static int _FMODExt_func_FMOD_Studio_System_SetListenerAttributes(lua_State *L) 
     if (hasAttenuationPosition) {
         attenuationposition = FMODExt_check_FMOD_VECTOR(L, 4);
     }
-    ensure(ST, FMOD_Studio_System_SetListenerAttributes, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, int, const FMOD_3D_ATTRIBUTES*, const FMOD_VECTOR*);
     errCheck(FMOD_Studio_System_SetListenerAttributes(system, index, attributes, hasAttenuationPosition ? &attenuationposition : NULL));
     return 0;
 }
@@ -2021,7 +2019,6 @@ static int _FMODExt_func_FMOD_Studio_System_SetListenerAttributes(lua_State *L) 
 static int _FMODExt_func_FMOD_Studio_EventInstance_Set3DAttributes(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_3D_ATTRIBUTES* attributes = FMODExt_check_ptr_FMOD_3D_ATTRIBUTES(L, 2);
-    ensure(ST, FMOD_Studio_EventInstance_Set3DAttributes, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_3D_ATTRIBUTES*);
     errCheck(FMOD_Studio_EventInstance_Set3DAttributes(eventinstance, attributes));
     return 0;
 }
@@ -2039,7 +2036,6 @@ static int _FMODExt_func_FMOD_DSP_GetParameterFloat(lua_State *L) {
     int index = FMODExt_check_int(L, 2);
     float value;
     char valuestr[FMOD_DSP_GETPARAM_VALUESTR_LENGTH];
-    ensure(LL, FMOD_DSP_GetParameterFloat, FMOD_RESULT, FMOD_DSP*, int, float*, char*, int);
     errCheck(FMOD_DSP_GetParameterFloat(dsp, index, &value, valuestr, FMOD_DSP_GETPARAM_VALUESTR_LENGTH));
     FMODExt_push_float(L, value);
     FMODExt_push_ptr_char(L, valuestr);
@@ -2052,7 +2048,6 @@ static int _FMODExt_func_FMOD_DSP_GetParameterInt(lua_State *L) {
     int index = FMODExt_check_int(L, 2);
     int value;
     char valuestr[FMOD_DSP_GETPARAM_VALUESTR_LENGTH];
-    ensure(LL, FMOD_DSP_GetParameterInt, FMOD_RESULT, FMOD_DSP*, int, int*, char*, int);
     errCheck(FMOD_DSP_GetParameterInt(dsp, index, &value, valuestr, FMOD_DSP_GETPARAM_VALUESTR_LENGTH));
     FMODExt_push_int(L, value);
     FMODExt_push_ptr_char(L, valuestr);
@@ -2066,7 +2061,6 @@ static int _FMODExt_func_FMOD_DSP_GetParameterBool(lua_State *L) {
     int index = FMODExt_check_int(L, 2);
     FMOD_BOOL value;
     char valuestr[FMOD_DSP_GETPARAM_VALUESTR_LENGTH];
-    ensure(LL, FMOD_DSP_GetParameterBool, FMOD_RESULT, FMOD_DSP*, int, FMOD_BOOL*, char*, int);
     errCheck(FMOD_DSP_GetParameterBool(dsp, index, &value, valuestr, FMOD_DSP_GETPARAM_VALUESTR_LENGTH));
     FMODExt_push_FMOD_BOOL(L, value);
     FMODExt_push_ptr_char(L, valuestr);
@@ -2082,7 +2076,6 @@ static int _FMODExt_func_FMOD_System_GetDriverInfo(lua_State *L) {
     int systemrate;
     FMOD_SPEAKERMODE speakermode;
     int speakermodechannels;
-    ensure(LL, FMOD_System_GetDriverInfo, FMOD_RESULT, FMOD_SYSTEM*, int, char*, int, FMOD_GUID*, int*, FMOD_SPEAKERMODE*, int*);
     errCheck(FMOD_System_GetDriverInfo(system, id, name, 256, guid, &systemrate, &speakermode, &speakermodechannels));
     lua_pushstring(L, name);
     lua_pushvalue(L, -2);
@@ -2099,7 +2092,6 @@ static int _FMODExt_func_FMOD_System_GetPluginInfo(lua_State *L) {
     FMOD_PLUGINTYPE plugintype;
     char name[256];
     unsigned int version;
-    ensure(LL, FMOD_System_GetPluginInfo, FMOD_RESULT, FMOD_SYSTEM*, unsigned int, FMOD_PLUGINTYPE*, char*, int, unsigned int*);
     errCheck(FMOD_System_GetPluginInfo(system, handle, &plugintype, name, 256, &version));
     FMODExt_push_FMOD_PLUGINTYPE(L, plugintype);
     lua_pushstring(L, name);
@@ -2117,7 +2109,6 @@ static int _FMODExt_func_FMOD_System_GetRecordDriverInfo(lua_State *L) {
     FMOD_SPEAKERMODE speakermode;
     int speakermodechannels;
     unsigned int state;
-    ensure(LL, FMOD_System_GetRecordDriverInfo, FMOD_RESULT, FMOD_SYSTEM*, int, char*, int, FMOD_GUID*, int*, FMOD_SPEAKERMODE*, int*, unsigned int*);
     errCheck(FMOD_System_GetRecordDriverInfo(system, id, name, 256, guid, &systemrate, &speakermode, &speakermodechannels, &state));
     lua_pushstring(L, name);
     lua_pushvalue(L, -2);
@@ -2131,7 +2122,6 @@ static int _FMODExt_func_FMOD_System_GetRecordDriverInfo(lua_State *L) {
 #define nameGetter(fname, type1, size) static int CONCAT(_FMODExt_func_, fname)(lua_State *L) { \
     type1* arg1 = CONCAT(FMODExt_check_ptr_, type1)(L, 1); \
     char name[size]; \
-    ensure(LL, fname, FMOD_RESULT, type1*, char*, int); \
     errCheck(fname(arg1, name, size)); \
     lua_pushstring(L, name); \
     return 1; \
@@ -2150,7 +2140,6 @@ static int _FMODExt_func_FMOD_Sound_GetSyncPointInfo(lua_State *L) {
     char name[256];
     unsigned int offset;
     unsigned int offsettype = FMODExt_check_unsigned_int(L, 3);
-    ensure(LL, FMOD_Sound_GetSyncPointInfo, FMOD_RESULT, FMOD_SOUND*, FMOD_SYNCPOINT*, char*, int, unsigned int*, unsigned int);
     errCheck(FMOD_Sound_GetSyncPointInfo(sound, point, name, 256, &offset, offsettype));
     lua_pushstring(L, name);
     FMODExt_push_unsigned_int(L, offset);
@@ -2171,7 +2160,6 @@ static int _FMODExt_func_FMOD_DSP_GetInfo(lua_State *L) {
     int channels;
     int configwidth;
     int configheight;
-    ensure(LL, FMOD_DSP_GetInfo, FMOD_RESULT, FMOD_DSP*, char*, unsigned int*, int*, int*, int*);
     errCheck(FMOD_DSP_GetInfo(dsp, name, &version, &channels, &configwidth, &configheight));
     lua_pushstring(L, name);
     FMODExt_push_unsigned_int(L, version);
@@ -2186,7 +2174,6 @@ static int _FMODExt_func_FMOD_Studio_System_LookupPath(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const FMOD_GUID* id = FMODExt_check_ptr_FMOD_GUID(L, 2);
     int retrieved;
-    ensure(ST, FMOD_Studio_System_LookupPath, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const FMOD_GUID*, char*, int, int*);
     errCheckBegin(FMOD_Studio_System_LookupPath(system, id, NULL, 0, &retrieved));
     errCheckEnd;
     char *path = (char*)malloc(retrieved);
@@ -2201,7 +2188,6 @@ static int _FMODExt_func_FMOD_Studio_System_LookupPath(lua_State *L) {
 #define pathGetter(fname, type1) static int CONCAT(_FMODExt_func_, fname)(lua_State *L) { \
     type1* arg1 = CONCAT(FMODExt_check_ptr_, type1)(L, 1); \
     int retrieved; \
-    ensure(ST, fname, FMOD_RESULT, type1*, char*, int, int*); \
     errCheckBegin(fname(arg1, NULL, 0, &retrieved)); \
     errCheckEnd; \
     char *path = (char*)malloc(retrieved); \
@@ -2231,7 +2217,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_GetStringInfo(lua_State *L) {
     int index = FMODExt_check_int(L, 2);
     FMOD_GUID* id = FMODExt_push_ptr_FMOD_GUID(L, NULL);
     int retrieved;
-    ensure(ST, FMOD_Studio_Bank_GetStringInfo, FMOD_RESULT, FMOD_STUDIO_BANK*, int, FMOD_GUID*, char*, int, int*);
     errCheckBegin(FMOD_Studio_Bank_GetStringInfo(bank, index, id, NULL, 0, &retrieved));
     errCheckEnd;
     char *path = (char*)malloc(retrieved);
@@ -2248,7 +2233,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_GetCommandString(lua_State *L
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     int commandindex = FMODExt_check_int(L, 2);
     char buffer[512];
-    ensure(ST, FMOD_Studio_CommandReplay_GetCommandString, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, int, char*, int);
     errCheck(FMOD_Studio_CommandReplay_GetCommandString(replay, commandindex, buffer, 512));
     lua_pushstring(L, buffer);
     return 1;
@@ -2267,7 +2251,6 @@ static int _FMODExt_func_FMOD_Memory_GetStats(lua_State *L) {
     int currentalloced;
     int maxalloced;
     FMOD_BOOL blocking = FMODExt_check_FMOD_BOOL(L, 1);
-    ensure(LL, FMOD_Memory_GetStats, FMOD_RESULT, int*, int*, FMOD_BOOL);
     errCheck(FMOD_Memory_GetStats(&currentalloced, &maxalloced, blocking));
     FMODExt_push_int(L, currentalloced);
     FMODExt_push_int(L, maxalloced);
@@ -2284,7 +2267,6 @@ static int _FMODExt_func_FMOD_Memory_GetStats(lua_State *L) {
 #define FMODExt_func_FMOD_File_SetDiskBusy _FMODExt_func_FMOD_File_SetDiskBusy
 static int _FMODExt_func_FMOD_File_SetDiskBusy(lua_State *L) {
     int busy = FMODExt_check_int(L, 1);
-    ensure(LL, FMOD_File_SetDiskBusy, FMOD_RESULT, int);
     errCheck(FMOD_File_SetDiskBusy(busy));
     return 0;
 }
@@ -2296,7 +2278,6 @@ static int _FMODExt_func_FMOD_File_SetDiskBusy(lua_State *L) {
 #define FMODExt_func_FMOD_File_GetDiskBusy _FMODExt_func_FMOD_File_GetDiskBusy
 static int _FMODExt_func_FMOD_File_GetDiskBusy(lua_State *L) {
     int busy;
-    ensure(LL, FMOD_File_GetDiskBusy, FMOD_RESULT, int*);
     errCheck(FMOD_File_GetDiskBusy(&busy));
     FMODExt_push_int(L, busy);
     return 1;
@@ -2312,7 +2293,6 @@ static int _FMODExt_func_FMOD_Thread_SetAttributes(lua_State *L) {
     FMOD_THREAD_AFFINITY affinity = FMODExt_check_long_long(L, 2);
     FMOD_THREAD_PRIORITY priority = FMODExt_check_int(L, 3);
     FMOD_THREAD_STACK_SIZE stacksize = FMODExt_check_unsigned_int(L, 4);
-    ensure(LL, FMOD_Thread_SetAttributes, FMOD_RESULT, FMOD_THREAD_TYPE, FMOD_THREAD_AFFINITY, FMOD_THREAD_PRIORITY, FMOD_THREAD_STACK_SIZE);
     errCheck(FMOD_Thread_SetAttributes(type, affinity, priority, stacksize));
     return 0;
 }
@@ -2325,7 +2305,6 @@ static int _FMODExt_func_FMOD_Thread_SetAttributes(lua_State *L) {
 static int _FMODExt_func_FMOD_System_Create(lua_State *L) {
     FMOD_SYSTEM* system;
     unsigned int headerversion = FMODExt_check_unsigned_int(L, 1);
-    ensure(LL, FMOD_System_Create, FMOD_RESULT, FMOD_SYSTEM**, unsigned int);
     errCheck(FMOD_System_Create(&system, headerversion));
     FMODExt_push_ptr_FMOD_SYSTEM(L, system);
     return 1;
@@ -2338,7 +2317,6 @@ static int _FMODExt_func_FMOD_System_Create(lua_State *L) {
 #define FMODExt_func_FMOD_System_Release _FMODExt_func_FMOD_System_Release
 static int _FMODExt_func_FMOD_System_Release(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
-    ensure(LL, FMOD_System_Release, FMOD_RESULT, FMOD_SYSTEM*);
     errCheck(FMOD_System_Release(system));
     return 0;
 }
@@ -2351,7 +2329,6 @@ static int _FMODExt_func_FMOD_System_Release(lua_State *L) {
 static int _FMODExt_func_FMOD_System_SetOutput(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_OUTPUTTYPE output = FMODExt_check_FMOD_OUTPUTTYPE(L, 2);
-    ensure(LL, FMOD_System_SetOutput, FMOD_RESULT, FMOD_SYSTEM*, FMOD_OUTPUTTYPE);
     errCheck(FMOD_System_SetOutput(system, output));
     return 0;
 }
@@ -2364,7 +2341,6 @@ static int _FMODExt_func_FMOD_System_SetOutput(lua_State *L) {
 static int _FMODExt_func_FMOD_System_GetOutput(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_OUTPUTTYPE output;
-    ensure(LL, FMOD_System_GetOutput, FMOD_RESULT, FMOD_SYSTEM*, FMOD_OUTPUTTYPE*);
     errCheck(FMOD_System_GetOutput(system, &output));
     FMODExt_push_FMOD_OUTPUTTYPE(L, output);
     return 1;
@@ -2378,7 +2354,6 @@ static int _FMODExt_func_FMOD_System_GetOutput(lua_State *L) {
 static int _FMODExt_func_FMOD_System_GetNumDrivers(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int numdrivers;
-    ensure(LL, FMOD_System_GetNumDrivers, FMOD_RESULT, FMOD_SYSTEM*, int*);
     errCheck(FMOD_System_GetNumDrivers(system, &numdrivers));
     FMODExt_push_int(L, numdrivers);
     return 1;
@@ -2395,7 +2370,6 @@ static int _FMODExt_func_FMOD_System_GetNumDrivers(lua_State *L) {
 static int _FMODExt_func_FMOD_System_SetDriver(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int driver = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_System_SetDriver, FMOD_RESULT, FMOD_SYSTEM*, int);
     errCheck(FMOD_System_SetDriver(system, driver));
     return 0;
 }
@@ -2408,7 +2382,6 @@ static int _FMODExt_func_FMOD_System_SetDriver(lua_State *L) {
 static int _FMODExt_func_FMOD_System_GetDriver(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int driver;
-    ensure(LL, FMOD_System_GetDriver, FMOD_RESULT, FMOD_SYSTEM*, int*);
     errCheck(FMOD_System_GetDriver(system, &driver));
     FMODExt_push_int(L, driver);
     return 1;
@@ -2422,7 +2395,6 @@ static int _FMODExt_func_FMOD_System_GetDriver(lua_State *L) {
 static int _FMODExt_func_FMOD_System_SetSoftwareChannels(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int numsoftwarechannels = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_System_SetSoftwareChannels, FMOD_RESULT, FMOD_SYSTEM*, int);
     errCheck(FMOD_System_SetSoftwareChannels(system, numsoftwarechannels));
     return 0;
 }
@@ -2435,7 +2407,6 @@ static int _FMODExt_func_FMOD_System_SetSoftwareChannels(lua_State *L) {
 static int _FMODExt_func_FMOD_System_GetSoftwareChannels(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int numsoftwarechannels;
-    ensure(LL, FMOD_System_GetSoftwareChannels, FMOD_RESULT, FMOD_SYSTEM*, int*);
     errCheck(FMOD_System_GetSoftwareChannels(system, &numsoftwarechannels));
     FMODExt_push_int(L, numsoftwarechannels);
     return 1;
@@ -2451,7 +2422,6 @@ static int _FMODExt_func_FMOD_System_SetSoftwareFormat(lua_State *L) {
     int samplerate = FMODExt_check_int(L, 2);
     FMOD_SPEAKERMODE speakermode = FMODExt_check_FMOD_SPEAKERMODE(L, 3);
     int numrawspeakers = FMODExt_check_int(L, 4);
-    ensure(LL, FMOD_System_SetSoftwareFormat, FMOD_RESULT, FMOD_SYSTEM*, int, FMOD_SPEAKERMODE, int);
     errCheck(FMOD_System_SetSoftwareFormat(system, samplerate, speakermode, numrawspeakers));
     return 0;
 }
@@ -2466,7 +2436,6 @@ static int _FMODExt_func_FMOD_System_GetSoftwareFormat(lua_State *L) {
     int samplerate;
     FMOD_SPEAKERMODE speakermode;
     int numrawspeakers;
-    ensure(LL, FMOD_System_GetSoftwareFormat, FMOD_RESULT, FMOD_SYSTEM*, int*, FMOD_SPEAKERMODE*, int*);
     errCheck(FMOD_System_GetSoftwareFormat(system, &samplerate, &speakermode, &numrawspeakers));
     FMODExt_push_int(L, samplerate);
     FMODExt_push_FMOD_SPEAKERMODE(L, speakermode);
@@ -2483,7 +2452,6 @@ static int _FMODExt_func_FMOD_System_SetDSPBufferSize(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     unsigned int bufferlength = FMODExt_check_unsigned_int(L, 2);
     int numbuffers = FMODExt_check_int(L, 3);
-    ensure(LL, FMOD_System_SetDSPBufferSize, FMOD_RESULT, FMOD_SYSTEM*, unsigned int, int);
     errCheck(FMOD_System_SetDSPBufferSize(system, bufferlength, numbuffers));
     return 0;
 }
@@ -2497,7 +2465,6 @@ static int _FMODExt_func_FMOD_System_GetDSPBufferSize(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     unsigned int bufferlength;
     int numbuffers;
-    ensure(LL, FMOD_System_GetDSPBufferSize, FMOD_RESULT, FMOD_SYSTEM*, unsigned int*, int*);
     errCheck(FMOD_System_GetDSPBufferSize(system, &bufferlength, &numbuffers));
     FMODExt_push_unsigned_int(L, bufferlength);
     FMODExt_push_int(L, numbuffers);
@@ -2518,7 +2485,6 @@ static int _FMODExt_func_FMOD_System_GetDSPBufferSize(lua_State *L) {
 static int _FMODExt_func_FMOD_System_SetAdvancedSettings(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_ADVANCEDSETTINGS* settings = FMODExt_push_ptr_FMOD_ADVANCEDSETTINGS(L, NULL);
-    ensure(LL, FMOD_System_SetAdvancedSettings, FMOD_RESULT, FMOD_SYSTEM*, FMOD_ADVANCEDSETTINGS*);
     errCheck(FMOD_System_SetAdvancedSettings(system, settings));
     lua_pushvalue(L, -1);
     return 1;
@@ -2532,7 +2498,6 @@ static int _FMODExt_func_FMOD_System_SetAdvancedSettings(lua_State *L) {
 static int _FMODExt_func_FMOD_System_GetAdvancedSettings(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_ADVANCEDSETTINGS* settings = FMODExt_push_ptr_FMOD_ADVANCEDSETTINGS(L, NULL);
-    ensure(LL, FMOD_System_GetAdvancedSettings, FMOD_RESULT, FMOD_SYSTEM*, FMOD_ADVANCEDSETTINGS*);
     errCheck(FMOD_System_GetAdvancedSettings(system, settings));
     lua_pushvalue(L, -1);
     return 1;
@@ -2549,7 +2514,6 @@ static int _FMODExt_func_FMOD_System_GetAdvancedSettings(lua_State *L) {
 static int _FMODExt_func_FMOD_System_SetPluginPath(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     const char* path = FMODExt_check_ptr_char(L, 2);
-    ensure(LL, FMOD_System_SetPluginPath, FMOD_RESULT, FMOD_SYSTEM*, const char*);
     errCheck(FMOD_System_SetPluginPath(system, path));
     return 0;
 }
@@ -2564,7 +2528,6 @@ static int _FMODExt_func_FMOD_System_LoadPlugin(lua_State *L) {
     const char* filename = FMODExt_check_ptr_char(L, 2);
     unsigned int handle;
     unsigned int priority = FMODExt_check_unsigned_int(L, 3);
-    ensure(LL, FMOD_System_LoadPlugin, FMOD_RESULT, FMOD_SYSTEM*, const char*, unsigned int*, unsigned int);
     errCheck(FMOD_System_LoadPlugin(system, filename, &handle, priority));
     FMODExt_push_unsigned_int(L, handle);
     return 1;
@@ -2578,7 +2541,6 @@ static int _FMODExt_func_FMOD_System_LoadPlugin(lua_State *L) {
 static int _FMODExt_func_FMOD_System_UnloadPlugin(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     unsigned int handle = FMODExt_check_unsigned_int(L, 2);
-    ensure(LL, FMOD_System_UnloadPlugin, FMOD_RESULT, FMOD_SYSTEM*, unsigned int);
     errCheck(FMOD_System_UnloadPlugin(system, handle));
     return 0;
 }
@@ -2592,7 +2554,6 @@ static int _FMODExt_func_FMOD_System_GetNumNestedPlugins(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     unsigned int handle = FMODExt_check_unsigned_int(L, 2);
     int count;
-    ensure(LL, FMOD_System_GetNumNestedPlugins, FMOD_RESULT, FMOD_SYSTEM*, unsigned int, int*);
     errCheck(FMOD_System_GetNumNestedPlugins(system, handle, &count));
     FMODExt_push_int(L, count);
     return 1;
@@ -2608,7 +2569,6 @@ static int _FMODExt_func_FMOD_System_GetNestedPlugin(lua_State *L) {
     unsigned int handle = FMODExt_check_unsigned_int(L, 2);
     int index = FMODExt_check_int(L, 3);
     unsigned int nestedhandle;
-    ensure(LL, FMOD_System_GetNestedPlugin, FMOD_RESULT, FMOD_SYSTEM*, unsigned int, int, unsigned int*);
     errCheck(FMOD_System_GetNestedPlugin(system, handle, index, &nestedhandle));
     FMODExt_push_unsigned_int(L, nestedhandle);
     return 1;
@@ -2623,7 +2583,6 @@ static int _FMODExt_func_FMOD_System_GetNumPlugins(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_PLUGINTYPE plugintype = FMODExt_check_FMOD_PLUGINTYPE(L, 2);
     int numplugins;
-    ensure(LL, FMOD_System_GetNumPlugins, FMOD_RESULT, FMOD_SYSTEM*, FMOD_PLUGINTYPE, int*);
     errCheck(FMOD_System_GetNumPlugins(system, plugintype, &numplugins));
     FMODExt_push_int(L, numplugins);
     return 1;
@@ -2639,7 +2598,6 @@ static int _FMODExt_func_FMOD_System_GetPluginHandle(lua_State *L) {
     FMOD_PLUGINTYPE plugintype = FMODExt_check_FMOD_PLUGINTYPE(L, 2);
     int index = FMODExt_check_int(L, 3);
     unsigned int handle;
-    ensure(LL, FMOD_System_GetPluginHandle, FMOD_RESULT, FMOD_SYSTEM*, FMOD_PLUGINTYPE, int, unsigned int*);
     errCheck(FMOD_System_GetPluginHandle(system, plugintype, index, &handle));
     FMODExt_push_unsigned_int(L, handle);
     return 1;
@@ -2656,7 +2614,6 @@ static int _FMODExt_func_FMOD_System_GetPluginHandle(lua_State *L) {
 static int _FMODExt_func_FMOD_System_SetOutputByPlugin(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     unsigned int handle = FMODExt_check_unsigned_int(L, 2);
-    ensure(LL, FMOD_System_SetOutputByPlugin, FMOD_RESULT, FMOD_SYSTEM*, unsigned int);
     errCheck(FMOD_System_SetOutputByPlugin(system, handle));
     return 0;
 }
@@ -2669,7 +2626,6 @@ static int _FMODExt_func_FMOD_System_SetOutputByPlugin(lua_State *L) {
 static int _FMODExt_func_FMOD_System_GetOutputByPlugin(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     unsigned int handle;
-    ensure(LL, FMOD_System_GetOutputByPlugin, FMOD_RESULT, FMOD_SYSTEM*, unsigned int*);
     errCheck(FMOD_System_GetOutputByPlugin(system, &handle));
     FMODExt_push_unsigned_int(L, handle);
     return 1;
@@ -2684,7 +2640,6 @@ static int _FMODExt_func_FMOD_System_CreateDSPByPlugin(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     unsigned int handle = FMODExt_check_unsigned_int(L, 2);
     FMOD_DSP* dsp;
-    ensure(LL, FMOD_System_CreateDSPByPlugin, FMOD_RESULT, FMOD_SYSTEM*, unsigned int, FMOD_DSP**);
     errCheck(FMOD_System_CreateDSPByPlugin(system, handle, &dsp));
     FMODExt_push_ptr_FMOD_DSP(L, dsp);
     return 1;
@@ -2699,7 +2654,6 @@ static int _FMODExt_func_FMOD_System_GetDSPInfoByPlugin(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     unsigned int handle = FMODExt_check_unsigned_int(L, 2);
     const FMOD_DSP_DESCRIPTION* description;
-    ensure(LL, FMOD_System_GetDSPInfoByPlugin, FMOD_RESULT, FMOD_SYSTEM*, unsigned int, const FMOD_DSP_DESCRIPTION**);
     errCheck(FMOD_System_GetDSPInfoByPlugin(system, handle, &description));
     FMODExt_push_ptr_FMOD_DSP_DESCRIPTION(L, description);
     return 1;
@@ -2715,7 +2669,6 @@ static int _FMODExt_func_FMOD_System_RegisterCodec(lua_State *L) {
     FMOD_CODEC_DESCRIPTION* description = FMODExt_push_ptr_FMOD_CODEC_DESCRIPTION(L, NULL);
     unsigned int handle;
     unsigned int priority = FMODExt_check_unsigned_int(L, 2);
-    ensure(LL, FMOD_System_RegisterCodec, FMOD_RESULT, FMOD_SYSTEM*, FMOD_CODEC_DESCRIPTION*, unsigned int*, unsigned int);
     errCheck(FMOD_System_RegisterCodec(system, description, &handle, priority));
     lua_pushvalue(L, -1);
     FMODExt_push_unsigned_int(L, handle);
@@ -2731,7 +2684,6 @@ static int _FMODExt_func_FMOD_System_RegisterDSP(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     const FMOD_DSP_DESCRIPTION* description = FMODExt_check_ptr_FMOD_DSP_DESCRIPTION(L, 2);
     unsigned int handle;
-    ensure(LL, FMOD_System_RegisterDSP, FMOD_RESULT, FMOD_SYSTEM*, const FMOD_DSP_DESCRIPTION*, unsigned int*);
     errCheck(FMOD_System_RegisterDSP(system, description, &handle));
     FMODExt_push_unsigned_int(L, handle);
     return 1;
@@ -2746,7 +2698,6 @@ static int _FMODExt_func_FMOD_System_RegisterOutput(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     const FMOD_OUTPUT_DESCRIPTION* description = FMODExt_check_ptr_FMOD_OUTPUT_DESCRIPTION(L, 2);
     unsigned int handle;
-    ensure(LL, FMOD_System_RegisterOutput, FMOD_RESULT, FMOD_SYSTEM*, const FMOD_OUTPUT_DESCRIPTION*, unsigned int*);
     errCheck(FMOD_System_RegisterOutput(system, description, &handle));
     FMODExt_push_unsigned_int(L, handle);
     return 1;
@@ -2762,7 +2713,6 @@ static int _FMODExt_func_FMOD_System_RegisterOutput(lua_State *L) {
 #define FMODExt_func_FMOD_System_Close _FMODExt_func_FMOD_System_Close
 static int _FMODExt_func_FMOD_System_Close(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
-    ensure(LL, FMOD_System_Close, FMOD_RESULT, FMOD_SYSTEM*);
     errCheck(FMOD_System_Close(system));
     return 0;
 }
@@ -2774,7 +2724,6 @@ static int _FMODExt_func_FMOD_System_Close(lua_State *L) {
 #define FMODExt_func_FMOD_System_Update _FMODExt_func_FMOD_System_Update
 static int _FMODExt_func_FMOD_System_Update(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
-    ensure(LL, FMOD_System_Update, FMOD_RESULT, FMOD_SYSTEM*);
     errCheck(FMOD_System_Update(system));
     return 0;
 }
@@ -2790,7 +2739,6 @@ static int _FMODExt_func_FMOD_System_SetSpeakerPosition(lua_State *L) {
     float x = FMODExt_check_float(L, 3);
     float y = FMODExt_check_float(L, 4);
     FMOD_BOOL active = FMODExt_check_FMOD_BOOL(L, 5);
-    ensure(LL, FMOD_System_SetSpeakerPosition, FMOD_RESULT, FMOD_SYSTEM*, FMOD_SPEAKER, float, float, FMOD_BOOL);
     errCheck(FMOD_System_SetSpeakerPosition(system, speaker, x, y, active));
     return 0;
 }
@@ -2806,7 +2754,6 @@ static int _FMODExt_func_FMOD_System_GetSpeakerPosition(lua_State *L) {
     float x;
     float y;
     FMOD_BOOL active;
-    ensure(LL, FMOD_System_GetSpeakerPosition, FMOD_RESULT, FMOD_SYSTEM*, FMOD_SPEAKER, float*, float*, FMOD_BOOL*);
     errCheck(FMOD_System_GetSpeakerPosition(system, speaker, &x, &y, &active));
     FMODExt_push_float(L, x);
     FMODExt_push_float(L, y);
@@ -2823,7 +2770,6 @@ static int _FMODExt_func_FMOD_System_SetStreamBufferSize(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     unsigned int filebuffersize = FMODExt_check_unsigned_int(L, 2);
     FMOD_TIMEUNIT filebuffersizetype = FMODExt_check_unsigned_int(L, 3);
-    ensure(LL, FMOD_System_SetStreamBufferSize, FMOD_RESULT, FMOD_SYSTEM*, unsigned int, FMOD_TIMEUNIT);
     errCheck(FMOD_System_SetStreamBufferSize(system, filebuffersize, filebuffersizetype));
     return 0;
 }
@@ -2837,7 +2783,6 @@ static int _FMODExt_func_FMOD_System_GetStreamBufferSize(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     unsigned int filebuffersize;
     FMOD_TIMEUNIT filebuffersizetype;
-    ensure(LL, FMOD_System_GetStreamBufferSize, FMOD_RESULT, FMOD_SYSTEM*, unsigned int*, FMOD_TIMEUNIT*);
     errCheck(FMOD_System_GetStreamBufferSize(system, &filebuffersize, &filebuffersizetype));
     FMODExt_push_unsigned_int(L, filebuffersize);
     FMODExt_push_unsigned_int(L, filebuffersizetype);
@@ -2854,7 +2799,6 @@ static int _FMODExt_func_FMOD_System_Set3DSettings(lua_State *L) {
     float dopplerscale = FMODExt_check_float(L, 2);
     float distancefactor = FMODExt_check_float(L, 3);
     float rolloffscale = FMODExt_check_float(L, 4);
-    ensure(LL, FMOD_System_Set3DSettings, FMOD_RESULT, FMOD_SYSTEM*, float, float, float);
     errCheck(FMOD_System_Set3DSettings(system, dopplerscale, distancefactor, rolloffscale));
     return 0;
 }
@@ -2869,7 +2813,6 @@ static int _FMODExt_func_FMOD_System_Get3DSettings(lua_State *L) {
     float dopplerscale;
     float distancefactor;
     float rolloffscale;
-    ensure(LL, FMOD_System_Get3DSettings, FMOD_RESULT, FMOD_SYSTEM*, float*, float*, float*);
     errCheck(FMOD_System_Get3DSettings(system, &dopplerscale, &distancefactor, &rolloffscale));
     FMODExt_push_float(L, dopplerscale);
     FMODExt_push_float(L, distancefactor);
@@ -2885,7 +2828,6 @@ static int _FMODExt_func_FMOD_System_Get3DSettings(lua_State *L) {
 static int _FMODExt_func_FMOD_System_Set3DNumListeners(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int numlisteners = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_System_Set3DNumListeners, FMOD_RESULT, FMOD_SYSTEM*, int);
     errCheck(FMOD_System_Set3DNumListeners(system, numlisteners));
     return 0;
 }
@@ -2898,7 +2840,6 @@ static int _FMODExt_func_FMOD_System_Set3DNumListeners(lua_State *L) {
 static int _FMODExt_func_FMOD_System_Get3DNumListeners(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int numlisteners;
-    ensure(LL, FMOD_System_Get3DNumListeners, FMOD_RESULT, FMOD_SYSTEM*, int*);
     errCheck(FMOD_System_Get3DNumListeners(system, &numlisteners));
     FMODExt_push_int(L, numlisteners);
     return 1;
@@ -2916,7 +2857,6 @@ static int _FMODExt_func_FMOD_System_Set3DListenerAttributes(lua_State *L) {
     const FMOD_VECTOR vel = FMODExt_check_FMOD_VECTOR(L, 4);
     const FMOD_VECTOR forward = FMODExt_check_FMOD_VECTOR(L, 5);
     const FMOD_VECTOR up = FMODExt_check_FMOD_VECTOR(L, 6);
-    ensure(LL, FMOD_System_Set3DListenerAttributes, FMOD_RESULT, FMOD_SYSTEM*, int, const FMOD_VECTOR*, const FMOD_VECTOR*, const FMOD_VECTOR*, const FMOD_VECTOR*);
     errCheck(FMOD_System_Set3DListenerAttributes(system, listener, &pos, &vel, &forward, &up));
     return 0;
 }
@@ -2933,7 +2873,6 @@ static int _FMODExt_func_FMOD_System_Get3DListenerAttributes(lua_State *L) {
     FMOD_VECTOR vel;
     FMOD_VECTOR forward;
     FMOD_VECTOR up;
-    ensure(LL, FMOD_System_Get3DListenerAttributes, FMOD_RESULT, FMOD_SYSTEM*, int, FMOD_VECTOR*, FMOD_VECTOR*, FMOD_VECTOR*, FMOD_VECTOR*);
     errCheck(FMOD_System_Get3DListenerAttributes(system, listener, &pos, &vel, &forward, &up));
     FMODExt_push_FMOD_VECTOR(L, pos);
     FMODExt_push_FMOD_VECTOR(L, vel);
@@ -2952,7 +2891,6 @@ static int _FMODExt_func_FMOD_System_Get3DListenerAttributes(lua_State *L) {
 #define FMODExt_func_FMOD_System_MixerSuspend _FMODExt_func_FMOD_System_MixerSuspend
 static int _FMODExt_func_FMOD_System_MixerSuspend(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
-    ensure(LL, FMOD_System_MixerSuspend, FMOD_RESULT, FMOD_SYSTEM*);
     errCheck(FMOD_System_MixerSuspend(system));
     return 0;
 }
@@ -2964,7 +2902,6 @@ static int _FMODExt_func_FMOD_System_MixerSuspend(lua_State *L) {
 #define FMODExt_func_FMOD_System_MixerResume _FMODExt_func_FMOD_System_MixerResume
 static int _FMODExt_func_FMOD_System_MixerResume(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
-    ensure(LL, FMOD_System_MixerResume, FMOD_RESULT, FMOD_SYSTEM*);
     errCheck(FMOD_System_MixerResume(system));
     return 0;
 }
@@ -2980,7 +2917,6 @@ static int _FMODExt_func_FMOD_System_GetDefaultMixMatrix(lua_State *L) {
     FMOD_SPEAKERMODE targetspeakermode = FMODExt_check_FMOD_SPEAKERMODE(L, 3);
     float matrix;
     int matrixhop = FMODExt_check_int(L, 4);
-    ensure(LL, FMOD_System_GetDefaultMixMatrix, FMOD_RESULT, FMOD_SYSTEM*, FMOD_SPEAKERMODE, FMOD_SPEAKERMODE, float*, int);
     errCheck(FMOD_System_GetDefaultMixMatrix(system, sourcespeakermode, targetspeakermode, &matrix, matrixhop));
     FMODExt_push_float(L, matrix);
     return 1;
@@ -2995,7 +2931,6 @@ static int _FMODExt_func_FMOD_System_GetSpeakerModeChannels(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_SPEAKERMODE mode = FMODExt_check_FMOD_SPEAKERMODE(L, 2);
     int channels;
-    ensure(LL, FMOD_System_GetSpeakerModeChannels, FMOD_RESULT, FMOD_SYSTEM*, FMOD_SPEAKERMODE, int*);
     errCheck(FMOD_System_GetSpeakerModeChannels(system, mode, &channels));
     FMODExt_push_int(L, channels);
     return 1;
@@ -3010,7 +2945,6 @@ static int _FMODExt_func_FMOD_System_GetVersion(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     unsigned int version;
     unsigned int buildnumber;
-    ensure(LL, FMOD_System_GetVersion, FMOD_RESULT, FMOD_SYSTEM*, unsigned int*, unsigned int*);
     errCheck(FMOD_System_GetVersion(system, &version, &buildnumber));
     FMODExt_push_unsigned_int(L, version);
     FMODExt_push_unsigned_int(L, buildnumber);
@@ -3029,7 +2963,6 @@ static int _FMODExt_func_FMOD_System_GetChannelsPlaying(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int channels;
     int realchannels;
-    ensure(LL, FMOD_System_GetChannelsPlaying, FMOD_RESULT, FMOD_SYSTEM*, int*, int*);
     errCheck(FMOD_System_GetChannelsPlaying(system, &channels, &realchannels));
     FMODExt_push_int(L, channels);
     FMODExt_push_int(L, realchannels);
@@ -3044,7 +2977,6 @@ static int _FMODExt_func_FMOD_System_GetChannelsPlaying(lua_State *L) {
 static int _FMODExt_func_FMOD_System_GetCPUUsage(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_CPU_USAGE* usage = FMODExt_push_ptr_FMOD_CPU_USAGE(L, NULL);
-    ensure(LL, FMOD_System_GetCPUUsage, FMOD_RESULT, FMOD_SYSTEM*, FMOD_CPU_USAGE*);
     errCheck(FMOD_System_GetCPUUsage(system, usage));
     lua_pushvalue(L, -1);
     return 1;
@@ -3060,7 +2992,6 @@ static int _FMODExt_func_FMOD_System_GetFileUsage(lua_State *L) {
     long long sampleBytesRead;
     long long streamBytesRead;
     long long otherBytesRead;
-    ensure(LL, FMOD_System_GetFileUsage, FMOD_RESULT, FMOD_SYSTEM*, long long*, long long*, long long*);
     errCheck(FMOD_System_GetFileUsage(system, &sampleBytesRead, &streamBytesRead, &otherBytesRead));
     FMODExt_push_long_long(L, sampleBytesRead);
     FMODExt_push_long_long(L, streamBytesRead);
@@ -3079,7 +3010,6 @@ static int _FMODExt_func_FMOD_System_CreateSound(lua_State *L) {
     FMOD_MODE mode = FMODExt_check_unsigned_int(L, 3);
     FMOD_CREATESOUNDEXINFO* exinfo = optional(L, 4, FMOD_CREATESOUNDEXINFO*, FMODExt_check_ptr_FMOD_CREATESOUNDEXINFO(L, 4));
     FMOD_SOUND* sound;
-    ensure(LL, FMOD_System_CreateSound, FMOD_RESULT, FMOD_SYSTEM*, const char*, FMOD_MODE, FMOD_CREATESOUNDEXINFO*, FMOD_SOUND**);
     errCheck(FMOD_System_CreateSound(system, name_or_data, mode, exinfo, &sound));
     FMODExt_push_ptr_FMOD_SOUND(L, sound);
     return 1;
@@ -3096,7 +3026,6 @@ static int _FMODExt_func_FMOD_System_CreateStream(lua_State *L) {
     FMOD_MODE mode = FMODExt_check_unsigned_int(L, 3);
     FMOD_CREATESOUNDEXINFO* exinfo = optional(L, 4, FMOD_CREATESOUNDEXINFO*, FMODExt_check_ptr_FMOD_CREATESOUNDEXINFO(L, 4));
     FMOD_SOUND* sound;
-    ensure(LL, FMOD_System_CreateStream, FMOD_RESULT, FMOD_SYSTEM*, const char*, FMOD_MODE, FMOD_CREATESOUNDEXINFO*, FMOD_SOUND**);
     errCheck(FMOD_System_CreateStream(system, name_or_data, mode, exinfo, &sound));
     FMODExt_push_ptr_FMOD_SOUND(L, sound);
     return 1;
@@ -3111,7 +3040,6 @@ static int _FMODExt_func_FMOD_System_CreateDSP(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     const FMOD_DSP_DESCRIPTION* description = FMODExt_check_ptr_FMOD_DSP_DESCRIPTION(L, 2);
     FMOD_DSP* dsp;
-    ensure(LL, FMOD_System_CreateDSP, FMOD_RESULT, FMOD_SYSTEM*, const FMOD_DSP_DESCRIPTION*, FMOD_DSP**);
     errCheck(FMOD_System_CreateDSP(system, description, &dsp));
     FMODExt_push_ptr_FMOD_DSP(L, dsp);
     return 1;
@@ -3126,7 +3054,6 @@ static int _FMODExt_func_FMOD_System_CreateDSPByType(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_DSP_TYPE type = FMODExt_check_FMOD_DSP_TYPE(L, 2);
     FMOD_DSP* dsp;
-    ensure(LL, FMOD_System_CreateDSPByType, FMOD_RESULT, FMOD_SYSTEM*, FMOD_DSP_TYPE, FMOD_DSP**);
     errCheck(FMOD_System_CreateDSPByType(system, type, &dsp));
     FMODExt_push_ptr_FMOD_DSP(L, dsp);
     return 1;
@@ -3141,7 +3068,6 @@ static int _FMODExt_func_FMOD_System_CreateDSPConnection(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_DSPCONNECTION_TYPE type = FMODExt_check_FMOD_DSPCONNECTION_TYPE(L, 2);
     FMOD_DSPCONNECTION* connection;
-    ensure(LL, FMOD_System_CreateDSPConnection, FMOD_RESULT, FMOD_SYSTEM*, FMOD_DSPCONNECTION_TYPE, FMOD_DSPCONNECTION**);
     errCheck(FMOD_System_CreateDSPConnection(system, type, &connection));
     FMODExt_push_ptr_FMOD_DSPCONNECTION(L, connection);
     return 1;
@@ -3156,7 +3082,6 @@ static int _FMODExt_func_FMOD_System_CreateChannelGroup(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     const char* name = FMODExt_check_ptr_char(L, 2);
     FMOD_CHANNELGROUP* channelgroup;
-    ensure(LL, FMOD_System_CreateChannelGroup, FMOD_RESULT, FMOD_SYSTEM*, const char*, FMOD_CHANNELGROUP**);
     errCheck(FMOD_System_CreateChannelGroup(system, name, &channelgroup));
     FMODExt_push_ptr_FMOD_CHANNELGROUP(L, channelgroup);
     return 1;
@@ -3171,7 +3096,6 @@ static int _FMODExt_func_FMOD_System_CreateSoundGroup(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     const char* name = FMODExt_check_ptr_char(L, 2);
     FMOD_SOUNDGROUP* soundgroup;
-    ensure(LL, FMOD_System_CreateSoundGroup, FMOD_RESULT, FMOD_SYSTEM*, const char*, FMOD_SOUNDGROUP**);
     errCheck(FMOD_System_CreateSoundGroup(system, name, &soundgroup));
     FMODExt_push_ptr_FMOD_SOUNDGROUP(L, soundgroup);
     return 1;
@@ -3185,7 +3109,6 @@ static int _FMODExt_func_FMOD_System_CreateSoundGroup(lua_State *L) {
 static int _FMODExt_func_FMOD_System_CreateReverb3D(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_REVERB3D* reverb;
-    ensure(LL, FMOD_System_CreateReverb3D, FMOD_RESULT, FMOD_SYSTEM*, FMOD_REVERB3D**);
     errCheck(FMOD_System_CreateReverb3D(system, &reverb));
     FMODExt_push_ptr_FMOD_REVERB3D(L, reverb);
     return 1;
@@ -3202,7 +3125,6 @@ static int _FMODExt_func_FMOD_System_PlaySound(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = optional(L, 3, FMOD_CHANNELGROUP*, FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 3));
     FMOD_BOOL paused = optional(L, 4, FMOD_BOOL, FMODExt_check_FMOD_BOOL(L, 4));
     FMOD_CHANNEL* channel;
-    ensure(LL, FMOD_System_PlaySound, FMOD_RESULT, FMOD_SYSTEM*, FMOD_SOUND*, FMOD_CHANNELGROUP*, FMOD_BOOL, FMOD_CHANNEL**);
     errCheck(FMOD_System_PlaySound(system, sound, channelgroup, paused, &channel));
     FMODExt_push_ptr_FMOD_CHANNEL(L, channel);
     return 1;
@@ -3219,7 +3141,6 @@ static int _FMODExt_func_FMOD_System_PlayDSP(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 3);
     FMOD_BOOL paused = FMODExt_check_FMOD_BOOL(L, 4);
     FMOD_CHANNEL* channel;
-    ensure(LL, FMOD_System_PlayDSP, FMOD_RESULT, FMOD_SYSTEM*, FMOD_DSP*, FMOD_CHANNELGROUP*, FMOD_BOOL, FMOD_CHANNEL**);
     errCheck(FMOD_System_PlayDSP(system, dsp, channelgroup, paused, &channel));
     FMODExt_push_ptr_FMOD_CHANNEL(L, channel);
     return 1;
@@ -3234,7 +3155,6 @@ static int _FMODExt_func_FMOD_System_GetChannel(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int channelid = FMODExt_check_int(L, 2);
     FMOD_CHANNEL* channel;
-    ensure(LL, FMOD_System_GetChannel, FMOD_RESULT, FMOD_SYSTEM*, int, FMOD_CHANNEL**);
     errCheck(FMOD_System_GetChannel(system, channelid, &channel));
     FMODExt_push_ptr_FMOD_CHANNEL(L, channel);
     return 1;
@@ -3249,7 +3169,6 @@ static int _FMODExt_func_FMOD_System_GetDSPInfoByType(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_DSP_TYPE type = FMODExt_check_FMOD_DSP_TYPE(L, 2);
     const FMOD_DSP_DESCRIPTION* description;
-    ensure(LL, FMOD_System_GetDSPInfoByType, FMOD_RESULT, FMOD_SYSTEM*, FMOD_DSP_TYPE, const FMOD_DSP_DESCRIPTION**);
     errCheck(FMOD_System_GetDSPInfoByType(system, type, &description));
     FMODExt_push_ptr_FMOD_DSP_DESCRIPTION(L, description);
     return 1;
@@ -3263,7 +3182,6 @@ static int _FMODExt_func_FMOD_System_GetDSPInfoByType(lua_State *L) {
 static int _FMODExt_func_FMOD_System_GetMasterChannelGroup(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_CHANNELGROUP* channelgroup;
-    ensure(LL, FMOD_System_GetMasterChannelGroup, FMOD_RESULT, FMOD_SYSTEM*, FMOD_CHANNELGROUP**);
     errCheck(FMOD_System_GetMasterChannelGroup(system, &channelgroup));
     FMODExt_push_ptr_FMOD_CHANNELGROUP(L, channelgroup);
     return 1;
@@ -3277,7 +3195,6 @@ static int _FMODExt_func_FMOD_System_GetMasterChannelGroup(lua_State *L) {
 static int _FMODExt_func_FMOD_System_GetMasterSoundGroup(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_SOUNDGROUP* soundgroup;
-    ensure(LL, FMOD_System_GetMasterSoundGroup, FMOD_RESULT, FMOD_SYSTEM*, FMOD_SOUNDGROUP**);
     errCheck(FMOD_System_GetMasterSoundGroup(system, &soundgroup));
     FMODExt_push_ptr_FMOD_SOUNDGROUP(L, soundgroup);
     return 1;
@@ -3294,7 +3211,6 @@ static int _FMODExt_func_FMOD_System_AttachChannelGroupToPort(lua_State *L) {
     FMOD_PORT_INDEX portIndex = FMODExt_check_unsigned_long_long(L, 3);
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 4);
     FMOD_BOOL passThru = FMODExt_check_FMOD_BOOL(L, 5);
-    ensure(LL, FMOD_System_AttachChannelGroupToPort, FMOD_RESULT, FMOD_SYSTEM*, FMOD_PORT_TYPE, FMOD_PORT_INDEX, FMOD_CHANNELGROUP*, FMOD_BOOL);
     errCheck(FMOD_System_AttachChannelGroupToPort(system, portType, portIndex, channelgroup, passThru));
     return 0;
 }
@@ -3307,7 +3223,6 @@ static int _FMODExt_func_FMOD_System_AttachChannelGroupToPort(lua_State *L) {
 static int _FMODExt_func_FMOD_System_DetachChannelGroupFromPort(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 2);
-    ensure(LL, FMOD_System_DetachChannelGroupFromPort, FMOD_RESULT, FMOD_SYSTEM*, FMOD_CHANNELGROUP*);
     errCheck(FMOD_System_DetachChannelGroupFromPort(system, channelgroup));
     return 0;
 }
@@ -3321,7 +3236,6 @@ static int _FMODExt_func_FMOD_System_SetReverbProperties(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int instance = FMODExt_check_int(L, 2);
     const FMOD_REVERB_PROPERTIES* prop = FMODExt_check_ptr_FMOD_REVERB_PROPERTIES(L, 3);
-    ensure(LL, FMOD_System_SetReverbProperties, FMOD_RESULT, FMOD_SYSTEM*, int, const FMOD_REVERB_PROPERTIES*);
     errCheck(FMOD_System_SetReverbProperties(system, instance, prop));
     return 0;
 }
@@ -3335,7 +3249,6 @@ static int _FMODExt_func_FMOD_System_GetReverbProperties(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int instance = FMODExt_check_int(L, 2);
     FMOD_REVERB_PROPERTIES* prop = FMODExt_push_ptr_FMOD_REVERB_PROPERTIES(L, NULL);
-    ensure(LL, FMOD_System_GetReverbProperties, FMOD_RESULT, FMOD_SYSTEM*, int, FMOD_REVERB_PROPERTIES*);
     errCheck(FMOD_System_GetReverbProperties(system, instance, prop));
     lua_pushvalue(L, -1);
     return 1;
@@ -3348,7 +3261,6 @@ static int _FMODExt_func_FMOD_System_GetReverbProperties(lua_State *L) {
 #define FMODExt_func_FMOD_System_LockDSP _FMODExt_func_FMOD_System_LockDSP
 static int _FMODExt_func_FMOD_System_LockDSP(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
-    ensure(LL, FMOD_System_LockDSP, FMOD_RESULT, FMOD_SYSTEM*);
     errCheck(FMOD_System_LockDSP(system));
     return 0;
 }
@@ -3360,7 +3272,6 @@ static int _FMODExt_func_FMOD_System_LockDSP(lua_State *L) {
 #define FMODExt_func_FMOD_System_UnlockDSP _FMODExt_func_FMOD_System_UnlockDSP
 static int _FMODExt_func_FMOD_System_UnlockDSP(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
-    ensure(LL, FMOD_System_UnlockDSP, FMOD_RESULT, FMOD_SYSTEM*);
     errCheck(FMOD_System_UnlockDSP(system));
     return 0;
 }
@@ -3374,7 +3285,6 @@ static int _FMODExt_func_FMOD_System_GetRecordNumDrivers(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int numdrivers;
     int numconnected;
-    ensure(LL, FMOD_System_GetRecordNumDrivers, FMOD_RESULT, FMOD_SYSTEM*, int*, int*);
     errCheck(FMOD_System_GetRecordNumDrivers(system, &numdrivers, &numconnected));
     FMODExt_push_int(L, numdrivers);
     FMODExt_push_int(L, numconnected);
@@ -3393,7 +3303,6 @@ static int _FMODExt_func_FMOD_System_GetRecordPosition(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int id = FMODExt_check_int(L, 2);
     unsigned int position;
-    ensure(LL, FMOD_System_GetRecordPosition, FMOD_RESULT, FMOD_SYSTEM*, int, unsigned int*);
     errCheck(FMOD_System_GetRecordPosition(system, id, &position));
     FMODExt_push_unsigned_int(L, position);
     return 1;
@@ -3409,7 +3318,6 @@ static int _FMODExt_func_FMOD_System_RecordStart(lua_State *L) {
     int id = FMODExt_check_int(L, 2);
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 3);
     FMOD_BOOL loop = FMODExt_check_FMOD_BOOL(L, 4);
-    ensure(LL, FMOD_System_RecordStart, FMOD_RESULT, FMOD_SYSTEM*, int, FMOD_SOUND*, FMOD_BOOL);
     errCheck(FMOD_System_RecordStart(system, id, sound, loop));
     return 0;
 }
@@ -3422,7 +3330,6 @@ static int _FMODExt_func_FMOD_System_RecordStart(lua_State *L) {
 static int _FMODExt_func_FMOD_System_RecordStop(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int id = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_System_RecordStop, FMOD_RESULT, FMOD_SYSTEM*, int);
     errCheck(FMOD_System_RecordStop(system, id));
     return 0;
 }
@@ -3436,7 +3343,6 @@ static int _FMODExt_func_FMOD_System_IsRecording(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int id = FMODExt_check_int(L, 2);
     FMOD_BOOL recording;
-    ensure(LL, FMOD_System_IsRecording, FMOD_RESULT, FMOD_SYSTEM*, int, FMOD_BOOL*);
     errCheck(FMOD_System_IsRecording(system, id, &recording));
     FMODExt_push_FMOD_BOOL(L, recording);
     return 1;
@@ -3452,7 +3358,6 @@ static int _FMODExt_func_FMOD_System_CreateGeometry(lua_State *L) {
     int maxpolygons = FMODExt_check_int(L, 2);
     int maxvertices = FMODExt_check_int(L, 3);
     FMOD_GEOMETRY* geometry;
-    ensure(LL, FMOD_System_CreateGeometry, FMOD_RESULT, FMOD_SYSTEM*, int, int, FMOD_GEOMETRY**);
     errCheck(FMOD_System_CreateGeometry(system, maxpolygons, maxvertices, &geometry));
     FMODExt_push_ptr_FMOD_GEOMETRY(L, geometry);
     return 1;
@@ -3466,7 +3371,6 @@ static int _FMODExt_func_FMOD_System_CreateGeometry(lua_State *L) {
 static int _FMODExt_func_FMOD_System_SetGeometrySettings(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     float maxworldsize = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_System_SetGeometrySettings, FMOD_RESULT, FMOD_SYSTEM*, float);
     errCheck(FMOD_System_SetGeometrySettings(system, maxworldsize));
     return 0;
 }
@@ -3479,7 +3383,6 @@ static int _FMODExt_func_FMOD_System_SetGeometrySettings(lua_State *L) {
 static int _FMODExt_func_FMOD_System_GetGeometrySettings(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     float maxworldsize;
-    ensure(LL, FMOD_System_GetGeometrySettings, FMOD_RESULT, FMOD_SYSTEM*, float*);
     errCheck(FMOD_System_GetGeometrySettings(system, &maxworldsize));
     FMODExt_push_float(L, maxworldsize);
     return 1;
@@ -3499,7 +3402,6 @@ static int _FMODExt_func_FMOD_System_GetGeometryOcclusion(lua_State *L) {
     const FMOD_VECTOR source = FMODExt_check_FMOD_VECTOR(L, 3);
     float direct;
     float reverb;
-    ensure(LL, FMOD_System_GetGeometryOcclusion, FMOD_RESULT, FMOD_SYSTEM*, const FMOD_VECTOR*, const FMOD_VECTOR*, float*, float*);
     errCheck(FMOD_System_GetGeometryOcclusion(system, &listener, &source, &direct, &reverb));
     FMODExt_push_float(L, direct);
     FMODExt_push_float(L, reverb);
@@ -3514,7 +3416,6 @@ static int _FMODExt_func_FMOD_System_GetGeometryOcclusion(lua_State *L) {
 static int _FMODExt_func_FMOD_System_SetNetworkProxy(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     const char* proxy = FMODExt_check_ptr_char(L, 2);
-    ensure(LL, FMOD_System_SetNetworkProxy, FMOD_RESULT, FMOD_SYSTEM*, const char*);
     errCheck(FMOD_System_SetNetworkProxy(system, proxy));
     return 0;
 }
@@ -3530,7 +3431,6 @@ static int _FMODExt_func_FMOD_System_SetNetworkProxy(lua_State *L) {
 static int _FMODExt_func_FMOD_System_SetNetworkTimeout(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int timeout = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_System_SetNetworkTimeout, FMOD_RESULT, FMOD_SYSTEM*, int);
     errCheck(FMOD_System_SetNetworkTimeout(system, timeout));
     return 0;
 }
@@ -3543,7 +3443,6 @@ static int _FMODExt_func_FMOD_System_SetNetworkTimeout(lua_State *L) {
 static int _FMODExt_func_FMOD_System_GetNetworkTimeout(lua_State *L) {
     FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
     int timeout;
-    ensure(LL, FMOD_System_GetNetworkTimeout, FMOD_RESULT, FMOD_SYSTEM*, int*);
     errCheck(FMOD_System_GetNetworkTimeout(system, &timeout));
     FMODExt_push_int(L, timeout);
     return 1;
@@ -3562,7 +3461,6 @@ static int _FMODExt_func_FMOD_System_GetNetworkTimeout(lua_State *L) {
 #define FMODExt_func_FMOD_Sound_Release _FMODExt_func_FMOD_Sound_Release
 static int _FMODExt_func_FMOD_Sound_Release(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
-    ensure(LL, FMOD_Sound_Release, FMOD_RESULT, FMOD_SOUND*);
     errCheck(FMOD_Sound_Release(sound));
     return 0;
 }
@@ -3575,7 +3473,6 @@ static int _FMODExt_func_FMOD_Sound_Release(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_GetSystemObject(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     FMOD_SYSTEM* system;
-    ensure(LL, FMOD_Sound_GetSystemObject, FMOD_RESULT, FMOD_SOUND*, FMOD_SYSTEM**);
     errCheck(FMOD_Sound_GetSystemObject(sound, &system));
     FMODExt_push_ptr_FMOD_SYSTEM(L, system);
     return 1;
@@ -3596,7 +3493,6 @@ static int _FMODExt_func_FMOD_Sound_SetDefaults(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     float frequency = FMODExt_check_float(L, 2);
     int priority = FMODExt_check_int(L, 3);
-    ensure(LL, FMOD_Sound_SetDefaults, FMOD_RESULT, FMOD_SOUND*, float, int);
     errCheck(FMOD_Sound_SetDefaults(sound, frequency, priority));
     return 0;
 }
@@ -3610,7 +3506,6 @@ static int _FMODExt_func_FMOD_Sound_GetDefaults(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     float frequency;
     int priority;
-    ensure(LL, FMOD_Sound_GetDefaults, FMOD_RESULT, FMOD_SOUND*, float*, int*);
     errCheck(FMOD_Sound_GetDefaults(sound, &frequency, &priority));
     FMODExt_push_float(L, frequency);
     FMODExt_push_int(L, priority);
@@ -3626,7 +3521,6 @@ static int _FMODExt_func_FMOD_Sound_Set3DMinMaxDistance(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     float min = FMODExt_check_float(L, 2);
     float max = FMODExt_check_float(L, 3);
-    ensure(LL, FMOD_Sound_Set3DMinMaxDistance, FMOD_RESULT, FMOD_SOUND*, float, float);
     errCheck(FMOD_Sound_Set3DMinMaxDistance(sound, min, max));
     return 0;
 }
@@ -3640,7 +3534,6 @@ static int _FMODExt_func_FMOD_Sound_Get3DMinMaxDistance(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     float min;
     float max;
-    ensure(LL, FMOD_Sound_Get3DMinMaxDistance, FMOD_RESULT, FMOD_SOUND*, float*, float*);
     errCheck(FMOD_Sound_Get3DMinMaxDistance(sound, &min, &max));
     FMODExt_push_float(L, min);
     FMODExt_push_float(L, max);
@@ -3657,7 +3550,6 @@ static int _FMODExt_func_FMOD_Sound_Set3DConeSettings(lua_State *L) {
     float insideconeangle = FMODExt_check_float(L, 2);
     float outsideconeangle = FMODExt_check_float(L, 3);
     float outsidevolume = FMODExt_check_float(L, 4);
-    ensure(LL, FMOD_Sound_Set3DConeSettings, FMOD_RESULT, FMOD_SOUND*, float, float, float);
     errCheck(FMOD_Sound_Set3DConeSettings(sound, insideconeangle, outsideconeangle, outsidevolume));
     return 0;
 }
@@ -3672,7 +3564,6 @@ static int _FMODExt_func_FMOD_Sound_Get3DConeSettings(lua_State *L) {
     float insideconeangle;
     float outsideconeangle;
     float outsidevolume;
-    ensure(LL, FMOD_Sound_Get3DConeSettings, FMOD_RESULT, FMOD_SOUND*, float*, float*, float*);
     errCheck(FMOD_Sound_Get3DConeSettings(sound, &insideconeangle, &outsideconeangle, &outsidevolume));
     FMODExt_push_float(L, insideconeangle);
     FMODExt_push_float(L, outsideconeangle);
@@ -3689,7 +3580,6 @@ static int _FMODExt_func_FMOD_Sound_Set3DCustomRolloff(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     FMOD_VECTOR points;
     int numpoints = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_Sound_Set3DCustomRolloff, FMOD_RESULT, FMOD_SOUND*, FMOD_VECTOR*, int);
     errCheck(FMOD_Sound_Set3DCustomRolloff(sound, &points, numpoints));
     FMODExt_push_FMOD_VECTOR(L, points);
     return 1;
@@ -3707,7 +3597,6 @@ static int _FMODExt_func_FMOD_Sound_GetSubSound(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     int index = FMODExt_check_int(L, 2);
     FMOD_SOUND* subsound;
-    ensure(LL, FMOD_Sound_GetSubSound, FMOD_RESULT, FMOD_SOUND*, int, FMOD_SOUND**);
     errCheck(FMOD_Sound_GetSubSound(sound, index, &subsound));
     FMODExt_push_ptr_FMOD_SOUND(L, subsound);
     return 1;
@@ -3721,7 +3610,6 @@ static int _FMODExt_func_FMOD_Sound_GetSubSound(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_GetSubSoundParent(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     FMOD_SOUND* parentsound;
-    ensure(LL, FMOD_Sound_GetSubSoundParent, FMOD_RESULT, FMOD_SOUND*, FMOD_SOUND**);
     errCheck(FMOD_Sound_GetSubSoundParent(sound, &parentsound));
     FMODExt_push_ptr_FMOD_SOUND(L, parentsound);
     return 1;
@@ -3739,7 +3627,6 @@ static int _FMODExt_func_FMOD_Sound_GetLength(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     unsigned int length;
     FMOD_TIMEUNIT lengthtype = FMODExt_check_unsigned_int(L, 2);
-    ensure(LL, FMOD_Sound_GetLength, FMOD_RESULT, FMOD_SOUND*, unsigned int*, FMOD_TIMEUNIT);
     errCheck(FMOD_Sound_GetLength(sound, &length, lengthtype));
     FMODExt_push_unsigned_int(L, length);
     return 1;
@@ -3756,7 +3643,6 @@ static int _FMODExt_func_FMOD_Sound_GetFormat(lua_State *L) {
     FMOD_SOUND_FORMAT format;
     int channels;
     int bits;
-    ensure(LL, FMOD_Sound_GetFormat, FMOD_RESULT, FMOD_SOUND*, FMOD_SOUND_TYPE*, FMOD_SOUND_FORMAT*, int*, int*);
     errCheck(FMOD_Sound_GetFormat(sound, &type, &format, &channels, &bits));
     FMODExt_push_FMOD_SOUND_TYPE(L, type);
     FMODExt_push_FMOD_SOUND_FORMAT(L, format);
@@ -3773,7 +3659,6 @@ static int _FMODExt_func_FMOD_Sound_GetFormat(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_GetNumSubSounds(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     int numsubsounds;
-    ensure(LL, FMOD_Sound_GetNumSubSounds, FMOD_RESULT, FMOD_SOUND*, int*);
     errCheck(FMOD_Sound_GetNumSubSounds(sound, &numsubsounds));
     FMODExt_push_int(L, numsubsounds);
     return 1;
@@ -3788,7 +3673,6 @@ static int _FMODExt_func_FMOD_Sound_GetNumTags(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     int numtags;
     int numtagsupdated;
-    ensure(LL, FMOD_Sound_GetNumTags, FMOD_RESULT, FMOD_SOUND*, int*, int*);
     errCheck(FMOD_Sound_GetNumTags(sound, &numtags, &numtagsupdated));
     FMODExt_push_int(L, numtags);
     FMODExt_push_int(L, numtagsupdated);
@@ -3805,7 +3689,6 @@ static int _FMODExt_func_FMOD_Sound_GetTag(lua_State *L) {
     const char* name = FMODExt_check_ptr_char(L, 2);
     int index = FMODExt_check_int(L, 3);
     FMOD_TAG* tag = FMODExt_push_ptr_FMOD_TAG(L, NULL);
-    ensure(LL, FMOD_Sound_GetTag, FMOD_RESULT, FMOD_SOUND*, const char*, int, FMOD_TAG*);
     errCheck(FMOD_Sound_GetTag(sound, name, index, tag));
     lua_pushvalue(L, -1);
     return 1;
@@ -3822,7 +3705,6 @@ static int _FMODExt_func_FMOD_Sound_GetOpenState(lua_State *L) {
     unsigned int percentbuffered;
     FMOD_BOOL starving;
     FMOD_BOOL diskbusy;
-    ensure(LL, FMOD_Sound_GetOpenState, FMOD_RESULT, FMOD_SOUND*, FMOD_OPENSTATE*, unsigned int*, FMOD_BOOL*, FMOD_BOOL*);
     errCheck(FMOD_Sound_GetOpenState(sound, &openstate, &percentbuffered, &starving, &diskbusy));
     FMODExt_push_FMOD_OPENSTATE(L, openstate);
     FMODExt_push_unsigned_int(L, percentbuffered);
@@ -3842,7 +3724,6 @@ static int _FMODExt_func_FMOD_Sound_GetOpenState(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_SeekData(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     unsigned int pcm = FMODExt_check_unsigned_int(L, 2);
-    ensure(LL, FMOD_Sound_SeekData, FMOD_RESULT, FMOD_SOUND*, unsigned int);
     errCheck(FMOD_Sound_SeekData(sound, pcm));
     return 0;
 }
@@ -3855,7 +3736,6 @@ static int _FMODExt_func_FMOD_Sound_SeekData(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_SetSoundGroup(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 2);
-    ensure(LL, FMOD_Sound_SetSoundGroup, FMOD_RESULT, FMOD_SOUND*, FMOD_SOUNDGROUP*);
     errCheck(FMOD_Sound_SetSoundGroup(sound, soundgroup));
     return 0;
 }
@@ -3868,7 +3748,6 @@ static int _FMODExt_func_FMOD_Sound_SetSoundGroup(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_GetSoundGroup(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     FMOD_SOUNDGROUP* soundgroup;
-    ensure(LL, FMOD_Sound_GetSoundGroup, FMOD_RESULT, FMOD_SOUND*, FMOD_SOUNDGROUP**);
     errCheck(FMOD_Sound_GetSoundGroup(sound, &soundgroup));
     FMODExt_push_ptr_FMOD_SOUNDGROUP(L, soundgroup);
     return 1;
@@ -3882,7 +3761,6 @@ static int _FMODExt_func_FMOD_Sound_GetSoundGroup(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_GetNumSyncPoints(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     int numsyncpoints;
-    ensure(LL, FMOD_Sound_GetNumSyncPoints, FMOD_RESULT, FMOD_SOUND*, int*);
     errCheck(FMOD_Sound_GetNumSyncPoints(sound, &numsyncpoints));
     FMODExt_push_int(L, numsyncpoints);
     return 1;
@@ -3897,7 +3775,6 @@ static int _FMODExt_func_FMOD_Sound_GetSyncPoint(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     int index = FMODExt_check_int(L, 2);
     FMOD_SYNCPOINT* point;
-    ensure(LL, FMOD_Sound_GetSyncPoint, FMOD_RESULT, FMOD_SOUND*, int, FMOD_SYNCPOINT**);
     errCheck(FMOD_Sound_GetSyncPoint(sound, index, &point));
     FMODExt_push_ptr_FMOD_SYNCPOINT(L, point);
     return 1;
@@ -3917,7 +3794,6 @@ static int _FMODExt_func_FMOD_Sound_AddSyncPoint(lua_State *L) {
     FMOD_TIMEUNIT offsettype = FMODExt_check_unsigned_int(L, 3);
     const char* name = FMODExt_check_ptr_char(L, 4);
     FMOD_SYNCPOINT* point;
-    ensure(LL, FMOD_Sound_AddSyncPoint, FMOD_RESULT, FMOD_SOUND*, unsigned int, FMOD_TIMEUNIT, const char*, FMOD_SYNCPOINT**);
     errCheck(FMOD_Sound_AddSyncPoint(sound, offset, offsettype, name, &point));
     FMODExt_push_ptr_FMOD_SYNCPOINT(L, point);
     return 1;
@@ -3931,7 +3807,6 @@ static int _FMODExt_func_FMOD_Sound_AddSyncPoint(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_DeleteSyncPoint(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     FMOD_SYNCPOINT* point = FMODExt_check_ptr_FMOD_SYNCPOINT(L, 2);
-    ensure(LL, FMOD_Sound_DeleteSyncPoint, FMOD_RESULT, FMOD_SOUND*, FMOD_SYNCPOINT*);
     errCheck(FMOD_Sound_DeleteSyncPoint(sound, point));
     return 0;
 }
@@ -3944,7 +3819,6 @@ static int _FMODExt_func_FMOD_Sound_DeleteSyncPoint(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_SetMode(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     FMOD_MODE mode = FMODExt_check_unsigned_int(L, 2);
-    ensure(LL, FMOD_Sound_SetMode, FMOD_RESULT, FMOD_SOUND*, FMOD_MODE);
     errCheck(FMOD_Sound_SetMode(sound, mode));
     return 0;
 }
@@ -3957,7 +3831,6 @@ static int _FMODExt_func_FMOD_Sound_SetMode(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_GetMode(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     FMOD_MODE mode;
-    ensure(LL, FMOD_Sound_GetMode, FMOD_RESULT, FMOD_SOUND*, FMOD_MODE*);
     errCheck(FMOD_Sound_GetMode(sound, &mode));
     FMODExt_push_unsigned_int(L, mode);
     return 1;
@@ -3971,7 +3844,6 @@ static int _FMODExt_func_FMOD_Sound_GetMode(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_SetLoopCount(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     int loopcount = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_Sound_SetLoopCount, FMOD_RESULT, FMOD_SOUND*, int);
     errCheck(FMOD_Sound_SetLoopCount(sound, loopcount));
     return 0;
 }
@@ -3984,7 +3856,6 @@ static int _FMODExt_func_FMOD_Sound_SetLoopCount(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_GetLoopCount(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     int loopcount;
-    ensure(LL, FMOD_Sound_GetLoopCount, FMOD_RESULT, FMOD_SOUND*, int*);
     errCheck(FMOD_Sound_GetLoopCount(sound, &loopcount));
     FMODExt_push_int(L, loopcount);
     return 1;
@@ -4001,7 +3872,6 @@ static int _FMODExt_func_FMOD_Sound_SetLoopPoints(lua_State *L) {
     FMOD_TIMEUNIT loopstarttype = FMODExt_check_unsigned_int(L, 3);
     unsigned int loopend = FMODExt_check_unsigned_int(L, 4);
     FMOD_TIMEUNIT loopendtype = FMODExt_check_unsigned_int(L, 5);
-    ensure(LL, FMOD_Sound_SetLoopPoints, FMOD_RESULT, FMOD_SOUND*, unsigned int, FMOD_TIMEUNIT, unsigned int, FMOD_TIMEUNIT);
     errCheck(FMOD_Sound_SetLoopPoints(sound, loopstart, loopstarttype, loopend, loopendtype));
     return 0;
 }
@@ -4017,7 +3887,6 @@ static int _FMODExt_func_FMOD_Sound_GetLoopPoints(lua_State *L) {
     FMOD_TIMEUNIT loopstarttype = FMODExt_check_unsigned_int(L, 2);
     unsigned int loopend;
     FMOD_TIMEUNIT loopendtype = FMODExt_check_unsigned_int(L, 3);
-    ensure(LL, FMOD_Sound_GetLoopPoints, FMOD_RESULT, FMOD_SOUND*, unsigned int*, FMOD_TIMEUNIT, unsigned int*, FMOD_TIMEUNIT);
     errCheck(FMOD_Sound_GetLoopPoints(sound, &loopstart, loopstarttype, &loopend, loopendtype));
     FMODExt_push_unsigned_int(L, loopstart);
     FMODExt_push_unsigned_int(L, loopend);
@@ -4032,7 +3901,6 @@ static int _FMODExt_func_FMOD_Sound_GetLoopPoints(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_GetMusicNumChannels(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     int numchannels;
-    ensure(LL, FMOD_Sound_GetMusicNumChannels, FMOD_RESULT, FMOD_SOUND*, int*);
     errCheck(FMOD_Sound_GetMusicNumChannels(sound, &numchannels));
     FMODExt_push_int(L, numchannels);
     return 1;
@@ -4047,7 +3915,6 @@ static int _FMODExt_func_FMOD_Sound_SetMusicChannelVolume(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     int channel = FMODExt_check_int(L, 2);
     float volume = FMODExt_check_float(L, 3);
-    ensure(LL, FMOD_Sound_SetMusicChannelVolume, FMOD_RESULT, FMOD_SOUND*, int, float);
     errCheck(FMOD_Sound_SetMusicChannelVolume(sound, channel, volume));
     return 0;
 }
@@ -4061,7 +3928,6 @@ static int _FMODExt_func_FMOD_Sound_GetMusicChannelVolume(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     int channel = FMODExt_check_int(L, 2);
     float volume;
-    ensure(LL, FMOD_Sound_GetMusicChannelVolume, FMOD_RESULT, FMOD_SOUND*, int, float*);
     errCheck(FMOD_Sound_GetMusicChannelVolume(sound, channel, &volume));
     FMODExt_push_float(L, volume);
     return 1;
@@ -4075,7 +3941,6 @@ static int _FMODExt_func_FMOD_Sound_GetMusicChannelVolume(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_SetMusicSpeed(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     float speed = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_Sound_SetMusicSpeed, FMOD_RESULT, FMOD_SOUND*, float);
     errCheck(FMOD_Sound_SetMusicSpeed(sound, speed));
     return 0;
 }
@@ -4088,7 +3953,6 @@ static int _FMODExt_func_FMOD_Sound_SetMusicSpeed(lua_State *L) {
 static int _FMODExt_func_FMOD_Sound_GetMusicSpeed(lua_State *L) {
     FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
     float speed;
-    ensure(LL, FMOD_Sound_GetMusicSpeed, FMOD_RESULT, FMOD_SOUND*, float*);
     errCheck(FMOD_Sound_GetMusicSpeed(sound, &speed));
     FMODExt_push_float(L, speed);
     return 1;
@@ -4108,7 +3972,6 @@ static int _FMODExt_func_FMOD_Sound_GetMusicSpeed(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetSystemObject(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_SYSTEM* system;
-    ensure(LL, FMOD_Channel_GetSystemObject, FMOD_RESULT, FMOD_CHANNEL*, FMOD_SYSTEM**);
     errCheck(FMOD_Channel_GetSystemObject(channel, &system));
     FMODExt_push_ptr_FMOD_SYSTEM(L, system);
     return 1;
@@ -4121,7 +3984,6 @@ static int _FMODExt_func_FMOD_Channel_GetSystemObject(lua_State *L) {
 #define FMODExt_func_FMOD_Channel_Stop _FMODExt_func_FMOD_Channel_Stop
 static int _FMODExt_func_FMOD_Channel_Stop(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
-    ensure(LL, FMOD_Channel_Stop, FMOD_RESULT, FMOD_CHANNEL*);
     errCheck(FMOD_Channel_Stop(channel));
     return 0;
 }
@@ -4134,7 +3996,6 @@ static int _FMODExt_func_FMOD_Channel_Stop(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_SetPaused(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_BOOL paused = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(LL, FMOD_Channel_SetPaused, FMOD_RESULT, FMOD_CHANNEL*, FMOD_BOOL);
     errCheck(FMOD_Channel_SetPaused(channel, paused));
     return 0;
 }
@@ -4147,7 +4008,6 @@ static int _FMODExt_func_FMOD_Channel_SetPaused(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetPaused(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_BOOL paused;
-    ensure(LL, FMOD_Channel_GetPaused, FMOD_RESULT, FMOD_CHANNEL*, FMOD_BOOL*);
     errCheck(FMOD_Channel_GetPaused(channel, &paused));
     FMODExt_push_FMOD_BOOL(L, paused);
     return 1;
@@ -4161,7 +4021,6 @@ static int _FMODExt_func_FMOD_Channel_GetPaused(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_SetVolume(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float volume = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_Channel_SetVolume, FMOD_RESULT, FMOD_CHANNEL*, float);
     errCheck(FMOD_Channel_SetVolume(channel, volume));
     return 0;
 }
@@ -4174,7 +4033,6 @@ static int _FMODExt_func_FMOD_Channel_SetVolume(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetVolume(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float volume;
-    ensure(LL, FMOD_Channel_GetVolume, FMOD_RESULT, FMOD_CHANNEL*, float*);
     errCheck(FMOD_Channel_GetVolume(channel, &volume));
     FMODExt_push_float(L, volume);
     return 1;
@@ -4188,7 +4046,6 @@ static int _FMODExt_func_FMOD_Channel_GetVolume(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_SetVolumeRamp(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_BOOL ramp = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(LL, FMOD_Channel_SetVolumeRamp, FMOD_RESULT, FMOD_CHANNEL*, FMOD_BOOL);
     errCheck(FMOD_Channel_SetVolumeRamp(channel, ramp));
     return 0;
 }
@@ -4201,7 +4058,6 @@ static int _FMODExt_func_FMOD_Channel_SetVolumeRamp(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetVolumeRamp(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_BOOL ramp;
-    ensure(LL, FMOD_Channel_GetVolumeRamp, FMOD_RESULT, FMOD_CHANNEL*, FMOD_BOOL*);
     errCheck(FMOD_Channel_GetVolumeRamp(channel, &ramp));
     FMODExt_push_FMOD_BOOL(L, ramp);
     return 1;
@@ -4215,7 +4071,6 @@ static int _FMODExt_func_FMOD_Channel_GetVolumeRamp(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetAudibility(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float audibility;
-    ensure(LL, FMOD_Channel_GetAudibility, FMOD_RESULT, FMOD_CHANNEL*, float*);
     errCheck(FMOD_Channel_GetAudibility(channel, &audibility));
     FMODExt_push_float(L, audibility);
     return 1;
@@ -4229,7 +4084,6 @@ static int _FMODExt_func_FMOD_Channel_GetAudibility(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_SetPitch(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float pitch = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_Channel_SetPitch, FMOD_RESULT, FMOD_CHANNEL*, float);
     errCheck(FMOD_Channel_SetPitch(channel, pitch));
     return 0;
 }
@@ -4242,7 +4096,6 @@ static int _FMODExt_func_FMOD_Channel_SetPitch(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetPitch(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float pitch;
-    ensure(LL, FMOD_Channel_GetPitch, FMOD_RESULT, FMOD_CHANNEL*, float*);
     errCheck(FMOD_Channel_GetPitch(channel, &pitch));
     FMODExt_push_float(L, pitch);
     return 1;
@@ -4256,7 +4109,6 @@ static int _FMODExt_func_FMOD_Channel_GetPitch(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_SetMute(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_BOOL mute = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(LL, FMOD_Channel_SetMute, FMOD_RESULT, FMOD_CHANNEL*, FMOD_BOOL);
     errCheck(FMOD_Channel_SetMute(channel, mute));
     return 0;
 }
@@ -4269,7 +4121,6 @@ static int _FMODExt_func_FMOD_Channel_SetMute(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetMute(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_BOOL mute;
-    ensure(LL, FMOD_Channel_GetMute, FMOD_RESULT, FMOD_CHANNEL*, FMOD_BOOL*);
     errCheck(FMOD_Channel_GetMute(channel, &mute));
     FMODExt_push_FMOD_BOOL(L, mute);
     return 1;
@@ -4284,7 +4135,6 @@ static int _FMODExt_func_FMOD_Channel_SetReverbProperties(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     int instance = FMODExt_check_int(L, 2);
     float wet = FMODExt_check_float(L, 3);
-    ensure(LL, FMOD_Channel_SetReverbProperties, FMOD_RESULT, FMOD_CHANNEL*, int, float);
     errCheck(FMOD_Channel_SetReverbProperties(channel, instance, wet));
     return 0;
 }
@@ -4298,7 +4148,6 @@ static int _FMODExt_func_FMOD_Channel_GetReverbProperties(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     int instance = FMODExt_check_int(L, 2);
     float wet;
-    ensure(LL, FMOD_Channel_GetReverbProperties, FMOD_RESULT, FMOD_CHANNEL*, int, float*);
     errCheck(FMOD_Channel_GetReverbProperties(channel, instance, &wet));
     FMODExt_push_float(L, wet);
     return 1;
@@ -4312,7 +4161,6 @@ static int _FMODExt_func_FMOD_Channel_GetReverbProperties(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_SetLowPassGain(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float gain = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_Channel_SetLowPassGain, FMOD_RESULT, FMOD_CHANNEL*, float);
     errCheck(FMOD_Channel_SetLowPassGain(channel, gain));
     return 0;
 }
@@ -4325,7 +4173,6 @@ static int _FMODExt_func_FMOD_Channel_SetLowPassGain(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetLowPassGain(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float gain;
-    ensure(LL, FMOD_Channel_GetLowPassGain, FMOD_RESULT, FMOD_CHANNEL*, float*);
     errCheck(FMOD_Channel_GetLowPassGain(channel, &gain));
     FMODExt_push_float(L, gain);
     return 1;
@@ -4339,7 +4186,6 @@ static int _FMODExt_func_FMOD_Channel_GetLowPassGain(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_SetMode(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_MODE mode = FMODExt_check_unsigned_int(L, 2);
-    ensure(LL, FMOD_Channel_SetMode, FMOD_RESULT, FMOD_CHANNEL*, FMOD_MODE);
     errCheck(FMOD_Channel_SetMode(channel, mode));
     return 0;
 }
@@ -4352,7 +4198,6 @@ static int _FMODExt_func_FMOD_Channel_SetMode(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetMode(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_MODE mode;
-    ensure(LL, FMOD_Channel_GetMode, FMOD_RESULT, FMOD_CHANNEL*, FMOD_MODE*);
     errCheck(FMOD_Channel_GetMode(channel, &mode));
     FMODExt_push_unsigned_int(L, mode);
     return 1;
@@ -4369,7 +4214,6 @@ static int _FMODExt_func_FMOD_Channel_GetMode(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_IsPlaying(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_BOOL isplaying;
-    ensure(LL, FMOD_Channel_IsPlaying, FMOD_RESULT, FMOD_CHANNEL*, FMOD_BOOL*);
     errCheck(FMOD_Channel_IsPlaying(channel, &isplaying));
     FMODExt_push_FMOD_BOOL(L, isplaying);
     return 1;
@@ -4383,7 +4227,6 @@ static int _FMODExt_func_FMOD_Channel_IsPlaying(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_SetPan(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float pan = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_Channel_SetPan, FMOD_RESULT, FMOD_CHANNEL*, float);
     errCheck(FMOD_Channel_SetPan(channel, pan));
     return 0;
 }
@@ -4403,7 +4246,6 @@ static int _FMODExt_func_FMOD_Channel_SetMixLevelsOutput(lua_State *L) {
     float surroundright = FMODExt_check_float(L, 7);
     float backleft = FMODExt_check_float(L, 8);
     float backright = FMODExt_check_float(L, 9);
-    ensure(LL, FMOD_Channel_SetMixLevelsOutput, FMOD_RESULT, FMOD_CHANNEL*, float, float, float, float, float, float, float, float);
     errCheck(FMOD_Channel_SetMixLevelsOutput(channel, frontleft, frontright, center, lfe, surroundleft, surroundright, backleft, backright));
     return 0;
 }
@@ -4417,7 +4259,6 @@ static int _FMODExt_func_FMOD_Channel_SetMixLevelsInput(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float levels;
     int numlevels = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_Channel_SetMixLevelsInput, FMOD_RESULT, FMOD_CHANNEL*, float*, int);
     errCheck(FMOD_Channel_SetMixLevelsInput(channel, &levels, numlevels));
     FMODExt_push_float(L, levels);
     return 1;
@@ -4434,7 +4275,6 @@ static int _FMODExt_func_FMOD_Channel_SetMixMatrix(lua_State *L) {
     int outchannels = FMODExt_check_int(L, 2);
     int inchannels = FMODExt_check_int(L, 3);
     int inchannel_hop = FMODExt_check_int(L, 4);
-    ensure(LL, FMOD_Channel_SetMixMatrix, FMOD_RESULT, FMOD_CHANNEL*, float*, int, int, int);
     errCheck(FMOD_Channel_SetMixMatrix(channel, &matrix, outchannels, inchannels, inchannel_hop));
     FMODExt_push_float(L, matrix);
     return 1;
@@ -4451,7 +4291,6 @@ static int _FMODExt_func_FMOD_Channel_GetMixMatrix(lua_State *L) {
     int outchannels;
     int inchannels;
     int inchannel_hop = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_Channel_GetMixMatrix, FMOD_RESULT, FMOD_CHANNEL*, float*, int*, int*, int);
     errCheck(FMOD_Channel_GetMixMatrix(channel, &matrix, &outchannels, &inchannels, inchannel_hop));
     FMODExt_push_float(L, matrix);
     FMODExt_push_int(L, outchannels);
@@ -4468,7 +4307,6 @@ static int _FMODExt_func_FMOD_Channel_GetDSPClock(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     unsigned long long dspclock;
     unsigned long long parentclock;
-    ensure(LL, FMOD_Channel_GetDSPClock, FMOD_RESULT, FMOD_CHANNEL*, unsigned long long*, unsigned long long*);
     errCheck(FMOD_Channel_GetDSPClock(channel, &dspclock, &parentclock));
     FMODExt_push_unsigned_long_long(L, dspclock);
     FMODExt_push_unsigned_long_long(L, parentclock);
@@ -4485,7 +4323,6 @@ static int _FMODExt_func_FMOD_Channel_SetDelay(lua_State *L) {
     unsigned long long dspclock_start = FMODExt_check_unsigned_long_long(L, 2);
     unsigned long long dspclock_end = FMODExt_check_unsigned_long_long(L, 3);
     FMOD_BOOL stopchannels = FMODExt_check_FMOD_BOOL(L, 4);
-    ensure(LL, FMOD_Channel_SetDelay, FMOD_RESULT, FMOD_CHANNEL*, unsigned long long, unsigned long long, FMOD_BOOL);
     errCheck(FMOD_Channel_SetDelay(channel, dspclock_start, dspclock_end, stopchannels));
     return 0;
 }
@@ -4500,7 +4337,6 @@ static int _FMODExt_func_FMOD_Channel_GetDelay(lua_State *L) {
     unsigned long long dspclock_start;
     unsigned long long dspclock_end;
     FMOD_BOOL stopchannels;
-    ensure(LL, FMOD_Channel_GetDelay, FMOD_RESULT, FMOD_CHANNEL*, unsigned long long*, unsigned long long*, FMOD_BOOL*);
     errCheck(FMOD_Channel_GetDelay(channel, &dspclock_start, &dspclock_end, &stopchannels));
     FMODExt_push_unsigned_long_long(L, dspclock_start);
     FMODExt_push_unsigned_long_long(L, dspclock_end);
@@ -4517,7 +4353,6 @@ static int _FMODExt_func_FMOD_Channel_AddFadePoint(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     unsigned long long dspclock = FMODExt_check_unsigned_long_long(L, 2);
     float volume = FMODExt_check_float(L, 3);
-    ensure(LL, FMOD_Channel_AddFadePoint, FMOD_RESULT, FMOD_CHANNEL*, unsigned long long, float);
     errCheck(FMOD_Channel_AddFadePoint(channel, dspclock, volume));
     return 0;
 }
@@ -4531,7 +4366,6 @@ static int _FMODExt_func_FMOD_Channel_SetFadePointRamp(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     unsigned long long dspclock = FMODExt_check_unsigned_long_long(L, 2);
     float volume = FMODExt_check_float(L, 3);
-    ensure(LL, FMOD_Channel_SetFadePointRamp, FMOD_RESULT, FMOD_CHANNEL*, unsigned long long, float);
     errCheck(FMOD_Channel_SetFadePointRamp(channel, dspclock, volume));
     return 0;
 }
@@ -4545,7 +4379,6 @@ static int _FMODExt_func_FMOD_Channel_RemoveFadePoints(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     unsigned long long dspclock_start = FMODExt_check_unsigned_long_long(L, 2);
     unsigned long long dspclock_end = FMODExt_check_unsigned_long_long(L, 3);
-    ensure(LL, FMOD_Channel_RemoveFadePoints, FMOD_RESULT, FMOD_CHANNEL*, unsigned long long, unsigned long long);
     errCheck(FMOD_Channel_RemoveFadePoints(channel, dspclock_start, dspclock_end));
     return 0;
 }
@@ -4560,7 +4393,6 @@ static int _FMODExt_func_FMOD_Channel_GetFadePoints(lua_State *L) {
     unsigned int numpoints;
     unsigned long long point_dspclock;
     float point_volume;
-    ensure(LL, FMOD_Channel_GetFadePoints, FMOD_RESULT, FMOD_CHANNEL*, unsigned int*, unsigned long long*, float*);
     errCheck(FMOD_Channel_GetFadePoints(channel, &numpoints, &point_dspclock, &point_volume));
     FMODExt_push_unsigned_int(L, numpoints);
     FMODExt_push_unsigned_long_long(L, point_dspclock);
@@ -4577,7 +4409,6 @@ static int _FMODExt_func_FMOD_Channel_GetDSP(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     int index = FMODExt_check_int(L, 2);
     FMOD_DSP* dsp;
-    ensure(LL, FMOD_Channel_GetDSP, FMOD_RESULT, FMOD_CHANNEL*, int, FMOD_DSP**);
     errCheck(FMOD_Channel_GetDSP(channel, index, &dsp));
     FMODExt_push_ptr_FMOD_DSP(L, dsp);
     return 1;
@@ -4592,7 +4423,6 @@ static int _FMODExt_func_FMOD_Channel_AddDSP(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     int index = FMODExt_check_int(L, 2);
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 3);
-    ensure(LL, FMOD_Channel_AddDSP, FMOD_RESULT, FMOD_CHANNEL*, int, FMOD_DSP*);
     errCheck(FMOD_Channel_AddDSP(channel, index, dsp));
     return 0;
 }
@@ -4605,7 +4435,6 @@ static int _FMODExt_func_FMOD_Channel_AddDSP(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_RemoveDSP(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 2);
-    ensure(LL, FMOD_Channel_RemoveDSP, FMOD_RESULT, FMOD_CHANNEL*, FMOD_DSP*);
     errCheck(FMOD_Channel_RemoveDSP(channel, dsp));
     return 0;
 }
@@ -4618,7 +4447,6 @@ static int _FMODExt_func_FMOD_Channel_RemoveDSP(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetNumDSPs(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     int numdsps;
-    ensure(LL, FMOD_Channel_GetNumDSPs, FMOD_RESULT, FMOD_CHANNEL*, int*);
     errCheck(FMOD_Channel_GetNumDSPs(channel, &numdsps));
     FMODExt_push_int(L, numdsps);
     return 1;
@@ -4633,7 +4461,6 @@ static int _FMODExt_func_FMOD_Channel_SetDSPIndex(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 2);
     int index = FMODExt_check_int(L, 3);
-    ensure(LL, FMOD_Channel_SetDSPIndex, FMOD_RESULT, FMOD_CHANNEL*, FMOD_DSP*, int);
     errCheck(FMOD_Channel_SetDSPIndex(channel, dsp, index));
     return 0;
 }
@@ -4647,7 +4474,6 @@ static int _FMODExt_func_FMOD_Channel_GetDSPIndex(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 2);
     int index;
-    ensure(LL, FMOD_Channel_GetDSPIndex, FMOD_RESULT, FMOD_CHANNEL*, FMOD_DSP*, int*);
     errCheck(FMOD_Channel_GetDSPIndex(channel, dsp, &index));
     FMODExt_push_int(L, index);
     return 1;
@@ -4662,7 +4488,6 @@ static int _FMODExt_func_FMOD_Channel_Set3DAttributes(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     const FMOD_VECTOR pos = FMODExt_check_FMOD_VECTOR(L, 2);
     const FMOD_VECTOR vel = FMODExt_check_FMOD_VECTOR(L, 3);
-    ensure(LL, FMOD_Channel_Set3DAttributes, FMOD_RESULT, FMOD_CHANNEL*, const FMOD_VECTOR*, const FMOD_VECTOR*);
     errCheck(FMOD_Channel_Set3DAttributes(channel, &pos, &vel));
     return 0;
 }
@@ -4676,7 +4501,6 @@ static int _FMODExt_func_FMOD_Channel_Get3DAttributes(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_VECTOR pos;
     FMOD_VECTOR vel;
-    ensure(LL, FMOD_Channel_Get3DAttributes, FMOD_RESULT, FMOD_CHANNEL*, FMOD_VECTOR*, FMOD_VECTOR*);
     errCheck(FMOD_Channel_Get3DAttributes(channel, &pos, &vel));
     FMODExt_push_FMOD_VECTOR(L, pos);
     FMODExt_push_FMOD_VECTOR(L, vel);
@@ -4692,7 +4516,6 @@ static int _FMODExt_func_FMOD_Channel_Set3DMinMaxDistance(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float mindistance = FMODExt_check_float(L, 2);
     float maxdistance = FMODExt_check_float(L, 3);
-    ensure(LL, FMOD_Channel_Set3DMinMaxDistance, FMOD_RESULT, FMOD_CHANNEL*, float, float);
     errCheck(FMOD_Channel_Set3DMinMaxDistance(channel, mindistance, maxdistance));
     return 0;
 }
@@ -4706,7 +4529,6 @@ static int _FMODExt_func_FMOD_Channel_Get3DMinMaxDistance(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float mindistance;
     float maxdistance;
-    ensure(LL, FMOD_Channel_Get3DMinMaxDistance, FMOD_RESULT, FMOD_CHANNEL*, float*, float*);
     errCheck(FMOD_Channel_Get3DMinMaxDistance(channel, &mindistance, &maxdistance));
     FMODExt_push_float(L, mindistance);
     FMODExt_push_float(L, maxdistance);
@@ -4723,7 +4545,6 @@ static int _FMODExt_func_FMOD_Channel_Set3DConeSettings(lua_State *L) {
     float insideconeangle = FMODExt_check_float(L, 2);
     float outsideconeangle = FMODExt_check_float(L, 3);
     float outsidevolume = FMODExt_check_float(L, 4);
-    ensure(LL, FMOD_Channel_Set3DConeSettings, FMOD_RESULT, FMOD_CHANNEL*, float, float, float);
     errCheck(FMOD_Channel_Set3DConeSettings(channel, insideconeangle, outsideconeangle, outsidevolume));
     return 0;
 }
@@ -4738,7 +4559,6 @@ static int _FMODExt_func_FMOD_Channel_Get3DConeSettings(lua_State *L) {
     float insideconeangle;
     float outsideconeangle;
     float outsidevolume;
-    ensure(LL, FMOD_Channel_Get3DConeSettings, FMOD_RESULT, FMOD_CHANNEL*, float*, float*, float*);
     errCheck(FMOD_Channel_Get3DConeSettings(channel, &insideconeangle, &outsideconeangle, &outsidevolume));
     FMODExt_push_float(L, insideconeangle);
     FMODExt_push_float(L, outsideconeangle);
@@ -4754,7 +4574,6 @@ static int _FMODExt_func_FMOD_Channel_Get3DConeSettings(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_Set3DConeOrientation(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_VECTOR orientation;
-    ensure(LL, FMOD_Channel_Set3DConeOrientation, FMOD_RESULT, FMOD_CHANNEL*, FMOD_VECTOR*);
     errCheck(FMOD_Channel_Set3DConeOrientation(channel, &orientation));
     FMODExt_push_FMOD_VECTOR(L, orientation);
     return 1;
@@ -4768,7 +4587,6 @@ static int _FMODExt_func_FMOD_Channel_Set3DConeOrientation(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_Get3DConeOrientation(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_VECTOR orientation;
-    ensure(LL, FMOD_Channel_Get3DConeOrientation, FMOD_RESULT, FMOD_CHANNEL*, FMOD_VECTOR*);
     errCheck(FMOD_Channel_Get3DConeOrientation(channel, &orientation));
     FMODExt_push_FMOD_VECTOR(L, orientation);
     return 1;
@@ -4783,7 +4601,6 @@ static int _FMODExt_func_FMOD_Channel_Set3DCustomRolloff(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_VECTOR points;
     int numpoints = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_Channel_Set3DCustomRolloff, FMOD_RESULT, FMOD_CHANNEL*, FMOD_VECTOR*, int);
     errCheck(FMOD_Channel_Set3DCustomRolloff(channel, &points, numpoints));
     FMODExt_push_FMOD_VECTOR(L, points);
     return 1;
@@ -4801,7 +4618,6 @@ static int _FMODExt_func_FMOD_Channel_Set3DOcclusion(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float directocclusion = FMODExt_check_float(L, 2);
     float reverbocclusion = FMODExt_check_float(L, 3);
-    ensure(LL, FMOD_Channel_Set3DOcclusion, FMOD_RESULT, FMOD_CHANNEL*, float, float);
     errCheck(FMOD_Channel_Set3DOcclusion(channel, directocclusion, reverbocclusion));
     return 0;
 }
@@ -4815,7 +4631,6 @@ static int _FMODExt_func_FMOD_Channel_Get3DOcclusion(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float directocclusion;
     float reverbocclusion;
-    ensure(LL, FMOD_Channel_Get3DOcclusion, FMOD_RESULT, FMOD_CHANNEL*, float*, float*);
     errCheck(FMOD_Channel_Get3DOcclusion(channel, &directocclusion, &reverbocclusion));
     FMODExt_push_float(L, directocclusion);
     FMODExt_push_float(L, reverbocclusion);
@@ -4830,7 +4645,6 @@ static int _FMODExt_func_FMOD_Channel_Get3DOcclusion(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_Set3DSpread(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float angle = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_Channel_Set3DSpread, FMOD_RESULT, FMOD_CHANNEL*, float);
     errCheck(FMOD_Channel_Set3DSpread(channel, angle));
     return 0;
 }
@@ -4843,7 +4657,6 @@ static int _FMODExt_func_FMOD_Channel_Set3DSpread(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_Get3DSpread(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float angle;
-    ensure(LL, FMOD_Channel_Get3DSpread, FMOD_RESULT, FMOD_CHANNEL*, float*);
     errCheck(FMOD_Channel_Get3DSpread(channel, &angle));
     FMODExt_push_float(L, angle);
     return 1;
@@ -4857,7 +4670,6 @@ static int _FMODExt_func_FMOD_Channel_Get3DSpread(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_Set3DLevel(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float level = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_Channel_Set3DLevel, FMOD_RESULT, FMOD_CHANNEL*, float);
     errCheck(FMOD_Channel_Set3DLevel(channel, level));
     return 0;
 }
@@ -4870,7 +4682,6 @@ static int _FMODExt_func_FMOD_Channel_Set3DLevel(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_Get3DLevel(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float level;
-    ensure(LL, FMOD_Channel_Get3DLevel, FMOD_RESULT, FMOD_CHANNEL*, float*);
     errCheck(FMOD_Channel_Get3DLevel(channel, &level));
     FMODExt_push_float(L, level);
     return 1;
@@ -4884,7 +4695,6 @@ static int _FMODExt_func_FMOD_Channel_Get3DLevel(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_Set3DDopplerLevel(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float level = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_Channel_Set3DDopplerLevel, FMOD_RESULT, FMOD_CHANNEL*, float);
     errCheck(FMOD_Channel_Set3DDopplerLevel(channel, level));
     return 0;
 }
@@ -4897,7 +4707,6 @@ static int _FMODExt_func_FMOD_Channel_Set3DDopplerLevel(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_Get3DDopplerLevel(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float level;
-    ensure(LL, FMOD_Channel_Get3DDopplerLevel, FMOD_RESULT, FMOD_CHANNEL*, float*);
     errCheck(FMOD_Channel_Get3DDopplerLevel(channel, &level));
     FMODExt_push_float(L, level);
     return 1;
@@ -4913,7 +4722,6 @@ static int _FMODExt_func_FMOD_Channel_Set3DDistanceFilter(lua_State *L) {
     FMOD_BOOL custom = FMODExt_check_FMOD_BOOL(L, 2);
     float customLevel = FMODExt_check_float(L, 3);
     float centerFreq = FMODExt_check_float(L, 4);
-    ensure(LL, FMOD_Channel_Set3DDistanceFilter, FMOD_RESULT, FMOD_CHANNEL*, FMOD_BOOL, float, float);
     errCheck(FMOD_Channel_Set3DDistanceFilter(channel, custom, customLevel, centerFreq));
     return 0;
 }
@@ -4928,7 +4736,6 @@ static int _FMODExt_func_FMOD_Channel_Get3DDistanceFilter(lua_State *L) {
     FMOD_BOOL custom;
     float customLevel;
     float centerFreq;
-    ensure(LL, FMOD_Channel_Get3DDistanceFilter, FMOD_RESULT, FMOD_CHANNEL*, FMOD_BOOL*, float*, float*);
     errCheck(FMOD_Channel_Get3DDistanceFilter(channel, &custom, &customLevel, &centerFreq));
     FMODExt_push_FMOD_BOOL(L, custom);
     FMODExt_push_float(L, customLevel);
@@ -4950,7 +4757,6 @@ static int _FMODExt_func_FMOD_Channel_Get3DDistanceFilter(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_SetFrequency(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float frequency = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_Channel_SetFrequency, FMOD_RESULT, FMOD_CHANNEL*, float);
     errCheck(FMOD_Channel_SetFrequency(channel, frequency));
     return 0;
 }
@@ -4963,7 +4769,6 @@ static int _FMODExt_func_FMOD_Channel_SetFrequency(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetFrequency(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     float frequency;
-    ensure(LL, FMOD_Channel_GetFrequency, FMOD_RESULT, FMOD_CHANNEL*, float*);
     errCheck(FMOD_Channel_GetFrequency(channel, &frequency));
     FMODExt_push_float(L, frequency);
     return 1;
@@ -4977,7 +4782,6 @@ static int _FMODExt_func_FMOD_Channel_GetFrequency(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_SetPriority(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     int priority = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_Channel_SetPriority, FMOD_RESULT, FMOD_CHANNEL*, int);
     errCheck(FMOD_Channel_SetPriority(channel, priority));
     return 0;
 }
@@ -4990,7 +4794,6 @@ static int _FMODExt_func_FMOD_Channel_SetPriority(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetPriority(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     int priority;
-    ensure(LL, FMOD_Channel_GetPriority, FMOD_RESULT, FMOD_CHANNEL*, int*);
     errCheck(FMOD_Channel_GetPriority(channel, &priority));
     FMODExt_push_int(L, priority);
     return 1;
@@ -5005,7 +4808,6 @@ static int _FMODExt_func_FMOD_Channel_SetPosition(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     unsigned int position = FMODExt_check_unsigned_int(L, 2);
     FMOD_TIMEUNIT postype = FMODExt_check_unsigned_int(L, 3);
-    ensure(LL, FMOD_Channel_SetPosition, FMOD_RESULT, FMOD_CHANNEL*, unsigned int, FMOD_TIMEUNIT);
     errCheck(FMOD_Channel_SetPosition(channel, position, postype));
     return 0;
 }
@@ -5019,7 +4821,6 @@ static int _FMODExt_func_FMOD_Channel_GetPosition(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     unsigned int position;
     FMOD_TIMEUNIT postype = FMODExt_check_unsigned_int(L, 2);
-    ensure(LL, FMOD_Channel_GetPosition, FMOD_RESULT, FMOD_CHANNEL*, unsigned int*, FMOD_TIMEUNIT);
     errCheck(FMOD_Channel_GetPosition(channel, &position, postype));
     FMODExt_push_unsigned_int(L, position);
     return 1;
@@ -5033,7 +4834,6 @@ static int _FMODExt_func_FMOD_Channel_GetPosition(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_SetChannelGroup(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 2);
-    ensure(LL, FMOD_Channel_SetChannelGroup, FMOD_RESULT, FMOD_CHANNEL*, FMOD_CHANNELGROUP*);
     errCheck(FMOD_Channel_SetChannelGroup(channel, channelgroup));
     return 0;
 }
@@ -5046,7 +4846,6 @@ static int _FMODExt_func_FMOD_Channel_SetChannelGroup(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetChannelGroup(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_CHANNELGROUP* channelgroup;
-    ensure(LL, FMOD_Channel_GetChannelGroup, FMOD_RESULT, FMOD_CHANNEL*, FMOD_CHANNELGROUP**);
     errCheck(FMOD_Channel_GetChannelGroup(channel, &channelgroup));
     FMODExt_push_ptr_FMOD_CHANNELGROUP(L, channelgroup);
     return 1;
@@ -5060,7 +4859,6 @@ static int _FMODExt_func_FMOD_Channel_GetChannelGroup(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_SetLoopCount(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     int loopcount = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_Channel_SetLoopCount, FMOD_RESULT, FMOD_CHANNEL*, int);
     errCheck(FMOD_Channel_SetLoopCount(channel, loopcount));
     return 0;
 }
@@ -5073,7 +4871,6 @@ static int _FMODExt_func_FMOD_Channel_SetLoopCount(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetLoopCount(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     int loopcount;
-    ensure(LL, FMOD_Channel_GetLoopCount, FMOD_RESULT, FMOD_CHANNEL*, int*);
     errCheck(FMOD_Channel_GetLoopCount(channel, &loopcount));
     FMODExt_push_int(L, loopcount);
     return 1;
@@ -5090,7 +4887,6 @@ static int _FMODExt_func_FMOD_Channel_SetLoopPoints(lua_State *L) {
     FMOD_TIMEUNIT loopstarttype = FMODExt_check_unsigned_int(L, 3);
     unsigned int loopend = FMODExt_check_unsigned_int(L, 4);
     FMOD_TIMEUNIT loopendtype = FMODExt_check_unsigned_int(L, 5);
-    ensure(LL, FMOD_Channel_SetLoopPoints, FMOD_RESULT, FMOD_CHANNEL*, unsigned int, FMOD_TIMEUNIT, unsigned int, FMOD_TIMEUNIT);
     errCheck(FMOD_Channel_SetLoopPoints(channel, loopstart, loopstarttype, loopend, loopendtype));
     return 0;
 }
@@ -5106,7 +4902,6 @@ static int _FMODExt_func_FMOD_Channel_GetLoopPoints(lua_State *L) {
     FMOD_TIMEUNIT loopstarttype = FMODExt_check_unsigned_int(L, 2);
     unsigned int loopend;
     FMOD_TIMEUNIT loopendtype = FMODExt_check_unsigned_int(L, 3);
-    ensure(LL, FMOD_Channel_GetLoopPoints, FMOD_RESULT, FMOD_CHANNEL*, unsigned int*, FMOD_TIMEUNIT, unsigned int*, FMOD_TIMEUNIT);
     errCheck(FMOD_Channel_GetLoopPoints(channel, &loopstart, loopstarttype, &loopend, loopendtype));
     FMODExt_push_unsigned_int(L, loopstart);
     FMODExt_push_unsigned_int(L, loopend);
@@ -5121,7 +4916,6 @@ static int _FMODExt_func_FMOD_Channel_GetLoopPoints(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_IsVirtual(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_BOOL isvirtual;
-    ensure(LL, FMOD_Channel_IsVirtual, FMOD_RESULT, FMOD_CHANNEL*, FMOD_BOOL*);
     errCheck(FMOD_Channel_IsVirtual(channel, &isvirtual));
     FMODExt_push_FMOD_BOOL(L, isvirtual);
     return 1;
@@ -5135,7 +4929,6 @@ static int _FMODExt_func_FMOD_Channel_IsVirtual(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetCurrentSound(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     FMOD_SOUND* sound;
-    ensure(LL, FMOD_Channel_GetCurrentSound, FMOD_RESULT, FMOD_CHANNEL*, FMOD_SOUND**);
     errCheck(FMOD_Channel_GetCurrentSound(channel, &sound));
     FMODExt_push_ptr_FMOD_SOUND(L, sound);
     return 1;
@@ -5149,7 +4942,6 @@ static int _FMODExt_func_FMOD_Channel_GetCurrentSound(lua_State *L) {
 static int _FMODExt_func_FMOD_Channel_GetIndex(lua_State *L) {
     FMOD_CHANNEL* channel = FMODExt_check_ptr_FMOD_CHANNEL(L, 1);
     int index;
-    ensure(LL, FMOD_Channel_GetIndex, FMOD_RESULT, FMOD_CHANNEL*, int*);
     errCheck(FMOD_Channel_GetIndex(channel, &index));
     FMODExt_push_int(L, index);
     return 1;
@@ -5163,7 +4955,6 @@ static int _FMODExt_func_FMOD_Channel_GetIndex(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_GetSystemObject(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_SYSTEM* system;
-    ensure(LL, FMOD_ChannelGroup_GetSystemObject, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_SYSTEM**);
     errCheck(FMOD_ChannelGroup_GetSystemObject(channelgroup, &system));
     FMODExt_push_ptr_FMOD_SYSTEM(L, system);
     return 1;
@@ -5176,7 +4967,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetSystemObject(lua_State *L) {
 #define FMODExt_func_FMOD_ChannelGroup_Stop _FMODExt_func_FMOD_ChannelGroup_Stop
 static int _FMODExt_func_FMOD_ChannelGroup_Stop(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
-    ensure(LL, FMOD_ChannelGroup_Stop, FMOD_RESULT, FMOD_CHANNELGROUP*);
     errCheck(FMOD_ChannelGroup_Stop(channelgroup));
     return 0;
 }
@@ -5189,7 +4979,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Stop(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_SetPaused(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_BOOL paused = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(LL, FMOD_ChannelGroup_SetPaused, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL);
     errCheck(FMOD_ChannelGroup_SetPaused(channelgroup, paused));
     return 0;
 }
@@ -5202,7 +4991,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetPaused(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_GetPaused(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_BOOL paused;
-    ensure(LL, FMOD_ChannelGroup_GetPaused, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL*);
     errCheck(FMOD_ChannelGroup_GetPaused(channelgroup, &paused));
     FMODExt_push_FMOD_BOOL(L, paused);
     return 1;
@@ -5216,7 +5004,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetPaused(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_SetVolume(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float volume = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_ChannelGroup_SetVolume, FMOD_RESULT, FMOD_CHANNELGROUP*, float);
     errCheck(FMOD_ChannelGroup_SetVolume(channelgroup, volume));
     return 0;
 }
@@ -5229,7 +5016,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetVolume(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_GetVolume(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float volume;
-    ensure(LL, FMOD_ChannelGroup_GetVolume, FMOD_RESULT, FMOD_CHANNELGROUP*, float*);
     errCheck(FMOD_ChannelGroup_GetVolume(channelgroup, &volume));
     FMODExt_push_float(L, volume);
     return 1;
@@ -5243,7 +5029,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetVolume(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_SetVolumeRamp(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_BOOL ramp = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(LL, FMOD_ChannelGroup_SetVolumeRamp, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL);
     errCheck(FMOD_ChannelGroup_SetVolumeRamp(channelgroup, ramp));
     return 0;
 }
@@ -5256,7 +5041,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetVolumeRamp(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_GetVolumeRamp(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_BOOL ramp;
-    ensure(LL, FMOD_ChannelGroup_GetVolumeRamp, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL*);
     errCheck(FMOD_ChannelGroup_GetVolumeRamp(channelgroup, &ramp));
     FMODExt_push_FMOD_BOOL(L, ramp);
     return 1;
@@ -5270,7 +5054,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetVolumeRamp(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_GetAudibility(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float audibility;
-    ensure(LL, FMOD_ChannelGroup_GetAudibility, FMOD_RESULT, FMOD_CHANNELGROUP*, float*);
     errCheck(FMOD_ChannelGroup_GetAudibility(channelgroup, &audibility));
     FMODExt_push_float(L, audibility);
     return 1;
@@ -5284,7 +5067,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetAudibility(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_SetPitch(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float pitch = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_ChannelGroup_SetPitch, FMOD_RESULT, FMOD_CHANNELGROUP*, float);
     errCheck(FMOD_ChannelGroup_SetPitch(channelgroup, pitch));
     return 0;
 }
@@ -5297,7 +5079,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetPitch(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_GetPitch(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float pitch;
-    ensure(LL, FMOD_ChannelGroup_GetPitch, FMOD_RESULT, FMOD_CHANNELGROUP*, float*);
     errCheck(FMOD_ChannelGroup_GetPitch(channelgroup, &pitch));
     FMODExt_push_float(L, pitch);
     return 1;
@@ -5311,7 +5092,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetPitch(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_SetMute(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_BOOL mute = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(LL, FMOD_ChannelGroup_SetMute, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL);
     errCheck(FMOD_ChannelGroup_SetMute(channelgroup, mute));
     return 0;
 }
@@ -5324,7 +5104,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetMute(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_GetMute(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_BOOL mute;
-    ensure(LL, FMOD_ChannelGroup_GetMute, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL*);
     errCheck(FMOD_ChannelGroup_GetMute(channelgroup, &mute));
     FMODExt_push_FMOD_BOOL(L, mute);
     return 1;
@@ -5339,7 +5118,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetReverbProperties(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     int instance = FMODExt_check_int(L, 2);
     float wet = FMODExt_check_float(L, 3);
-    ensure(LL, FMOD_ChannelGroup_SetReverbProperties, FMOD_RESULT, FMOD_CHANNELGROUP*, int, float);
     errCheck(FMOD_ChannelGroup_SetReverbProperties(channelgroup, instance, wet));
     return 0;
 }
@@ -5353,7 +5131,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetReverbProperties(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     int instance = FMODExt_check_int(L, 2);
     float wet;
-    ensure(LL, FMOD_ChannelGroup_GetReverbProperties, FMOD_RESULT, FMOD_CHANNELGROUP*, int, float*);
     errCheck(FMOD_ChannelGroup_GetReverbProperties(channelgroup, instance, &wet));
     FMODExt_push_float(L, wet);
     return 1;
@@ -5367,7 +5144,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetReverbProperties(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_SetLowPassGain(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float gain = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_ChannelGroup_SetLowPassGain, FMOD_RESULT, FMOD_CHANNELGROUP*, float);
     errCheck(FMOD_ChannelGroup_SetLowPassGain(channelgroup, gain));
     return 0;
 }
@@ -5380,7 +5156,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetLowPassGain(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_GetLowPassGain(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float gain;
-    ensure(LL, FMOD_ChannelGroup_GetLowPassGain, FMOD_RESULT, FMOD_CHANNELGROUP*, float*);
     errCheck(FMOD_ChannelGroup_GetLowPassGain(channelgroup, &gain));
     FMODExt_push_float(L, gain);
     return 1;
@@ -5394,7 +5169,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetLowPassGain(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_SetMode(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_MODE mode = FMODExt_check_unsigned_int(L, 2);
-    ensure(LL, FMOD_ChannelGroup_SetMode, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_MODE);
     errCheck(FMOD_ChannelGroup_SetMode(channelgroup, mode));
     return 0;
 }
@@ -5407,7 +5181,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetMode(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_GetMode(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_MODE mode;
-    ensure(LL, FMOD_ChannelGroup_GetMode, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_MODE*);
     errCheck(FMOD_ChannelGroup_GetMode(channelgroup, &mode));
     FMODExt_push_unsigned_int(L, mode);
     return 1;
@@ -5424,7 +5197,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetMode(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_IsPlaying(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_BOOL isplaying;
-    ensure(LL, FMOD_ChannelGroup_IsPlaying, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL*);
     errCheck(FMOD_ChannelGroup_IsPlaying(channelgroup, &isplaying));
     FMODExt_push_FMOD_BOOL(L, isplaying);
     return 1;
@@ -5438,7 +5210,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_IsPlaying(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_SetPan(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float pan = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_ChannelGroup_SetPan, FMOD_RESULT, FMOD_CHANNELGROUP*, float);
     errCheck(FMOD_ChannelGroup_SetPan(channelgroup, pan));
     return 0;
 }
@@ -5458,7 +5229,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetMixLevelsOutput(lua_State *L) {
     float surroundright = FMODExt_check_float(L, 7);
     float backleft = FMODExt_check_float(L, 8);
     float backright = FMODExt_check_float(L, 9);
-    ensure(LL, FMOD_ChannelGroup_SetMixLevelsOutput, FMOD_RESULT, FMOD_CHANNELGROUP*, float, float, float, float, float, float, float, float);
     errCheck(FMOD_ChannelGroup_SetMixLevelsOutput(channelgroup, frontleft, frontright, center, lfe, surroundleft, surroundright, backleft, backright));
     return 0;
 }
@@ -5472,7 +5242,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetMixLevelsInput(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float levels;
     int numlevels = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_ChannelGroup_SetMixLevelsInput, FMOD_RESULT, FMOD_CHANNELGROUP*, float*, int);
     errCheck(FMOD_ChannelGroup_SetMixLevelsInput(channelgroup, &levels, numlevels));
     FMODExt_push_float(L, levels);
     return 1;
@@ -5489,7 +5258,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetMixMatrix(lua_State *L) {
     int outchannels = FMODExt_check_int(L, 2);
     int inchannels = FMODExt_check_int(L, 3);
     int inchannel_hop = FMODExt_check_int(L, 4);
-    ensure(LL, FMOD_ChannelGroup_SetMixMatrix, FMOD_RESULT, FMOD_CHANNELGROUP*, float*, int, int, int);
     errCheck(FMOD_ChannelGroup_SetMixMatrix(channelgroup, &matrix, outchannels, inchannels, inchannel_hop));
     FMODExt_push_float(L, matrix);
     return 1;
@@ -5506,7 +5274,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetMixMatrix(lua_State *L) {
     int outchannels;
     int inchannels;
     int inchannel_hop = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_ChannelGroup_GetMixMatrix, FMOD_RESULT, FMOD_CHANNELGROUP*, float*, int*, int*, int);
     errCheck(FMOD_ChannelGroup_GetMixMatrix(channelgroup, &matrix, &outchannels, &inchannels, inchannel_hop));
     FMODExt_push_float(L, matrix);
     FMODExt_push_int(L, outchannels);
@@ -5523,7 +5290,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetDSPClock(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     unsigned long long dspclock;
     unsigned long long parentclock;
-    ensure(LL, FMOD_ChannelGroup_GetDSPClock, FMOD_RESULT, FMOD_CHANNELGROUP*, unsigned long long*, unsigned long long*);
     errCheck(FMOD_ChannelGroup_GetDSPClock(channelgroup, &dspclock, &parentclock));
     FMODExt_push_unsigned_long_long(L, dspclock);
     FMODExt_push_unsigned_long_long(L, parentclock);
@@ -5540,7 +5306,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetDelay(lua_State *L) {
     unsigned long long dspclock_start = FMODExt_check_unsigned_long_long(L, 2);
     unsigned long long dspclock_end = FMODExt_check_unsigned_long_long(L, 3);
     FMOD_BOOL stopchannels = FMODExt_check_FMOD_BOOL(L, 4);
-    ensure(LL, FMOD_ChannelGroup_SetDelay, FMOD_RESULT, FMOD_CHANNELGROUP*, unsigned long long, unsigned long long, FMOD_BOOL);
     errCheck(FMOD_ChannelGroup_SetDelay(channelgroup, dspclock_start, dspclock_end, stopchannels));
     return 0;
 }
@@ -5555,7 +5320,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetDelay(lua_State *L) {
     unsigned long long dspclock_start;
     unsigned long long dspclock_end;
     FMOD_BOOL stopchannels;
-    ensure(LL, FMOD_ChannelGroup_GetDelay, FMOD_RESULT, FMOD_CHANNELGROUP*, unsigned long long*, unsigned long long*, FMOD_BOOL*);
     errCheck(FMOD_ChannelGroup_GetDelay(channelgroup, &dspclock_start, &dspclock_end, &stopchannels));
     FMODExt_push_unsigned_long_long(L, dspclock_start);
     FMODExt_push_unsigned_long_long(L, dspclock_end);
@@ -5572,7 +5336,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_AddFadePoint(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     unsigned long long dspclock = FMODExt_check_unsigned_long_long(L, 2);
     float volume = FMODExt_check_float(L, 3);
-    ensure(LL, FMOD_ChannelGroup_AddFadePoint, FMOD_RESULT, FMOD_CHANNELGROUP*, unsigned long long, float);
     errCheck(FMOD_ChannelGroup_AddFadePoint(channelgroup, dspclock, volume));
     return 0;
 }
@@ -5586,7 +5349,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetFadePointRamp(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     unsigned long long dspclock = FMODExt_check_unsigned_long_long(L, 2);
     float volume = FMODExt_check_float(L, 3);
-    ensure(LL, FMOD_ChannelGroup_SetFadePointRamp, FMOD_RESULT, FMOD_CHANNELGROUP*, unsigned long long, float);
     errCheck(FMOD_ChannelGroup_SetFadePointRamp(channelgroup, dspclock, volume));
     return 0;
 }
@@ -5600,7 +5362,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_RemoveFadePoints(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     unsigned long long dspclock_start = FMODExt_check_unsigned_long_long(L, 2);
     unsigned long long dspclock_end = FMODExt_check_unsigned_long_long(L, 3);
-    ensure(LL, FMOD_ChannelGroup_RemoveFadePoints, FMOD_RESULT, FMOD_CHANNELGROUP*, unsigned long long, unsigned long long);
     errCheck(FMOD_ChannelGroup_RemoveFadePoints(channelgroup, dspclock_start, dspclock_end));
     return 0;
 }
@@ -5615,7 +5376,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetFadePoints(lua_State *L) {
     unsigned int numpoints;
     unsigned long long point_dspclock;
     float point_volume;
-    ensure(LL, FMOD_ChannelGroup_GetFadePoints, FMOD_RESULT, FMOD_CHANNELGROUP*, unsigned int*, unsigned long long*, float*);
     errCheck(FMOD_ChannelGroup_GetFadePoints(channelgroup, &numpoints, &point_dspclock, &point_volume));
     FMODExt_push_unsigned_int(L, numpoints);
     FMODExt_push_unsigned_long_long(L, point_dspclock);
@@ -5632,7 +5392,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetDSP(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     int index = FMODExt_check_int(L, 2);
     FMOD_DSP* dsp;
-    ensure(LL, FMOD_ChannelGroup_GetDSP, FMOD_RESULT, FMOD_CHANNELGROUP*, int, FMOD_DSP**);
     errCheck(FMOD_ChannelGroup_GetDSP(channelgroup, index, &dsp));
     FMODExt_push_ptr_FMOD_DSP(L, dsp);
     return 1;
@@ -5647,7 +5406,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_AddDSP(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     int index = FMODExt_check_int(L, 2);
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 3);
-    ensure(LL, FMOD_ChannelGroup_AddDSP, FMOD_RESULT, FMOD_CHANNELGROUP*, int, FMOD_DSP*);
     errCheck(FMOD_ChannelGroup_AddDSP(channelgroup, index, dsp));
     return 0;
 }
@@ -5660,7 +5418,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_AddDSP(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_RemoveDSP(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 2);
-    ensure(LL, FMOD_ChannelGroup_RemoveDSP, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_DSP*);
     errCheck(FMOD_ChannelGroup_RemoveDSP(channelgroup, dsp));
     return 0;
 }
@@ -5673,7 +5430,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_RemoveDSP(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_GetNumDSPs(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     int numdsps;
-    ensure(LL, FMOD_ChannelGroup_GetNumDSPs, FMOD_RESULT, FMOD_CHANNELGROUP*, int*);
     errCheck(FMOD_ChannelGroup_GetNumDSPs(channelgroup, &numdsps));
     FMODExt_push_int(L, numdsps);
     return 1;
@@ -5688,7 +5444,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_SetDSPIndex(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 2);
     int index = FMODExt_check_int(L, 3);
-    ensure(LL, FMOD_ChannelGroup_SetDSPIndex, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_DSP*, int);
     errCheck(FMOD_ChannelGroup_SetDSPIndex(channelgroup, dsp, index));
     return 0;
 }
@@ -5702,7 +5457,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetDSPIndex(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 2);
     int index;
-    ensure(LL, FMOD_ChannelGroup_GetDSPIndex, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_DSP*, int*);
     errCheck(FMOD_ChannelGroup_GetDSPIndex(channelgroup, dsp, &index));
     FMODExt_push_int(L, index);
     return 1;
@@ -5717,7 +5471,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Set3DAttributes(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     const FMOD_VECTOR pos = FMODExt_check_FMOD_VECTOR(L, 2);
     const FMOD_VECTOR vel = FMODExt_check_FMOD_VECTOR(L, 3);
-    ensure(LL, FMOD_ChannelGroup_Set3DAttributes, FMOD_RESULT, FMOD_CHANNELGROUP*, const FMOD_VECTOR*, const FMOD_VECTOR*);
     errCheck(FMOD_ChannelGroup_Set3DAttributes(channelgroup, &pos, &vel));
     return 0;
 }
@@ -5731,7 +5484,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Get3DAttributes(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_VECTOR pos;
     FMOD_VECTOR vel;
-    ensure(LL, FMOD_ChannelGroup_Get3DAttributes, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_VECTOR*, FMOD_VECTOR*);
     errCheck(FMOD_ChannelGroup_Get3DAttributes(channelgroup, &pos, &vel));
     FMODExt_push_FMOD_VECTOR(L, pos);
     FMODExt_push_FMOD_VECTOR(L, vel);
@@ -5747,7 +5499,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Set3DMinMaxDistance(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float mindistance = FMODExt_check_float(L, 2);
     float maxdistance = FMODExt_check_float(L, 3);
-    ensure(LL, FMOD_ChannelGroup_Set3DMinMaxDistance, FMOD_RESULT, FMOD_CHANNELGROUP*, float, float);
     errCheck(FMOD_ChannelGroup_Set3DMinMaxDistance(channelgroup, mindistance, maxdistance));
     return 0;
 }
@@ -5761,7 +5512,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Get3DMinMaxDistance(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float mindistance;
     float maxdistance;
-    ensure(LL, FMOD_ChannelGroup_Get3DMinMaxDistance, FMOD_RESULT, FMOD_CHANNELGROUP*, float*, float*);
     errCheck(FMOD_ChannelGroup_Get3DMinMaxDistance(channelgroup, &mindistance, &maxdistance));
     FMODExt_push_float(L, mindistance);
     FMODExt_push_float(L, maxdistance);
@@ -5778,7 +5528,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Set3DConeSettings(lua_State *L) {
     float insideconeangle = FMODExt_check_float(L, 2);
     float outsideconeangle = FMODExt_check_float(L, 3);
     float outsidevolume = FMODExt_check_float(L, 4);
-    ensure(LL, FMOD_ChannelGroup_Set3DConeSettings, FMOD_RESULT, FMOD_CHANNELGROUP*, float, float, float);
     errCheck(FMOD_ChannelGroup_Set3DConeSettings(channelgroup, insideconeangle, outsideconeangle, outsidevolume));
     return 0;
 }
@@ -5793,7 +5542,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Get3DConeSettings(lua_State *L) {
     float insideconeangle;
     float outsideconeangle;
     float outsidevolume;
-    ensure(LL, FMOD_ChannelGroup_Get3DConeSettings, FMOD_RESULT, FMOD_CHANNELGROUP*, float*, float*, float*);
     errCheck(FMOD_ChannelGroup_Get3DConeSettings(channelgroup, &insideconeangle, &outsideconeangle, &outsidevolume));
     FMODExt_push_float(L, insideconeangle);
     FMODExt_push_float(L, outsideconeangle);
@@ -5809,7 +5557,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Get3DConeSettings(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_Set3DConeOrientation(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_VECTOR orientation;
-    ensure(LL, FMOD_ChannelGroup_Set3DConeOrientation, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_VECTOR*);
     errCheck(FMOD_ChannelGroup_Set3DConeOrientation(channelgroup, &orientation));
     FMODExt_push_FMOD_VECTOR(L, orientation);
     return 1;
@@ -5823,7 +5570,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Set3DConeOrientation(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_Get3DConeOrientation(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_VECTOR orientation;
-    ensure(LL, FMOD_ChannelGroup_Get3DConeOrientation, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_VECTOR*);
     errCheck(FMOD_ChannelGroup_Get3DConeOrientation(channelgroup, &orientation));
     FMODExt_push_FMOD_VECTOR(L, orientation);
     return 1;
@@ -5838,7 +5584,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Set3DCustomRolloff(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_VECTOR points;
     int numpoints = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_ChannelGroup_Set3DCustomRolloff, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_VECTOR*, int);
     errCheck(FMOD_ChannelGroup_Set3DCustomRolloff(channelgroup, &points, numpoints));
     FMODExt_push_FMOD_VECTOR(L, points);
     return 1;
@@ -5856,7 +5601,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Set3DOcclusion(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float directocclusion = FMODExt_check_float(L, 2);
     float reverbocclusion = FMODExt_check_float(L, 3);
-    ensure(LL, FMOD_ChannelGroup_Set3DOcclusion, FMOD_RESULT, FMOD_CHANNELGROUP*, float, float);
     errCheck(FMOD_ChannelGroup_Set3DOcclusion(channelgroup, directocclusion, reverbocclusion));
     return 0;
 }
@@ -5870,7 +5614,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Get3DOcclusion(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float directocclusion;
     float reverbocclusion;
-    ensure(LL, FMOD_ChannelGroup_Get3DOcclusion, FMOD_RESULT, FMOD_CHANNELGROUP*, float*, float*);
     errCheck(FMOD_ChannelGroup_Get3DOcclusion(channelgroup, &directocclusion, &reverbocclusion));
     FMODExt_push_float(L, directocclusion);
     FMODExt_push_float(L, reverbocclusion);
@@ -5885,7 +5628,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Get3DOcclusion(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_Set3DSpread(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float angle = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_ChannelGroup_Set3DSpread, FMOD_RESULT, FMOD_CHANNELGROUP*, float);
     errCheck(FMOD_ChannelGroup_Set3DSpread(channelgroup, angle));
     return 0;
 }
@@ -5898,7 +5640,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Set3DSpread(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_Get3DSpread(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float angle;
-    ensure(LL, FMOD_ChannelGroup_Get3DSpread, FMOD_RESULT, FMOD_CHANNELGROUP*, float*);
     errCheck(FMOD_ChannelGroup_Get3DSpread(channelgroup, &angle));
     FMODExt_push_float(L, angle);
     return 1;
@@ -5912,7 +5653,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Get3DSpread(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_Set3DLevel(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float level = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_ChannelGroup_Set3DLevel, FMOD_RESULT, FMOD_CHANNELGROUP*, float);
     errCheck(FMOD_ChannelGroup_Set3DLevel(channelgroup, level));
     return 0;
 }
@@ -5925,7 +5665,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Set3DLevel(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_Get3DLevel(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float level;
-    ensure(LL, FMOD_ChannelGroup_Get3DLevel, FMOD_RESULT, FMOD_CHANNELGROUP*, float*);
     errCheck(FMOD_ChannelGroup_Get3DLevel(channelgroup, &level));
     FMODExt_push_float(L, level);
     return 1;
@@ -5939,7 +5678,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Get3DLevel(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_Set3DDopplerLevel(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float level = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_ChannelGroup_Set3DDopplerLevel, FMOD_RESULT, FMOD_CHANNELGROUP*, float);
     errCheck(FMOD_ChannelGroup_Set3DDopplerLevel(channelgroup, level));
     return 0;
 }
@@ -5952,7 +5690,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Set3DDopplerLevel(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_Get3DDopplerLevel(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     float level;
-    ensure(LL, FMOD_ChannelGroup_Get3DDopplerLevel, FMOD_RESULT, FMOD_CHANNELGROUP*, float*);
     errCheck(FMOD_ChannelGroup_Get3DDopplerLevel(channelgroup, &level));
     FMODExt_push_float(L, level);
     return 1;
@@ -5968,7 +5705,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Set3DDistanceFilter(lua_State *L) {
     FMOD_BOOL custom = FMODExt_check_FMOD_BOOL(L, 2);
     float customLevel = FMODExt_check_float(L, 3);
     float centerFreq = FMODExt_check_float(L, 4);
-    ensure(LL, FMOD_ChannelGroup_Set3DDistanceFilter, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL, float, float);
     errCheck(FMOD_ChannelGroup_Set3DDistanceFilter(channelgroup, custom, customLevel, centerFreq));
     return 0;
 }
@@ -5983,7 +5719,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Get3DDistanceFilter(lua_State *L) {
     FMOD_BOOL custom;
     float customLevel;
     float centerFreq;
-    ensure(LL, FMOD_ChannelGroup_Get3DDistanceFilter, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL*, float*, float*);
     errCheck(FMOD_ChannelGroup_Get3DDistanceFilter(channelgroup, &custom, &customLevel, &centerFreq));
     FMODExt_push_FMOD_BOOL(L, custom);
     FMODExt_push_float(L, customLevel);
@@ -6004,7 +5739,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_Get3DDistanceFilter(lua_State *L) {
 #define FMODExt_func_FMOD_ChannelGroup_Release _FMODExt_func_FMOD_ChannelGroup_Release
 static int _FMODExt_func_FMOD_ChannelGroup_Release(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
-    ensure(LL, FMOD_ChannelGroup_Release, FMOD_RESULT, FMOD_CHANNELGROUP*);
     errCheck(FMOD_ChannelGroup_Release(channelgroup));
     return 0;
 }
@@ -6019,7 +5753,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_AddGroup(lua_State *L) {
     FMOD_CHANNELGROUP* group = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 2);
     FMOD_BOOL propagatedspclock = FMODExt_check_FMOD_BOOL(L, 3);
     FMOD_DSPCONNECTION* connection;
-    ensure(LL, FMOD_ChannelGroup_AddGroup, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_CHANNELGROUP*, FMOD_BOOL, FMOD_DSPCONNECTION**);
     errCheck(FMOD_ChannelGroup_AddGroup(channelgroup, group, propagatedspclock, &connection));
     FMODExt_push_ptr_FMOD_DSPCONNECTION(L, connection);
     return 1;
@@ -6033,7 +5766,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_AddGroup(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_GetNumGroups(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     int numgroups;
-    ensure(LL, FMOD_ChannelGroup_GetNumGroups, FMOD_RESULT, FMOD_CHANNELGROUP*, int*);
     errCheck(FMOD_ChannelGroup_GetNumGroups(channelgroup, &numgroups));
     FMODExt_push_int(L, numgroups);
     return 1;
@@ -6048,7 +5780,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetGroup(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     int index = FMODExt_check_int(L, 2);
     FMOD_CHANNELGROUP* group;
-    ensure(LL, FMOD_ChannelGroup_GetGroup, FMOD_RESULT, FMOD_CHANNELGROUP*, int, FMOD_CHANNELGROUP**);
     errCheck(FMOD_ChannelGroup_GetGroup(channelgroup, index, &group));
     FMODExt_push_ptr_FMOD_CHANNELGROUP(L, group);
     return 1;
@@ -6062,7 +5793,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetGroup(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_GetParentGroup(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     FMOD_CHANNELGROUP* group;
-    ensure(LL, FMOD_ChannelGroup_GetParentGroup, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_CHANNELGROUP**);
     errCheck(FMOD_ChannelGroup_GetParentGroup(channelgroup, &group));
     FMODExt_push_ptr_FMOD_CHANNELGROUP(L, group);
     return 1;
@@ -6079,7 +5809,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetParentGroup(lua_State *L) {
 static int _FMODExt_func_FMOD_ChannelGroup_GetNumChannels(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     int numchannels;
-    ensure(LL, FMOD_ChannelGroup_GetNumChannels, FMOD_RESULT, FMOD_CHANNELGROUP*, int*);
     errCheck(FMOD_ChannelGroup_GetNumChannels(channelgroup, &numchannels));
     FMODExt_push_int(L, numchannels);
     return 1;
@@ -6094,7 +5823,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetChannel(lua_State *L) {
     FMOD_CHANNELGROUP* channelgroup = FMODExt_check_ptr_FMOD_CHANNELGROUP(L, 1);
     int index = FMODExt_check_int(L, 2);
     FMOD_CHANNEL* channel;
-    ensure(LL, FMOD_ChannelGroup_GetChannel, FMOD_RESULT, FMOD_CHANNELGROUP*, int, FMOD_CHANNEL**);
     errCheck(FMOD_ChannelGroup_GetChannel(channelgroup, index, &channel));
     FMODExt_push_ptr_FMOD_CHANNEL(L, channel);
     return 1;
@@ -6107,7 +5835,6 @@ static int _FMODExt_func_FMOD_ChannelGroup_GetChannel(lua_State *L) {
 #define FMODExt_func_FMOD_SoundGroup_Release _FMODExt_func_FMOD_SoundGroup_Release
 static int _FMODExt_func_FMOD_SoundGroup_Release(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
-    ensure(LL, FMOD_SoundGroup_Release, FMOD_RESULT, FMOD_SOUNDGROUP*);
     errCheck(FMOD_SoundGroup_Release(soundgroup));
     return 0;
 }
@@ -6120,7 +5847,6 @@ static int _FMODExt_func_FMOD_SoundGroup_Release(lua_State *L) {
 static int _FMODExt_func_FMOD_SoundGroup_GetSystemObject(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
     FMOD_SYSTEM* system;
-    ensure(LL, FMOD_SoundGroup_GetSystemObject, FMOD_RESULT, FMOD_SOUNDGROUP*, FMOD_SYSTEM**);
     errCheck(FMOD_SoundGroup_GetSystemObject(soundgroup, &system));
     FMODExt_push_ptr_FMOD_SYSTEM(L, system);
     return 1;
@@ -6134,7 +5860,6 @@ static int _FMODExt_func_FMOD_SoundGroup_GetSystemObject(lua_State *L) {
 static int _FMODExt_func_FMOD_SoundGroup_SetMaxAudible(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
     int maxaudible = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_SoundGroup_SetMaxAudible, FMOD_RESULT, FMOD_SOUNDGROUP*, int);
     errCheck(FMOD_SoundGroup_SetMaxAudible(soundgroup, maxaudible));
     return 0;
 }
@@ -6147,7 +5872,6 @@ static int _FMODExt_func_FMOD_SoundGroup_SetMaxAudible(lua_State *L) {
 static int _FMODExt_func_FMOD_SoundGroup_GetMaxAudible(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
     int maxaudible;
-    ensure(LL, FMOD_SoundGroup_GetMaxAudible, FMOD_RESULT, FMOD_SOUNDGROUP*, int*);
     errCheck(FMOD_SoundGroup_GetMaxAudible(soundgroup, &maxaudible));
     FMODExt_push_int(L, maxaudible);
     return 1;
@@ -6161,7 +5885,6 @@ static int _FMODExt_func_FMOD_SoundGroup_GetMaxAudible(lua_State *L) {
 static int _FMODExt_func_FMOD_SoundGroup_SetMaxAudibleBehavior(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
     FMOD_SOUNDGROUP_BEHAVIOR behavior = FMODExt_check_FMOD_SOUNDGROUP_BEHAVIOR(L, 2);
-    ensure(LL, FMOD_SoundGroup_SetMaxAudibleBehavior, FMOD_RESULT, FMOD_SOUNDGROUP*, FMOD_SOUNDGROUP_BEHAVIOR);
     errCheck(FMOD_SoundGroup_SetMaxAudibleBehavior(soundgroup, behavior));
     return 0;
 }
@@ -6174,7 +5897,6 @@ static int _FMODExt_func_FMOD_SoundGroup_SetMaxAudibleBehavior(lua_State *L) {
 static int _FMODExt_func_FMOD_SoundGroup_GetMaxAudibleBehavior(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
     FMOD_SOUNDGROUP_BEHAVIOR behavior;
-    ensure(LL, FMOD_SoundGroup_GetMaxAudibleBehavior, FMOD_RESULT, FMOD_SOUNDGROUP*, FMOD_SOUNDGROUP_BEHAVIOR*);
     errCheck(FMOD_SoundGroup_GetMaxAudibleBehavior(soundgroup, &behavior));
     FMODExt_push_FMOD_SOUNDGROUP_BEHAVIOR(L, behavior);
     return 1;
@@ -6188,7 +5910,6 @@ static int _FMODExt_func_FMOD_SoundGroup_GetMaxAudibleBehavior(lua_State *L) {
 static int _FMODExt_func_FMOD_SoundGroup_SetMuteFadeSpeed(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
     float speed = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_SoundGroup_SetMuteFadeSpeed, FMOD_RESULT, FMOD_SOUNDGROUP*, float);
     errCheck(FMOD_SoundGroup_SetMuteFadeSpeed(soundgroup, speed));
     return 0;
 }
@@ -6201,7 +5922,6 @@ static int _FMODExt_func_FMOD_SoundGroup_SetMuteFadeSpeed(lua_State *L) {
 static int _FMODExt_func_FMOD_SoundGroup_GetMuteFadeSpeed(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
     float speed;
-    ensure(LL, FMOD_SoundGroup_GetMuteFadeSpeed, FMOD_RESULT, FMOD_SOUNDGROUP*, float*);
     errCheck(FMOD_SoundGroup_GetMuteFadeSpeed(soundgroup, &speed));
     FMODExt_push_float(L, speed);
     return 1;
@@ -6215,7 +5935,6 @@ static int _FMODExt_func_FMOD_SoundGroup_GetMuteFadeSpeed(lua_State *L) {
 static int _FMODExt_func_FMOD_SoundGroup_SetVolume(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
     float volume = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_SoundGroup_SetVolume, FMOD_RESULT, FMOD_SOUNDGROUP*, float);
     errCheck(FMOD_SoundGroup_SetVolume(soundgroup, volume));
     return 0;
 }
@@ -6228,7 +5947,6 @@ static int _FMODExt_func_FMOD_SoundGroup_SetVolume(lua_State *L) {
 static int _FMODExt_func_FMOD_SoundGroup_GetVolume(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
     float volume;
-    ensure(LL, FMOD_SoundGroup_GetVolume, FMOD_RESULT, FMOD_SOUNDGROUP*, float*);
     errCheck(FMOD_SoundGroup_GetVolume(soundgroup, &volume));
     FMODExt_push_float(L, volume);
     return 1;
@@ -6241,7 +5959,6 @@ static int _FMODExt_func_FMOD_SoundGroup_GetVolume(lua_State *L) {
 #define FMODExt_func_FMOD_SoundGroup_Stop _FMODExt_func_FMOD_SoundGroup_Stop
 static int _FMODExt_func_FMOD_SoundGroup_Stop(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
-    ensure(LL, FMOD_SoundGroup_Stop, FMOD_RESULT, FMOD_SOUNDGROUP*);
     errCheck(FMOD_SoundGroup_Stop(soundgroup));
     return 0;
 }
@@ -6257,7 +5974,6 @@ static int _FMODExt_func_FMOD_SoundGroup_Stop(lua_State *L) {
 static int _FMODExt_func_FMOD_SoundGroup_GetNumSounds(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
     int numsounds;
-    ensure(LL, FMOD_SoundGroup_GetNumSounds, FMOD_RESULT, FMOD_SOUNDGROUP*, int*);
     errCheck(FMOD_SoundGroup_GetNumSounds(soundgroup, &numsounds));
     FMODExt_push_int(L, numsounds);
     return 1;
@@ -6272,7 +5988,6 @@ static int _FMODExt_func_FMOD_SoundGroup_GetSound(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
     int index = FMODExt_check_int(L, 2);
     FMOD_SOUND* sound;
-    ensure(LL, FMOD_SoundGroup_GetSound, FMOD_RESULT, FMOD_SOUNDGROUP*, int, FMOD_SOUND**);
     errCheck(FMOD_SoundGroup_GetSound(soundgroup, index, &sound));
     FMODExt_push_ptr_FMOD_SOUND(L, sound);
     return 1;
@@ -6286,7 +6001,6 @@ static int _FMODExt_func_FMOD_SoundGroup_GetSound(lua_State *L) {
 static int _FMODExt_func_FMOD_SoundGroup_GetNumPlaying(lua_State *L) {
     FMOD_SOUNDGROUP* soundgroup = FMODExt_check_ptr_FMOD_SOUNDGROUP(L, 1);
     int numplaying;
-    ensure(LL, FMOD_SoundGroup_GetNumPlaying, FMOD_RESULT, FMOD_SOUNDGROUP*, int*);
     errCheck(FMOD_SoundGroup_GetNumPlaying(soundgroup, &numplaying));
     FMODExt_push_int(L, numplaying);
     return 1;
@@ -6305,7 +6019,6 @@ static int _FMODExt_func_FMOD_SoundGroup_GetNumPlaying(lua_State *L) {
 #define FMODExt_func_FMOD_DSP_Release _FMODExt_func_FMOD_DSP_Release
 static int _FMODExt_func_FMOD_DSP_Release(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
-    ensure(LL, FMOD_DSP_Release, FMOD_RESULT, FMOD_DSP*);
     errCheck(FMOD_DSP_Release(dsp));
     return 0;
 }
@@ -6318,7 +6031,6 @@ static int _FMODExt_func_FMOD_DSP_Release(lua_State *L) {
 static int _FMODExt_func_FMOD_DSP_GetSystemObject(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     FMOD_SYSTEM* system;
-    ensure(LL, FMOD_DSP_GetSystemObject, FMOD_RESULT, FMOD_DSP*, FMOD_SYSTEM**);
     errCheck(FMOD_DSP_GetSystemObject(dsp, &system));
     FMODExt_push_ptr_FMOD_SYSTEM(L, system);
     return 1;
@@ -6334,7 +6046,6 @@ static int _FMODExt_func_FMOD_DSP_AddInput(lua_State *L) {
     FMOD_DSP* input = FMODExt_check_ptr_FMOD_DSP(L, 2);
     FMOD_DSPCONNECTION* connection;
     FMOD_DSPCONNECTION_TYPE type = FMODExt_check_FMOD_DSPCONNECTION_TYPE(L, 3);
-    ensure(LL, FMOD_DSP_AddInput, FMOD_RESULT, FMOD_DSP*, FMOD_DSP*, FMOD_DSPCONNECTION**, FMOD_DSPCONNECTION_TYPE);
     errCheck(FMOD_DSP_AddInput(dsp, input, &connection, type));
     FMODExt_push_ptr_FMOD_DSPCONNECTION(L, connection);
     return 1;
@@ -6349,7 +6060,6 @@ static int _FMODExt_func_FMOD_DSP_DisconnectFrom(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     FMOD_DSP* target = FMODExt_check_ptr_FMOD_DSP(L, 2);
     FMOD_DSPCONNECTION* connection = FMODExt_check_ptr_FMOD_DSPCONNECTION(L, 3);
-    ensure(LL, FMOD_DSP_DisconnectFrom, FMOD_RESULT, FMOD_DSP*, FMOD_DSP*, FMOD_DSPCONNECTION*);
     errCheck(FMOD_DSP_DisconnectFrom(dsp, target, connection));
     return 0;
 }
@@ -6363,7 +6073,6 @@ static int _FMODExt_func_FMOD_DSP_DisconnectAll(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     FMOD_BOOL inputs = FMODExt_check_FMOD_BOOL(L, 2);
     FMOD_BOOL outputs = FMODExt_check_FMOD_BOOL(L, 3);
-    ensure(LL, FMOD_DSP_DisconnectAll, FMOD_RESULT, FMOD_DSP*, FMOD_BOOL, FMOD_BOOL);
     errCheck(FMOD_DSP_DisconnectAll(dsp, inputs, outputs));
     return 0;
 }
@@ -6376,7 +6085,6 @@ static int _FMODExt_func_FMOD_DSP_DisconnectAll(lua_State *L) {
 static int _FMODExt_func_FMOD_DSP_GetNumInputs(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     int numinputs;
-    ensure(LL, FMOD_DSP_GetNumInputs, FMOD_RESULT, FMOD_DSP*, int*);
     errCheck(FMOD_DSP_GetNumInputs(dsp, &numinputs));
     FMODExt_push_int(L, numinputs);
     return 1;
@@ -6390,7 +6098,6 @@ static int _FMODExt_func_FMOD_DSP_GetNumInputs(lua_State *L) {
 static int _FMODExt_func_FMOD_DSP_GetNumOutputs(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     int numoutputs;
-    ensure(LL, FMOD_DSP_GetNumOutputs, FMOD_RESULT, FMOD_DSP*, int*);
     errCheck(FMOD_DSP_GetNumOutputs(dsp, &numoutputs));
     FMODExt_push_int(L, numoutputs);
     return 1;
@@ -6406,7 +6113,6 @@ static int _FMODExt_func_FMOD_DSP_GetInput(lua_State *L) {
     int index = FMODExt_check_int(L, 2);
     FMOD_DSP* input;
     FMOD_DSPCONNECTION* inputconnection;
-    ensure(LL, FMOD_DSP_GetInput, FMOD_RESULT, FMOD_DSP*, int, FMOD_DSP**, FMOD_DSPCONNECTION**);
     errCheck(FMOD_DSP_GetInput(dsp, index, &input, &inputconnection));
     FMODExt_push_ptr_FMOD_DSP(L, input);
     FMODExt_push_ptr_FMOD_DSPCONNECTION(L, inputconnection);
@@ -6423,7 +6129,6 @@ static int _FMODExt_func_FMOD_DSP_GetOutput(lua_State *L) {
     int index = FMODExt_check_int(L, 2);
     FMOD_DSP* output;
     FMOD_DSPCONNECTION* outputconnection;
-    ensure(LL, FMOD_DSP_GetOutput, FMOD_RESULT, FMOD_DSP*, int, FMOD_DSP**, FMOD_DSPCONNECTION**);
     errCheck(FMOD_DSP_GetOutput(dsp, index, &output, &outputconnection));
     FMODExt_push_ptr_FMOD_DSP(L, output);
     FMODExt_push_ptr_FMOD_DSPCONNECTION(L, outputconnection);
@@ -6438,7 +6143,6 @@ static int _FMODExt_func_FMOD_DSP_GetOutput(lua_State *L) {
 static int _FMODExt_func_FMOD_DSP_SetActive(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     FMOD_BOOL active = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(LL, FMOD_DSP_SetActive, FMOD_RESULT, FMOD_DSP*, FMOD_BOOL);
     errCheck(FMOD_DSP_SetActive(dsp, active));
     return 0;
 }
@@ -6451,7 +6155,6 @@ static int _FMODExt_func_FMOD_DSP_SetActive(lua_State *L) {
 static int _FMODExt_func_FMOD_DSP_GetActive(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     FMOD_BOOL active;
-    ensure(LL, FMOD_DSP_GetActive, FMOD_RESULT, FMOD_DSP*, FMOD_BOOL*);
     errCheck(FMOD_DSP_GetActive(dsp, &active));
     FMODExt_push_FMOD_BOOL(L, active);
     return 1;
@@ -6465,7 +6168,6 @@ static int _FMODExt_func_FMOD_DSP_GetActive(lua_State *L) {
 static int _FMODExt_func_FMOD_DSP_SetBypass(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     FMOD_BOOL bypass = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(LL, FMOD_DSP_SetBypass, FMOD_RESULT, FMOD_DSP*, FMOD_BOOL);
     errCheck(FMOD_DSP_SetBypass(dsp, bypass));
     return 0;
 }
@@ -6478,7 +6180,6 @@ static int _FMODExt_func_FMOD_DSP_SetBypass(lua_State *L) {
 static int _FMODExt_func_FMOD_DSP_GetBypass(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     FMOD_BOOL bypass;
-    ensure(LL, FMOD_DSP_GetBypass, FMOD_RESULT, FMOD_DSP*, FMOD_BOOL*);
     errCheck(FMOD_DSP_GetBypass(dsp, &bypass));
     FMODExt_push_FMOD_BOOL(L, bypass);
     return 1;
@@ -6494,7 +6195,6 @@ static int _FMODExt_func_FMOD_DSP_SetWetDryMix(lua_State *L) {
     float prewet = FMODExt_check_float(L, 2);
     float postwet = FMODExt_check_float(L, 3);
     float dry = FMODExt_check_float(L, 4);
-    ensure(LL, FMOD_DSP_SetWetDryMix, FMOD_RESULT, FMOD_DSP*, float, float, float);
     errCheck(FMOD_DSP_SetWetDryMix(dsp, prewet, postwet, dry));
     return 0;
 }
@@ -6509,7 +6209,6 @@ static int _FMODExt_func_FMOD_DSP_GetWetDryMix(lua_State *L) {
     float prewet;
     float postwet;
     float dry;
-    ensure(LL, FMOD_DSP_GetWetDryMix, FMOD_RESULT, FMOD_DSP*, float*, float*, float*);
     errCheck(FMOD_DSP_GetWetDryMix(dsp, &prewet, &postwet, &dry));
     FMODExt_push_float(L, prewet);
     FMODExt_push_float(L, postwet);
@@ -6527,7 +6226,6 @@ static int _FMODExt_func_FMOD_DSP_SetChannelFormat(lua_State *L) {
     FMOD_CHANNELMASK channelmask = FMODExt_check_unsigned_int(L, 2);
     int numchannels = FMODExt_check_int(L, 3);
     FMOD_SPEAKERMODE source_speakermode = FMODExt_check_FMOD_SPEAKERMODE(L, 4);
-    ensure(LL, FMOD_DSP_SetChannelFormat, FMOD_RESULT, FMOD_DSP*, FMOD_CHANNELMASK, int, FMOD_SPEAKERMODE);
     errCheck(FMOD_DSP_SetChannelFormat(dsp, channelmask, numchannels, source_speakermode));
     return 0;
 }
@@ -6542,7 +6240,6 @@ static int _FMODExt_func_FMOD_DSP_GetChannelFormat(lua_State *L) {
     FMOD_CHANNELMASK channelmask;
     int numchannels;
     FMOD_SPEAKERMODE source_speakermode;
-    ensure(LL, FMOD_DSP_GetChannelFormat, FMOD_RESULT, FMOD_DSP*, FMOD_CHANNELMASK*, int*, FMOD_SPEAKERMODE*);
     errCheck(FMOD_DSP_GetChannelFormat(dsp, &channelmask, &numchannels, &source_speakermode));
     FMODExt_push_unsigned_int(L, channelmask);
     FMODExt_push_int(L, numchannels);
@@ -6563,7 +6260,6 @@ static int _FMODExt_func_FMOD_DSP_GetOutputChannelFormat(lua_State *L) {
     FMOD_CHANNELMASK outmask;
     int outchannels;
     FMOD_SPEAKERMODE outspeakermode;
-    ensure(LL, FMOD_DSP_GetOutputChannelFormat, FMOD_RESULT, FMOD_DSP*, FMOD_CHANNELMASK, int, FMOD_SPEAKERMODE, FMOD_CHANNELMASK*, int*, FMOD_SPEAKERMODE*);
     errCheck(FMOD_DSP_GetOutputChannelFormat(dsp, inmask, inchannels, inspeakermode, &outmask, &outchannels, &outspeakermode));
     FMODExt_push_unsigned_int(L, outmask);
     FMODExt_push_int(L, outchannels);
@@ -6578,7 +6274,6 @@ static int _FMODExt_func_FMOD_DSP_GetOutputChannelFormat(lua_State *L) {
 #define FMODExt_func_FMOD_DSP_Reset _FMODExt_func_FMOD_DSP_Reset
 static int _FMODExt_func_FMOD_DSP_Reset(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
-    ensure(LL, FMOD_DSP_Reset, FMOD_RESULT, FMOD_DSP*);
     errCheck(FMOD_DSP_Reset(dsp));
     return 0;
 }
@@ -6595,7 +6290,6 @@ static int _FMODExt_func_FMOD_DSP_SetParameterFloat(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     int index = FMODExt_check_int(L, 2);
     float value = FMODExt_check_float(L, 3);
-    ensure(LL, FMOD_DSP_SetParameterFloat, FMOD_RESULT, FMOD_DSP*, int, float);
     errCheck(FMOD_DSP_SetParameterFloat(dsp, index, value));
     return 0;
 }
@@ -6609,7 +6303,6 @@ static int _FMODExt_func_FMOD_DSP_SetParameterInt(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     int index = FMODExt_check_int(L, 2);
     int value = FMODExt_check_int(L, 3);
-    ensure(LL, FMOD_DSP_SetParameterInt, FMOD_RESULT, FMOD_DSP*, int, int);
     errCheck(FMOD_DSP_SetParameterInt(dsp, index, value));
     return 0;
 }
@@ -6623,7 +6316,6 @@ static int _FMODExt_func_FMOD_DSP_SetParameterBool(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     int index = FMODExt_check_int(L, 2);
     FMOD_BOOL value = FMODExt_check_FMOD_BOOL(L, 3);
-    ensure(LL, FMOD_DSP_SetParameterBool, FMOD_RESULT, FMOD_DSP*, int, FMOD_BOOL);
     errCheck(FMOD_DSP_SetParameterBool(dsp, index, value));
     return 0;
 }
@@ -6651,7 +6343,6 @@ static int _FMODExt_func_FMOD_DSP_SetParameterBool(lua_State *L) {
 static int _FMODExt_func_FMOD_DSP_GetNumParameters(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     int numparams;
-    ensure(LL, FMOD_DSP_GetNumParameters, FMOD_RESULT, FMOD_DSP*, int*);
     errCheck(FMOD_DSP_GetNumParameters(dsp, &numparams));
     FMODExt_push_int(L, numparams);
     return 1;
@@ -6666,7 +6357,6 @@ static int _FMODExt_func_FMOD_DSP_GetParameterInfo(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     int index = FMODExt_check_int(L, 2);
     FMOD_DSP_PARAMETER_DESC* desc;
-    ensure(LL, FMOD_DSP_GetParameterInfo, FMOD_RESULT, FMOD_DSP*, int, FMOD_DSP_PARAMETER_DESC**);
     errCheck(FMOD_DSP_GetParameterInfo(dsp, index, &desc));
     FMODExt_push_ptr_FMOD_DSP_PARAMETER_DESC(L, desc);
     return 1;
@@ -6681,7 +6371,6 @@ static int _FMODExt_func_FMOD_DSP_GetDataParameterIndex(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     int datatype = FMODExt_check_int(L, 2);
     int index;
-    ensure(LL, FMOD_DSP_GetDataParameterIndex, FMOD_RESULT, FMOD_DSP*, int, int*);
     errCheck(FMOD_DSP_GetDataParameterIndex(dsp, datatype, &index));
     FMODExt_push_int(L, index);
     return 1;
@@ -6701,7 +6390,6 @@ static int _FMODExt_func_FMOD_DSP_GetDataParameterIndex(lua_State *L) {
 static int _FMODExt_func_FMOD_DSP_GetType(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     FMOD_DSP_TYPE type;
-    ensure(LL, FMOD_DSP_GetType, FMOD_RESULT, FMOD_DSP*, FMOD_DSP_TYPE*);
     errCheck(FMOD_DSP_GetType(dsp, &type));
     FMODExt_push_FMOD_DSP_TYPE(L, type);
     return 1;
@@ -6715,7 +6403,6 @@ static int _FMODExt_func_FMOD_DSP_GetType(lua_State *L) {
 static int _FMODExt_func_FMOD_DSP_GetIdle(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     FMOD_BOOL idle;
-    ensure(LL, FMOD_DSP_GetIdle, FMOD_RESULT, FMOD_DSP*, FMOD_BOOL*);
     errCheck(FMOD_DSP_GetIdle(dsp, &idle));
     FMODExt_push_FMOD_BOOL(L, idle);
     return 1;
@@ -6736,7 +6423,6 @@ static int _FMODExt_func_FMOD_DSP_SetMeteringEnabled(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     FMOD_BOOL inputEnabled = FMODExt_check_FMOD_BOOL(L, 2);
     FMOD_BOOL outputEnabled = FMODExt_check_FMOD_BOOL(L, 3);
-    ensure(LL, FMOD_DSP_SetMeteringEnabled, FMOD_RESULT, FMOD_DSP*, FMOD_BOOL, FMOD_BOOL);
     errCheck(FMOD_DSP_SetMeteringEnabled(dsp, inputEnabled, outputEnabled));
     return 0;
 }
@@ -6750,7 +6436,6 @@ static int _FMODExt_func_FMOD_DSP_GetMeteringEnabled(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     FMOD_BOOL inputEnabled;
     FMOD_BOOL outputEnabled;
-    ensure(LL, FMOD_DSP_GetMeteringEnabled, FMOD_RESULT, FMOD_DSP*, FMOD_BOOL*, FMOD_BOOL*);
     errCheck(FMOD_DSP_GetMeteringEnabled(dsp, &inputEnabled, &outputEnabled));
     FMODExt_push_FMOD_BOOL(L, inputEnabled);
     FMODExt_push_FMOD_BOOL(L, outputEnabled);
@@ -6766,7 +6451,6 @@ static int _FMODExt_func_FMOD_DSP_GetMeteringInfo(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     FMOD_DSP_METERING_INFO* inputInfo = FMODExt_push_ptr_FMOD_DSP_METERING_INFO(L, NULL);
     FMOD_DSP_METERING_INFO* outputInfo = FMODExt_push_ptr_FMOD_DSP_METERING_INFO(L, NULL);
-    ensure(LL, FMOD_DSP_GetMeteringInfo, FMOD_RESULT, FMOD_DSP*, FMOD_DSP_METERING_INFO*, FMOD_DSP_METERING_INFO*);
     errCheck(FMOD_DSP_GetMeteringInfo(dsp, inputInfo, outputInfo));
     lua_pushvalue(L, -2);
     lua_pushvalue(L, -2);
@@ -6782,7 +6466,6 @@ static int _FMODExt_func_FMOD_DSP_GetCPUUsage(lua_State *L) {
     FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     unsigned int exclusive;
     unsigned int inclusive;
-    ensure(LL, FMOD_DSP_GetCPUUsage, FMOD_RESULT, FMOD_DSP*, unsigned int*, unsigned int*);
     errCheck(FMOD_DSP_GetCPUUsage(dsp, &exclusive, &inclusive));
     FMODExt_push_unsigned_int(L, exclusive);
     FMODExt_push_unsigned_int(L, inclusive);
@@ -6797,7 +6480,6 @@ static int _FMODExt_func_FMOD_DSP_GetCPUUsage(lua_State *L) {
 static int _FMODExt_func_FMOD_DSPConnection_GetInput(lua_State *L) {
     FMOD_DSPCONNECTION* dspconnection = FMODExt_check_ptr_FMOD_DSPCONNECTION(L, 1);
     FMOD_DSP* input;
-    ensure(LL, FMOD_DSPConnection_GetInput, FMOD_RESULT, FMOD_DSPCONNECTION*, FMOD_DSP**);
     errCheck(FMOD_DSPConnection_GetInput(dspconnection, &input));
     FMODExt_push_ptr_FMOD_DSP(L, input);
     return 1;
@@ -6811,7 +6493,6 @@ static int _FMODExt_func_FMOD_DSPConnection_GetInput(lua_State *L) {
 static int _FMODExt_func_FMOD_DSPConnection_GetOutput(lua_State *L) {
     FMOD_DSPCONNECTION* dspconnection = FMODExt_check_ptr_FMOD_DSPCONNECTION(L, 1);
     FMOD_DSP* output;
-    ensure(LL, FMOD_DSPConnection_GetOutput, FMOD_RESULT, FMOD_DSPCONNECTION*, FMOD_DSP**);
     errCheck(FMOD_DSPConnection_GetOutput(dspconnection, &output));
     FMODExt_push_ptr_FMOD_DSP(L, output);
     return 1;
@@ -6825,7 +6506,6 @@ static int _FMODExt_func_FMOD_DSPConnection_GetOutput(lua_State *L) {
 static int _FMODExt_func_FMOD_DSPConnection_SetMix(lua_State *L) {
     FMOD_DSPCONNECTION* dspconnection = FMODExt_check_ptr_FMOD_DSPCONNECTION(L, 1);
     float volume = FMODExt_check_float(L, 2);
-    ensure(LL, FMOD_DSPConnection_SetMix, FMOD_RESULT, FMOD_DSPCONNECTION*, float);
     errCheck(FMOD_DSPConnection_SetMix(dspconnection, volume));
     return 0;
 }
@@ -6838,7 +6518,6 @@ static int _FMODExt_func_FMOD_DSPConnection_SetMix(lua_State *L) {
 static int _FMODExt_func_FMOD_DSPConnection_GetMix(lua_State *L) {
     FMOD_DSPCONNECTION* dspconnection = FMODExt_check_ptr_FMOD_DSPCONNECTION(L, 1);
     float volume;
-    ensure(LL, FMOD_DSPConnection_GetMix, FMOD_RESULT, FMOD_DSPCONNECTION*, float*);
     errCheck(FMOD_DSPConnection_GetMix(dspconnection, &volume));
     FMODExt_push_float(L, volume);
     return 1;
@@ -6855,7 +6534,6 @@ static int _FMODExt_func_FMOD_DSPConnection_SetMixMatrix(lua_State *L) {
     int outchannels = FMODExt_check_int(L, 2);
     int inchannels = FMODExt_check_int(L, 3);
     int inchannel_hop = FMODExt_check_int(L, 4);
-    ensure(LL, FMOD_DSPConnection_SetMixMatrix, FMOD_RESULT, FMOD_DSPCONNECTION*, float*, int, int, int);
     errCheck(FMOD_DSPConnection_SetMixMatrix(dspconnection, &matrix, outchannels, inchannels, inchannel_hop));
     FMODExt_push_float(L, matrix);
     return 1;
@@ -6872,7 +6550,6 @@ static int _FMODExt_func_FMOD_DSPConnection_GetMixMatrix(lua_State *L) {
     int outchannels;
     int inchannels;
     int inchannel_hop = FMODExt_check_int(L, 2);
-    ensure(LL, FMOD_DSPConnection_GetMixMatrix, FMOD_RESULT, FMOD_DSPCONNECTION*, float*, int*, int*, int);
     errCheck(FMOD_DSPConnection_GetMixMatrix(dspconnection, &matrix, &outchannels, &inchannels, inchannel_hop));
     FMODExt_push_float(L, matrix);
     FMODExt_push_int(L, outchannels);
@@ -6888,7 +6565,6 @@ static int _FMODExt_func_FMOD_DSPConnection_GetMixMatrix(lua_State *L) {
 static int _FMODExt_func_FMOD_DSPConnection_GetType(lua_State *L) {
     FMOD_DSPCONNECTION* dspconnection = FMODExt_check_ptr_FMOD_DSPCONNECTION(L, 1);
     FMOD_DSPCONNECTION_TYPE type;
-    ensure(LL, FMOD_DSPConnection_GetType, FMOD_RESULT, FMOD_DSPCONNECTION*, FMOD_DSPCONNECTION_TYPE*);
     errCheck(FMOD_DSPConnection_GetType(dspconnection, &type));
     FMODExt_push_FMOD_DSPCONNECTION_TYPE(L, type);
     return 1;
@@ -6907,7 +6583,6 @@ static int _FMODExt_func_FMOD_DSPConnection_GetType(lua_State *L) {
 #define FMODExt_func_FMOD_Geometry_Release _FMODExt_func_FMOD_Geometry_Release
 static int _FMODExt_func_FMOD_Geometry_Release(lua_State *L) {
     FMOD_GEOMETRY* geometry = FMODExt_check_ptr_FMOD_GEOMETRY(L, 1);
-    ensure(LL, FMOD_Geometry_Release, FMOD_RESULT, FMOD_GEOMETRY*);
     errCheck(FMOD_Geometry_Release(geometry));
     return 0;
 }
@@ -6925,7 +6600,6 @@ static int _FMODExt_func_FMOD_Geometry_AddPolygon(lua_State *L) {
     int numvertices = FMODExt_check_int(L, 5);
     const FMOD_VECTOR vertices = FMODExt_check_FMOD_VECTOR(L, 6);
     int polygonindex;
-    ensure(LL, FMOD_Geometry_AddPolygon, FMOD_RESULT, FMOD_GEOMETRY*, float, float, FMOD_BOOL, int, const FMOD_VECTOR*, int*);
     errCheck(FMOD_Geometry_AddPolygon(geometry, directocclusion, reverbocclusion, doublesided, numvertices, &vertices, &polygonindex));
     FMODExt_push_int(L, polygonindex);
     return 1;
@@ -6939,7 +6613,6 @@ static int _FMODExt_func_FMOD_Geometry_AddPolygon(lua_State *L) {
 static int _FMODExt_func_FMOD_Geometry_GetNumPolygons(lua_State *L) {
     FMOD_GEOMETRY* geometry = FMODExt_check_ptr_FMOD_GEOMETRY(L, 1);
     int numpolygons;
-    ensure(LL, FMOD_Geometry_GetNumPolygons, FMOD_RESULT, FMOD_GEOMETRY*, int*);
     errCheck(FMOD_Geometry_GetNumPolygons(geometry, &numpolygons));
     FMODExt_push_int(L, numpolygons);
     return 1;
@@ -6954,7 +6627,6 @@ static int _FMODExt_func_FMOD_Geometry_GetMaxPolygons(lua_State *L) {
     FMOD_GEOMETRY* geometry = FMODExt_check_ptr_FMOD_GEOMETRY(L, 1);
     int maxpolygons;
     int maxvertices;
-    ensure(LL, FMOD_Geometry_GetMaxPolygons, FMOD_RESULT, FMOD_GEOMETRY*, int*, int*);
     errCheck(FMOD_Geometry_GetMaxPolygons(geometry, &maxpolygons, &maxvertices));
     FMODExt_push_int(L, maxpolygons);
     FMODExt_push_int(L, maxvertices);
@@ -6970,7 +6642,6 @@ static int _FMODExt_func_FMOD_Geometry_GetPolygonNumVertices(lua_State *L) {
     FMOD_GEOMETRY* geometry = FMODExt_check_ptr_FMOD_GEOMETRY(L, 1);
     int index = FMODExt_check_int(L, 2);
     int numvertices;
-    ensure(LL, FMOD_Geometry_GetPolygonNumVertices, FMOD_RESULT, FMOD_GEOMETRY*, int, int*);
     errCheck(FMOD_Geometry_GetPolygonNumVertices(geometry, index, &numvertices));
     FMODExt_push_int(L, numvertices);
     return 1;
@@ -6986,7 +6657,6 @@ static int _FMODExt_func_FMOD_Geometry_SetPolygonVertex(lua_State *L) {
     int index = FMODExt_check_int(L, 2);
     int vertexindex = FMODExt_check_int(L, 3);
     const FMOD_VECTOR vertex = FMODExt_check_FMOD_VECTOR(L, 4);
-    ensure(LL, FMOD_Geometry_SetPolygonVertex, FMOD_RESULT, FMOD_GEOMETRY*, int, int, const FMOD_VECTOR*);
     errCheck(FMOD_Geometry_SetPolygonVertex(geometry, index, vertexindex, &vertex));
     return 0;
 }
@@ -7001,7 +6671,6 @@ static int _FMODExt_func_FMOD_Geometry_GetPolygonVertex(lua_State *L) {
     int index = FMODExt_check_int(L, 2);
     int vertexindex = FMODExt_check_int(L, 3);
     FMOD_VECTOR vertex;
-    ensure(LL, FMOD_Geometry_GetPolygonVertex, FMOD_RESULT, FMOD_GEOMETRY*, int, int, FMOD_VECTOR*);
     errCheck(FMOD_Geometry_GetPolygonVertex(geometry, index, vertexindex, &vertex));
     FMODExt_push_FMOD_VECTOR(L, vertex);
     return 1;
@@ -7018,7 +6687,6 @@ static int _FMODExt_func_FMOD_Geometry_SetPolygonAttributes(lua_State *L) {
     float directocclusion = FMODExt_check_float(L, 3);
     float reverbocclusion = FMODExt_check_float(L, 4);
     FMOD_BOOL doublesided = FMODExt_check_FMOD_BOOL(L, 5);
-    ensure(LL, FMOD_Geometry_SetPolygonAttributes, FMOD_RESULT, FMOD_GEOMETRY*, int, float, float, FMOD_BOOL);
     errCheck(FMOD_Geometry_SetPolygonAttributes(geometry, index, directocclusion, reverbocclusion, doublesided));
     return 0;
 }
@@ -7034,7 +6702,6 @@ static int _FMODExt_func_FMOD_Geometry_GetPolygonAttributes(lua_State *L) {
     float directocclusion;
     float reverbocclusion;
     FMOD_BOOL doublesided;
-    ensure(LL, FMOD_Geometry_GetPolygonAttributes, FMOD_RESULT, FMOD_GEOMETRY*, int, float*, float*, FMOD_BOOL*);
     errCheck(FMOD_Geometry_GetPolygonAttributes(geometry, index, &directocclusion, &reverbocclusion, &doublesided));
     FMODExt_push_float(L, directocclusion);
     FMODExt_push_float(L, reverbocclusion);
@@ -7050,7 +6717,6 @@ static int _FMODExt_func_FMOD_Geometry_GetPolygonAttributes(lua_State *L) {
 static int _FMODExt_func_FMOD_Geometry_SetActive(lua_State *L) {
     FMOD_GEOMETRY* geometry = FMODExt_check_ptr_FMOD_GEOMETRY(L, 1);
     FMOD_BOOL active = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(LL, FMOD_Geometry_SetActive, FMOD_RESULT, FMOD_GEOMETRY*, FMOD_BOOL);
     errCheck(FMOD_Geometry_SetActive(geometry, active));
     return 0;
 }
@@ -7063,7 +6729,6 @@ static int _FMODExt_func_FMOD_Geometry_SetActive(lua_State *L) {
 static int _FMODExt_func_FMOD_Geometry_GetActive(lua_State *L) {
     FMOD_GEOMETRY* geometry = FMODExt_check_ptr_FMOD_GEOMETRY(L, 1);
     FMOD_BOOL active;
-    ensure(LL, FMOD_Geometry_GetActive, FMOD_RESULT, FMOD_GEOMETRY*, FMOD_BOOL*);
     errCheck(FMOD_Geometry_GetActive(geometry, &active));
     FMODExt_push_FMOD_BOOL(L, active);
     return 1;
@@ -7078,7 +6743,6 @@ static int _FMODExt_func_FMOD_Geometry_SetRotation(lua_State *L) {
     FMOD_GEOMETRY* geometry = FMODExt_check_ptr_FMOD_GEOMETRY(L, 1);
     const FMOD_VECTOR forward = FMODExt_check_FMOD_VECTOR(L, 2);
     const FMOD_VECTOR up = FMODExt_check_FMOD_VECTOR(L, 3);
-    ensure(LL, FMOD_Geometry_SetRotation, FMOD_RESULT, FMOD_GEOMETRY*, const FMOD_VECTOR*, const FMOD_VECTOR*);
     errCheck(FMOD_Geometry_SetRotation(geometry, &forward, &up));
     return 0;
 }
@@ -7092,7 +6756,6 @@ static int _FMODExt_func_FMOD_Geometry_GetRotation(lua_State *L) {
     FMOD_GEOMETRY* geometry = FMODExt_check_ptr_FMOD_GEOMETRY(L, 1);
     FMOD_VECTOR forward;
     FMOD_VECTOR up;
-    ensure(LL, FMOD_Geometry_GetRotation, FMOD_RESULT, FMOD_GEOMETRY*, FMOD_VECTOR*, FMOD_VECTOR*);
     errCheck(FMOD_Geometry_GetRotation(geometry, &forward, &up));
     FMODExt_push_FMOD_VECTOR(L, forward);
     FMODExt_push_FMOD_VECTOR(L, up);
@@ -7107,7 +6770,6 @@ static int _FMODExt_func_FMOD_Geometry_GetRotation(lua_State *L) {
 static int _FMODExt_func_FMOD_Geometry_SetPosition(lua_State *L) {
     FMOD_GEOMETRY* geometry = FMODExt_check_ptr_FMOD_GEOMETRY(L, 1);
     const FMOD_VECTOR position = FMODExt_check_FMOD_VECTOR(L, 2);
-    ensure(LL, FMOD_Geometry_SetPosition, FMOD_RESULT, FMOD_GEOMETRY*, const FMOD_VECTOR*);
     errCheck(FMOD_Geometry_SetPosition(geometry, &position));
     return 0;
 }
@@ -7120,7 +6782,6 @@ static int _FMODExt_func_FMOD_Geometry_SetPosition(lua_State *L) {
 static int _FMODExt_func_FMOD_Geometry_GetPosition(lua_State *L) {
     FMOD_GEOMETRY* geometry = FMODExt_check_ptr_FMOD_GEOMETRY(L, 1);
     FMOD_VECTOR position;
-    ensure(LL, FMOD_Geometry_GetPosition, FMOD_RESULT, FMOD_GEOMETRY*, FMOD_VECTOR*);
     errCheck(FMOD_Geometry_GetPosition(geometry, &position));
     FMODExt_push_FMOD_VECTOR(L, position);
     return 1;
@@ -7134,7 +6795,6 @@ static int _FMODExt_func_FMOD_Geometry_GetPosition(lua_State *L) {
 static int _FMODExt_func_FMOD_Geometry_SetScale(lua_State *L) {
     FMOD_GEOMETRY* geometry = FMODExt_check_ptr_FMOD_GEOMETRY(L, 1);
     const FMOD_VECTOR scale = FMODExt_check_FMOD_VECTOR(L, 2);
-    ensure(LL, FMOD_Geometry_SetScale, FMOD_RESULT, FMOD_GEOMETRY*, const FMOD_VECTOR*);
     errCheck(FMOD_Geometry_SetScale(geometry, &scale));
     return 0;
 }
@@ -7147,7 +6807,6 @@ static int _FMODExt_func_FMOD_Geometry_SetScale(lua_State *L) {
 static int _FMODExt_func_FMOD_Geometry_GetScale(lua_State *L) {
     FMOD_GEOMETRY* geometry = FMODExt_check_ptr_FMOD_GEOMETRY(L, 1);
     FMOD_VECTOR scale;
-    ensure(LL, FMOD_Geometry_GetScale, FMOD_RESULT, FMOD_GEOMETRY*, FMOD_VECTOR*);
     errCheck(FMOD_Geometry_GetScale(geometry, &scale));
     FMODExt_push_FMOD_VECTOR(L, scale);
     return 1;
@@ -7169,7 +6828,6 @@ static int _FMODExt_func_FMOD_Geometry_GetScale(lua_State *L) {
 #define FMODExt_func_FMOD_Reverb3D_Release _FMODExt_func_FMOD_Reverb3D_Release
 static int _FMODExt_func_FMOD_Reverb3D_Release(lua_State *L) {
     FMOD_REVERB3D* reverb3d = FMODExt_check_ptr_FMOD_REVERB3D(L, 1);
-    ensure(LL, FMOD_Reverb3D_Release, FMOD_RESULT, FMOD_REVERB3D*);
     errCheck(FMOD_Reverb3D_Release(reverb3d));
     return 0;
 }
@@ -7184,7 +6842,6 @@ static int _FMODExt_func_FMOD_Reverb3D_Set3DAttributes(lua_State *L) {
     const FMOD_VECTOR position = FMODExt_check_FMOD_VECTOR(L, 2);
     float mindistance = FMODExt_check_float(L, 3);
     float maxdistance = FMODExt_check_float(L, 4);
-    ensure(LL, FMOD_Reverb3D_Set3DAttributes, FMOD_RESULT, FMOD_REVERB3D*, const FMOD_VECTOR*, float, float);
     errCheck(FMOD_Reverb3D_Set3DAttributes(reverb3d, &position, mindistance, maxdistance));
     return 0;
 }
@@ -7199,7 +6856,6 @@ static int _FMODExt_func_FMOD_Reverb3D_Get3DAttributes(lua_State *L) {
     FMOD_VECTOR position;
     float mindistance;
     float maxdistance;
-    ensure(LL, FMOD_Reverb3D_Get3DAttributes, FMOD_RESULT, FMOD_REVERB3D*, FMOD_VECTOR*, float*, float*);
     errCheck(FMOD_Reverb3D_Get3DAttributes(reverb3d, &position, &mindistance, &maxdistance));
     FMODExt_push_FMOD_VECTOR(L, position);
     FMODExt_push_float(L, mindistance);
@@ -7215,7 +6871,6 @@ static int _FMODExt_func_FMOD_Reverb3D_Get3DAttributes(lua_State *L) {
 static int _FMODExt_func_FMOD_Reverb3D_SetProperties(lua_State *L) {
     FMOD_REVERB3D* reverb3d = FMODExt_check_ptr_FMOD_REVERB3D(L, 1);
     const FMOD_REVERB_PROPERTIES* properties = FMODExt_check_ptr_FMOD_REVERB_PROPERTIES(L, 2);
-    ensure(LL, FMOD_Reverb3D_SetProperties, FMOD_RESULT, FMOD_REVERB3D*, const FMOD_REVERB_PROPERTIES*);
     errCheck(FMOD_Reverb3D_SetProperties(reverb3d, properties));
     return 0;
 }
@@ -7228,7 +6883,6 @@ static int _FMODExt_func_FMOD_Reverb3D_SetProperties(lua_State *L) {
 static int _FMODExt_func_FMOD_Reverb3D_GetProperties(lua_State *L) {
     FMOD_REVERB3D* reverb3d = FMODExt_check_ptr_FMOD_REVERB3D(L, 1);
     FMOD_REVERB_PROPERTIES* properties = FMODExt_push_ptr_FMOD_REVERB_PROPERTIES(L, NULL);
-    ensure(LL, FMOD_Reverb3D_GetProperties, FMOD_RESULT, FMOD_REVERB3D*, FMOD_REVERB_PROPERTIES*);
     errCheck(FMOD_Reverb3D_GetProperties(reverb3d, properties));
     lua_pushvalue(L, -1);
     return 1;
@@ -7242,7 +6896,6 @@ static int _FMODExt_func_FMOD_Reverb3D_GetProperties(lua_State *L) {
 static int _FMODExt_func_FMOD_Reverb3D_SetActive(lua_State *L) {
     FMOD_REVERB3D* reverb3d = FMODExt_check_ptr_FMOD_REVERB3D(L, 1);
     FMOD_BOOL active = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(LL, FMOD_Reverb3D_SetActive, FMOD_RESULT, FMOD_REVERB3D*, FMOD_BOOL);
     errCheck(FMOD_Reverb3D_SetActive(reverb3d, active));
     return 0;
 }
@@ -7255,7 +6908,6 @@ static int _FMODExt_func_FMOD_Reverb3D_SetActive(lua_State *L) {
 static int _FMODExt_func_FMOD_Reverb3D_GetActive(lua_State *L) {
     FMOD_REVERB3D* reverb3d = FMODExt_check_ptr_FMOD_REVERB3D(L, 1);
     FMOD_BOOL active;
-    ensure(LL, FMOD_Reverb3D_GetActive, FMOD_RESULT, FMOD_REVERB3D*, FMOD_BOOL*);
     errCheck(FMOD_Reverb3D_GetActive(reverb3d, &active));
     FMODExt_push_FMOD_BOOL(L, active);
     return 1;
@@ -7275,7 +6927,6 @@ static int _FMODExt_func_FMOD_Reverb3D_GetActive(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_ParseID(lua_State *L) {
     const char* idstring = FMODExt_check_ptr_char(L, 1);
     FMOD_GUID* id = FMODExt_push_ptr_FMOD_GUID(L, NULL);
-    ensure(ST, FMOD_Studio_ParseID, FMOD_RESULT, const char*, FMOD_GUID*);
     errCheck(FMOD_Studio_ParseID(idstring, id));
     lua_pushvalue(L, -1);
     return 1;
@@ -7289,7 +6940,6 @@ static int _FMODExt_func_FMOD_Studio_ParseID(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_System_Create(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system;
     unsigned int headerversion = FMODExt_check_unsigned_int(L, 1);
-    ensure(ST, FMOD_Studio_System_Create, FMOD_RESULT, FMOD_STUDIO_SYSTEM**, unsigned int);
     errCheck(FMOD_Studio_System_Create(&system, headerversion));
     FMODExt_push_ptr_FMOD_STUDIO_SYSTEM(L, system);
     return 1;
@@ -7302,7 +6952,6 @@ static int _FMODExt_func_FMOD_Studio_System_Create(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_System_IsValid _FMODExt_func_FMOD_Studio_System_IsValid
 static int _FMODExt_func_FMOD_Studio_System_IsValid(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
-    ensure(ST, FMOD_Studio_System_IsValid, FMOD_BOOL, FMOD_STUDIO_SYSTEM*);
     FMOD_BOOL retval = FMOD_Studio_System_IsValid(system);
     lua_pushboolean(L, retval);
     return 1;
@@ -7316,7 +6965,6 @@ static int _FMODExt_func_FMOD_Studio_System_IsValid(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_System_SetAdvancedSettings(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     FMOD_STUDIO_ADVANCEDSETTINGS* settings = FMODExt_push_ptr_FMOD_STUDIO_ADVANCEDSETTINGS(L, NULL);
-    ensure(ST, FMOD_Studio_System_SetAdvancedSettings, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_STUDIO_ADVANCEDSETTINGS*);
     errCheck(FMOD_Studio_System_SetAdvancedSettings(system, settings));
     lua_pushvalue(L, -1);
     return 1;
@@ -7330,7 +6978,6 @@ static int _FMODExt_func_FMOD_Studio_System_SetAdvancedSettings(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_System_GetAdvancedSettings(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     FMOD_STUDIO_ADVANCEDSETTINGS* settings = FMODExt_push_ptr_FMOD_STUDIO_ADVANCEDSETTINGS(L, NULL);
-    ensure(ST, FMOD_Studio_System_GetAdvancedSettings, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_STUDIO_ADVANCEDSETTINGS*);
     errCheck(FMOD_Studio_System_GetAdvancedSettings(system, settings));
     lua_pushvalue(L, -1);
     return 1;
@@ -7346,7 +6993,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetAdvancedSettings(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_System_Release _FMODExt_func_FMOD_Studio_System_Release
 static int _FMODExt_func_FMOD_Studio_System_Release(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
-    ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
     errCheck(FMOD_Studio_System_Release(system));
     return 0;
 }
@@ -7358,7 +7004,6 @@ static int _FMODExt_func_FMOD_Studio_System_Release(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_System_Update _FMODExt_func_FMOD_Studio_System_Update
 static int _FMODExt_func_FMOD_Studio_System_Update(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
-    ensure(ST, FMOD_Studio_System_Update, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
     errCheck(FMOD_Studio_System_Update(system));
     return 0;
 }
@@ -7371,7 +7016,6 @@ static int _FMODExt_func_FMOD_Studio_System_Update(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_System_GetCoreSystem(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     FMOD_SYSTEM* coresystem;
-    ensure(ST, FMOD_Studio_System_GetCoreSystem, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_SYSTEM**);
     errCheck(FMOD_Studio_System_GetCoreSystem(system, &coresystem));
     FMODExt_push_ptr_FMOD_SYSTEM(L, coresystem);
     return 1;
@@ -7386,7 +7030,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetEvent(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const char* pathOrID = FMODExt_check_ptr_char(L, 2);
     FMOD_STUDIO_EVENTDESCRIPTION* event;
-    ensure(ST, FMOD_Studio_System_GetEvent, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, FMOD_STUDIO_EVENTDESCRIPTION**);
     errCheck(FMOD_Studio_System_GetEvent(system, pathOrID, &event));
     FMODExt_push_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, event);
     return 1;
@@ -7401,7 +7044,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetBus(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const char* pathOrID = FMODExt_check_ptr_char(L, 2);
     FMOD_STUDIO_BUS* bus;
-    ensure(ST, FMOD_Studio_System_GetBus, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, FMOD_STUDIO_BUS**);
     errCheck(FMOD_Studio_System_GetBus(system, pathOrID, &bus));
     FMODExt_push_ptr_FMOD_STUDIO_BUS(L, bus);
     return 1;
@@ -7416,7 +7058,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetVCA(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const char* pathOrID = FMODExt_check_ptr_char(L, 2);
     FMOD_STUDIO_VCA* vca;
-    ensure(ST, FMOD_Studio_System_GetVCA, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, FMOD_STUDIO_VCA**);
     errCheck(FMOD_Studio_System_GetVCA(system, pathOrID, &vca));
     FMODExt_push_ptr_FMOD_STUDIO_VCA(L, vca);
     return 1;
@@ -7431,7 +7072,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetBank(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const char* pathOrID = FMODExt_check_ptr_char(L, 2);
     FMOD_STUDIO_BANK* bank;
-    ensure(ST, FMOD_Studio_System_GetBank, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, FMOD_STUDIO_BANK**);
     errCheck(FMOD_Studio_System_GetBank(system, pathOrID, &bank));
     FMODExt_push_ptr_FMOD_STUDIO_BANK(L, bank);
     return 1;
@@ -7446,7 +7086,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetEventByID(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const FMOD_GUID* id = FMODExt_check_ptr_FMOD_GUID(L, 2);
     FMOD_STUDIO_EVENTDESCRIPTION* event;
-    ensure(ST, FMOD_Studio_System_GetEventByID, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const FMOD_GUID*, FMOD_STUDIO_EVENTDESCRIPTION**);
     errCheck(FMOD_Studio_System_GetEventByID(system, id, &event));
     FMODExt_push_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, event);
     return 1;
@@ -7461,7 +7100,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetBusByID(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const FMOD_GUID* id = FMODExt_check_ptr_FMOD_GUID(L, 2);
     FMOD_STUDIO_BUS* bus;
-    ensure(ST, FMOD_Studio_System_GetBusByID, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const FMOD_GUID*, FMOD_STUDIO_BUS**);
     errCheck(FMOD_Studio_System_GetBusByID(system, id, &bus));
     FMODExt_push_ptr_FMOD_STUDIO_BUS(L, bus);
     return 1;
@@ -7476,7 +7114,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetVCAByID(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const FMOD_GUID* id = FMODExt_check_ptr_FMOD_GUID(L, 2);
     FMOD_STUDIO_VCA* vca;
-    ensure(ST, FMOD_Studio_System_GetVCAByID, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const FMOD_GUID*, FMOD_STUDIO_VCA**);
     errCheck(FMOD_Studio_System_GetVCAByID(system, id, &vca));
     FMODExt_push_ptr_FMOD_STUDIO_VCA(L, vca);
     return 1;
@@ -7491,7 +7128,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetBankByID(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const FMOD_GUID* id = FMODExt_check_ptr_FMOD_GUID(L, 2);
     FMOD_STUDIO_BANK* bank;
-    ensure(ST, FMOD_Studio_System_GetBankByID, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const FMOD_GUID*, FMOD_STUDIO_BANK**);
     errCheck(FMOD_Studio_System_GetBankByID(system, id, &bank));
     FMODExt_push_ptr_FMOD_STUDIO_BANK(L, bank);
     return 1;
@@ -7506,7 +7142,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetSoundInfo(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const char* key = FMODExt_check_ptr_char(L, 2);
     FMOD_STUDIO_SOUND_INFO* info = FMODExt_push_ptr_FMOD_STUDIO_SOUND_INFO(L, NULL);
-    ensure(ST, FMOD_Studio_System_GetSoundInfo, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, FMOD_STUDIO_SOUND_INFO*);
     errCheck(FMOD_Studio_System_GetSoundInfo(system, key, info));
     lua_pushvalue(L, -1);
     return 1;
@@ -7521,7 +7156,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetParameterDescriptionByName(lua_St
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const char* name = FMODExt_check_ptr_char(L, 2);
     FMOD_STUDIO_PARAMETER_DESCRIPTION* parameter = FMODExt_push_ptr_FMOD_STUDIO_PARAMETER_DESCRIPTION(L, NULL);
-    ensure(ST, FMOD_Studio_System_GetParameterDescriptionByName, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, FMOD_STUDIO_PARAMETER_DESCRIPTION*);
     errCheck(FMOD_Studio_System_GetParameterDescriptionByName(system, name, parameter));
     lua_pushvalue(L, -1);
     return 1;
@@ -7536,7 +7170,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetParameterDescriptionByID(lua_Stat
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     FMOD_STUDIO_PARAMETER_ID* id = FMODExt_check_ptr_FMOD_STUDIO_PARAMETER_ID(L, 2);
     FMOD_STUDIO_PARAMETER_DESCRIPTION* parameter = FMODExt_push_ptr_FMOD_STUDIO_PARAMETER_DESCRIPTION(L, NULL);
-    ensure(ST, FMOD_Studio_System_GetParameterDescriptionByID, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_STUDIO_PARAMETER_ID, FMOD_STUDIO_PARAMETER_DESCRIPTION*);
     errCheck(FMOD_Studio_System_GetParameterDescriptionByID(system, *id, parameter));
     lua_pushvalue(L, -1);
     return 1;
@@ -7558,7 +7191,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetParameterByID(lua_State *L) {
     FMOD_STUDIO_PARAMETER_ID* id = FMODExt_check_ptr_FMOD_STUDIO_PARAMETER_ID(L, 2);
     float value;
     float finalvalue;
-    ensure(ST, FMOD_Studio_System_GetParameterByID, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_STUDIO_PARAMETER_ID, float*, float*);
     errCheck(FMOD_Studio_System_GetParameterByID(system, *id, &value, &finalvalue));
     FMODExt_push_float(L, value);
     FMODExt_push_float(L, finalvalue);
@@ -7575,7 +7207,6 @@ static int _FMODExt_func_FMOD_Studio_System_SetParameterByID(lua_State *L) {
     FMOD_STUDIO_PARAMETER_ID* id = FMODExt_check_ptr_FMOD_STUDIO_PARAMETER_ID(L, 2);
     float value = FMODExt_check_float(L, 3);
     FMOD_BOOL ignoreseekspeed = FMODExt_check_FMOD_BOOL(L, 4);
-    ensure(ST, FMOD_Studio_System_SetParameterByID, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_STUDIO_PARAMETER_ID, float, FMOD_BOOL);
     errCheck(FMOD_Studio_System_SetParameterByID(system, *id, value, ignoreseekspeed));
     return 0;
 }
@@ -7590,7 +7221,6 @@ static int _FMODExt_func_FMOD_Studio_System_SetParameterByIDWithLabel(lua_State 
     FMOD_STUDIO_PARAMETER_ID* id = FMODExt_check_ptr_FMOD_STUDIO_PARAMETER_ID(L, 2);
     const char* label = FMODExt_check_ptr_char(L, 3);
     FMOD_BOOL ignoreseekspeed = FMODExt_check_FMOD_BOOL(L, 4);
-    ensure(ST, FMOD_Studio_System_SetParameterByIDWithLabel, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_STUDIO_PARAMETER_ID, const char*, FMOD_BOOL);
     errCheck(FMOD_Studio_System_SetParameterByIDWithLabel(system, *id, label, ignoreseekspeed));
     return 0;
 }
@@ -7606,7 +7236,6 @@ static int _FMODExt_func_FMOD_Studio_System_SetParametersByIDs(lua_State *L) {
     float values;
     int count = FMODExt_check_int(L, 3);
     FMOD_BOOL ignoreseekspeed = FMODExt_check_FMOD_BOOL(L, 4);
-    ensure(ST, FMOD_Studio_System_SetParametersByIDs, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const FMOD_STUDIO_PARAMETER_ID*, float*, int, FMOD_BOOL);
     errCheck(FMOD_Studio_System_SetParametersByIDs(system, ids, &values, count, ignoreseekspeed));
     FMODExt_push_float(L, values);
     return 1;
@@ -7622,7 +7251,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetParameterByName(lua_State *L) {
     const char* name = FMODExt_check_ptr_char(L, 2);
     float value;
     float finalvalue;
-    ensure(ST, FMOD_Studio_System_GetParameterByName, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, float*, float*);
     errCheck(FMOD_Studio_System_GetParameterByName(system, name, &value, &finalvalue));
     FMODExt_push_float(L, value);
     FMODExt_push_float(L, finalvalue);
@@ -7639,7 +7267,6 @@ static int _FMODExt_func_FMOD_Studio_System_SetParameterByName(lua_State *L) {
     const char* name = FMODExt_check_ptr_char(L, 2);
     float value = FMODExt_check_float(L, 3);
     FMOD_BOOL ignoreseekspeed = FMODExt_check_FMOD_BOOL(L, 4);
-    ensure(ST, FMOD_Studio_System_SetParameterByName, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, float, FMOD_BOOL);
     errCheck(FMOD_Studio_System_SetParameterByName(system, name, value, ignoreseekspeed));
     return 0;
 }
@@ -7654,7 +7281,6 @@ static int _FMODExt_func_FMOD_Studio_System_SetParameterByNameWithLabel(lua_Stat
     const char* name = FMODExt_check_ptr_char(L, 2);
     const char* label = FMODExt_check_ptr_char(L, 3);
     FMOD_BOOL ignoreseekspeed = FMODExt_check_FMOD_BOOL(L, 4);
-    ensure(ST, FMOD_Studio_System_SetParameterByNameWithLabel, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, const char*, FMOD_BOOL);
     errCheck(FMOD_Studio_System_SetParameterByNameWithLabel(system, name, label, ignoreseekspeed));
     return 0;
 }
@@ -7668,7 +7294,6 @@ static int _FMODExt_func_FMOD_Studio_System_LookupID(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const char* path = FMODExt_check_ptr_char(L, 2);
     FMOD_GUID* id = FMODExt_push_ptr_FMOD_GUID(L, NULL);
-    ensure(ST, FMOD_Studio_System_LookupID, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, FMOD_GUID*);
     errCheck(FMOD_Studio_System_LookupID(system, path, id));
     lua_pushvalue(L, -1);
     return 1;
@@ -7685,7 +7310,6 @@ static int _FMODExt_func_FMOD_Studio_System_LookupID(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_System_GetNumListeners(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     int numlisteners;
-    ensure(ST, FMOD_Studio_System_GetNumListeners, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, int*);
     errCheck(FMOD_Studio_System_GetNumListeners(system, &numlisteners));
     FMODExt_push_int(L, numlisteners);
     return 1;
@@ -7699,7 +7323,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetNumListeners(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_System_SetNumListeners(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     int numlisteners = FMODExt_check_int(L, 2);
-    ensure(ST, FMOD_Studio_System_SetNumListeners, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, int);
     errCheck(FMOD_Studio_System_SetNumListeners(system, numlisteners));
     return 0;
 }
@@ -7714,7 +7337,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetListenerAttributes(lua_State *L) 
     int index = FMODExt_check_int(L, 2);
     FMOD_3D_ATTRIBUTES* attributes = FMODExt_push_ptr_FMOD_3D_ATTRIBUTES(L, NULL);
     FMOD_VECTOR attenuationposition;
-    ensure(ST, FMOD_Studio_System_GetListenerAttributes, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, int, FMOD_3D_ATTRIBUTES*, FMOD_VECTOR*);
     errCheck(FMOD_Studio_System_GetListenerAttributes(system, index, attributes, &attenuationposition));
     lua_pushvalue(L, -1);
     FMODExt_push_FMOD_VECTOR(L, attenuationposition);
@@ -7731,7 +7353,6 @@ static int _FMODExt_func_FMOD_Studio_System_SetListenerAttributes(lua_State *L) 
     int index = FMODExt_check_int(L, 2);
     const FMOD_3D_ATTRIBUTES* attributes = FMODExt_check_ptr_FMOD_3D_ATTRIBUTES(L, 3);
     const FMOD_VECTOR attenuationposition = FMODExt_check_FMOD_VECTOR(L, 4);
-    ensure(ST, FMOD_Studio_System_SetListenerAttributes, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, int, const FMOD_3D_ATTRIBUTES*, const FMOD_VECTOR*);
     errCheck(FMOD_Studio_System_SetListenerAttributes(system, index, attributes, &attenuationposition));
     return 0;
 }
@@ -7745,7 +7366,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetListenerWeight(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     int index = FMODExt_check_int(L, 2);
     float weight;
-    ensure(ST, FMOD_Studio_System_GetListenerWeight, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, int, float*);
     errCheck(FMOD_Studio_System_GetListenerWeight(system, index, &weight));
     FMODExt_push_float(L, weight);
     return 1;
@@ -7760,7 +7380,6 @@ static int _FMODExt_func_FMOD_Studio_System_SetListenerWeight(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     int index = FMODExt_check_int(L, 2);
     float weight = FMODExt_check_float(L, 3);
-    ensure(ST, FMOD_Studio_System_SetListenerWeight, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, int, float);
     errCheck(FMOD_Studio_System_SetListenerWeight(system, index, weight));
     return 0;
 }
@@ -7775,7 +7394,6 @@ static int _FMODExt_func_FMOD_Studio_System_LoadBankFile(lua_State *L) {
     const char* filename = FMODExt_check_ptr_char(L, 2);
     FMOD_STUDIO_LOAD_BANK_FLAGS flags = FMODExt_check_unsigned_int(L, 3);
     FMOD_STUDIO_BANK* bank;
-    ensure(ST, FMOD_Studio_System_LoadBankFile, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, FMOD_STUDIO_LOAD_BANK_FLAGS, FMOD_STUDIO_BANK**);
     errCheck(FMOD_Studio_System_LoadBankFile(system, filename, flags, &bank));
     FMODExt_push_ptr_FMOD_STUDIO_BANK(L, bank);
     return 1;
@@ -7793,7 +7411,6 @@ static int _FMODExt_func_FMOD_Studio_System_LoadBankMemory(lua_State *L) {
     FMOD_STUDIO_LOAD_MEMORY_MODE mode = FMODExt_check_FMOD_STUDIO_LOAD_MEMORY_MODE(L, 4);
     FMOD_STUDIO_LOAD_BANK_FLAGS flags = FMODExt_check_unsigned_int(L, 5);
     FMOD_STUDIO_BANK* bank;
-    ensure(ST, FMOD_Studio_System_LoadBankMemory, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, int, FMOD_STUDIO_LOAD_MEMORY_MODE, FMOD_STUDIO_LOAD_BANK_FLAGS, FMOD_STUDIO_BANK**);
     errCheck(FMOD_Studio_System_LoadBankMemory(system, buffer, length, mode, flags, &bank));
     FMODExt_push_ptr_FMOD_STUDIO_BANK(L, bank);
     return 1;
@@ -7809,7 +7426,6 @@ static int _FMODExt_func_FMOD_Studio_System_LoadBankCustom(lua_State *L) {
     const FMOD_STUDIO_BANK_INFO* info = FMODExt_check_ptr_FMOD_STUDIO_BANK_INFO(L, 2);
     FMOD_STUDIO_LOAD_BANK_FLAGS flags = FMODExt_check_unsigned_int(L, 3);
     FMOD_STUDIO_BANK* bank;
-    ensure(ST, FMOD_Studio_System_LoadBankCustom, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const FMOD_STUDIO_BANK_INFO*, FMOD_STUDIO_LOAD_BANK_FLAGS, FMOD_STUDIO_BANK**);
     errCheck(FMOD_Studio_System_LoadBankCustom(system, info, flags, &bank));
     FMODExt_push_ptr_FMOD_STUDIO_BANK(L, bank);
     return 1;
@@ -7823,7 +7439,6 @@ static int _FMODExt_func_FMOD_Studio_System_LoadBankCustom(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_System_RegisterPlugin(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const FMOD_DSP_DESCRIPTION* description = FMODExt_check_ptr_FMOD_DSP_DESCRIPTION(L, 2);
-    ensure(ST, FMOD_Studio_System_RegisterPlugin, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const FMOD_DSP_DESCRIPTION*);
     errCheck(FMOD_Studio_System_RegisterPlugin(system, description));
     return 0;
 }
@@ -7836,7 +7451,6 @@ static int _FMODExt_func_FMOD_Studio_System_RegisterPlugin(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_System_UnregisterPlugin(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const char* name = FMODExt_check_ptr_char(L, 2);
-    ensure(ST, FMOD_Studio_System_UnregisterPlugin, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*);
     errCheck(FMOD_Studio_System_UnregisterPlugin(system, name));
     return 0;
 }
@@ -7848,7 +7462,6 @@ static int _FMODExt_func_FMOD_Studio_System_UnregisterPlugin(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_System_UnloadAll _FMODExt_func_FMOD_Studio_System_UnloadAll
 static int _FMODExt_func_FMOD_Studio_System_UnloadAll(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
-    ensure(ST, FMOD_Studio_System_UnloadAll, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
     errCheck(FMOD_Studio_System_UnloadAll(system));
     return 0;
 }
@@ -7860,7 +7473,6 @@ static int _FMODExt_func_FMOD_Studio_System_UnloadAll(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_System_FlushCommands _FMODExt_func_FMOD_Studio_System_FlushCommands
 static int _FMODExt_func_FMOD_Studio_System_FlushCommands(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
-    ensure(ST, FMOD_Studio_System_FlushCommands, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
     errCheck(FMOD_Studio_System_FlushCommands(system));
     return 0;
 }
@@ -7872,7 +7484,6 @@ static int _FMODExt_func_FMOD_Studio_System_FlushCommands(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_System_FlushSampleLoading _FMODExt_func_FMOD_Studio_System_FlushSampleLoading
 static int _FMODExt_func_FMOD_Studio_System_FlushSampleLoading(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
-    ensure(ST, FMOD_Studio_System_FlushSampleLoading, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
     errCheck(FMOD_Studio_System_FlushSampleLoading(system));
     return 0;
 }
@@ -7886,7 +7497,6 @@ static int _FMODExt_func_FMOD_Studio_System_StartCommandCapture(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     const char* filename = FMODExt_check_ptr_char(L, 2);
     FMOD_STUDIO_COMMANDCAPTURE_FLAGS flags = FMODExt_check_unsigned_int(L, 3);
-    ensure(ST, FMOD_Studio_System_StartCommandCapture, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, FMOD_STUDIO_COMMANDCAPTURE_FLAGS);
     errCheck(FMOD_Studio_System_StartCommandCapture(system, filename, flags));
     return 0;
 }
@@ -7898,7 +7508,6 @@ static int _FMODExt_func_FMOD_Studio_System_StartCommandCapture(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_System_StopCommandCapture _FMODExt_func_FMOD_Studio_System_StopCommandCapture
 static int _FMODExt_func_FMOD_Studio_System_StopCommandCapture(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
-    ensure(ST, FMOD_Studio_System_StopCommandCapture, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
     errCheck(FMOD_Studio_System_StopCommandCapture(system));
     return 0;
 }
@@ -7913,7 +7522,6 @@ static int _FMODExt_func_FMOD_Studio_System_LoadCommandReplay(lua_State *L) {
     const char* filename = FMODExt_check_ptr_char(L, 2);
     FMOD_STUDIO_COMMANDREPLAY_FLAGS flags = FMODExt_check_unsigned_int(L, 3);
     FMOD_STUDIO_COMMANDREPLAY* replay;
-    ensure(ST, FMOD_Studio_System_LoadCommandReplay, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const char*, FMOD_STUDIO_COMMANDREPLAY_FLAGS, FMOD_STUDIO_COMMANDREPLAY**);
     errCheck(FMOD_Studio_System_LoadCommandReplay(system, filename, flags, &replay));
     FMODExt_push_ptr_FMOD_STUDIO_COMMANDREPLAY(L, replay);
     return 1;
@@ -7927,7 +7535,6 @@ static int _FMODExt_func_FMOD_Studio_System_LoadCommandReplay(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_System_GetBankCount(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     int count;
-    ensure(ST, FMOD_Studio_System_GetBankCount, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, int*);
     errCheck(FMOD_Studio_System_GetBankCount(system, &count));
     FMODExt_push_int(L, count);
     return 1;
@@ -7943,7 +7550,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetBankList(lua_State *L) {
     FMOD_STUDIO_BANK* array;
     int capacity = FMODExt_check_int(L, 2);
     int count;
-    ensure(ST, FMOD_Studio_System_GetBankList, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_STUDIO_BANK**, int, int*);
     errCheck(FMOD_Studio_System_GetBankList(system, &array, capacity, &count));
     FMODExt_push_ptr_FMOD_STUDIO_BANK(L, array);
     FMODExt_push_int(L, count);
@@ -7958,7 +7564,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetBankList(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_System_GetParameterDescriptionCount(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     int count;
-    ensure(ST, FMOD_Studio_System_GetParameterDescriptionCount, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, int*);
     errCheck(FMOD_Studio_System_GetParameterDescriptionCount(system, &count));
     FMODExt_push_int(L, count);
     return 1;
@@ -7974,7 +7579,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetParameterDescriptionList(lua_Stat
     FMOD_STUDIO_PARAMETER_DESCRIPTION* array = FMODExt_push_ptr_FMOD_STUDIO_PARAMETER_DESCRIPTION(L, NULL);
     int capacity = FMODExt_check_int(L, 2);
     int count;
-    ensure(ST, FMOD_Studio_System_GetParameterDescriptionList, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_STUDIO_PARAMETER_DESCRIPTION*, int, int*);
     errCheck(FMOD_Studio_System_GetParameterDescriptionList(system, array, capacity, &count));
     lua_pushvalue(L, -1);
     FMODExt_push_int(L, count);
@@ -7990,7 +7594,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetCPUUsage(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     FMOD_STUDIO_CPU_USAGE* usage = FMODExt_push_ptr_FMOD_STUDIO_CPU_USAGE(L, NULL);
     FMOD_CPU_USAGE* usage_core = FMODExt_push_ptr_FMOD_CPU_USAGE(L, NULL);
-    ensure(ST, FMOD_Studio_System_GetCPUUsage, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_STUDIO_CPU_USAGE*, FMOD_CPU_USAGE*);
     errCheck(FMOD_Studio_System_GetCPUUsage(system, usage, usage_core));
     lua_pushvalue(L, -2);
     lua_pushvalue(L, -2);
@@ -8005,7 +7608,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetCPUUsage(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_System_GetBufferUsage(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     FMOD_STUDIO_BUFFER_USAGE* usage = FMODExt_push_ptr_FMOD_STUDIO_BUFFER_USAGE(L, NULL);
-    ensure(ST, FMOD_Studio_System_GetBufferUsage, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_STUDIO_BUFFER_USAGE*);
     errCheck(FMOD_Studio_System_GetBufferUsage(system, usage));
     lua_pushvalue(L, -1);
     return 1;
@@ -8018,7 +7620,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetBufferUsage(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_System_ResetBufferUsage _FMODExt_func_FMOD_Studio_System_ResetBufferUsage
 static int _FMODExt_func_FMOD_Studio_System_ResetBufferUsage(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
-    ensure(ST, FMOD_Studio_System_ResetBufferUsage, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
     errCheck(FMOD_Studio_System_ResetBufferUsage(system));
     return 0;
 }
@@ -8040,7 +7641,6 @@ static int _FMODExt_func_FMOD_Studio_System_ResetBufferUsage(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_System_GetMemoryUsage(lua_State *L) {
     FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     FMOD_STUDIO_MEMORY_USAGE* memoryusage = FMODExt_push_ptr_FMOD_STUDIO_MEMORY_USAGE(L, NULL);
-    ensure(ST, FMOD_Studio_System_GetMemoryUsage, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_STUDIO_MEMORY_USAGE*);
     errCheck(FMOD_Studio_System_GetMemoryUsage(system, memoryusage));
     lua_pushvalue(L, -1);
     return 1;
@@ -8053,7 +7653,6 @@ static int _FMODExt_func_FMOD_Studio_System_GetMemoryUsage(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_EventDescription_IsValid _FMODExt_func_FMOD_Studio_EventDescription_IsValid
 static int _FMODExt_func_FMOD_Studio_EventDescription_IsValid(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
-    ensure(ST, FMOD_Studio_EventDescription_IsValid, FMOD_BOOL, FMOD_STUDIO_EVENTDESCRIPTION*);
     FMOD_BOOL retval = FMOD_Studio_EventDescription_IsValid(eventdescription);
     lua_pushboolean(L, retval);
     return 1;
@@ -8067,7 +7666,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_IsValid(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventDescription_GetID(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     FMOD_GUID* id = FMODExt_push_ptr_FMOD_GUID(L, NULL);
-    ensure(ST, FMOD_Studio_EventDescription_GetID, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, FMOD_GUID*);
     errCheck(FMOD_Studio_EventDescription_GetID(eventdescription, id));
     lua_pushvalue(L, -1);
     return 1;
@@ -8084,7 +7682,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetID(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventDescription_GetParameterDescriptionCount(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     int count;
-    ensure(ST, FMOD_Studio_EventDescription_GetParameterDescriptionCount, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, int*);
     errCheck(FMOD_Studio_EventDescription_GetParameterDescriptionCount(eventdescription, &count));
     FMODExt_push_int(L, count);
     return 1;
@@ -8099,7 +7696,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetParameterDescriptionByI
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     int index = FMODExt_check_int(L, 2);
     FMOD_STUDIO_PARAMETER_DESCRIPTION* parameter = FMODExt_push_ptr_FMOD_STUDIO_PARAMETER_DESCRIPTION(L, NULL);
-    ensure(ST, FMOD_Studio_EventDescription_GetParameterDescriptionByIndex, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, int, FMOD_STUDIO_PARAMETER_DESCRIPTION*);
     errCheck(FMOD_Studio_EventDescription_GetParameterDescriptionByIndex(eventdescription, index, parameter));
     lua_pushvalue(L, -1);
     return 1;
@@ -8114,7 +7710,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetParameterDescriptionByN
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     const char* name = FMODExt_check_ptr_char(L, 2);
     FMOD_STUDIO_PARAMETER_DESCRIPTION* parameter = FMODExt_push_ptr_FMOD_STUDIO_PARAMETER_DESCRIPTION(L, NULL);
-    ensure(ST, FMOD_Studio_EventDescription_GetParameterDescriptionByName, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, const char*, FMOD_STUDIO_PARAMETER_DESCRIPTION*);
     errCheck(FMOD_Studio_EventDescription_GetParameterDescriptionByName(eventdescription, name, parameter));
     lua_pushvalue(L, -1);
     return 1;
@@ -8129,7 +7724,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetParameterDescriptionByI
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     FMOD_STUDIO_PARAMETER_ID* id = FMODExt_check_ptr_FMOD_STUDIO_PARAMETER_ID(L, 2);
     FMOD_STUDIO_PARAMETER_DESCRIPTION* parameter = FMODExt_push_ptr_FMOD_STUDIO_PARAMETER_DESCRIPTION(L, NULL);
-    ensure(ST, FMOD_Studio_EventDescription_GetParameterDescriptionByID, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, FMOD_STUDIO_PARAMETER_ID, FMOD_STUDIO_PARAMETER_DESCRIPTION*);
     errCheck(FMOD_Studio_EventDescription_GetParameterDescriptionByID(eventdescription, *id, parameter));
     lua_pushvalue(L, -1);
     return 1;
@@ -8152,7 +7746,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetParameterDescriptionByI
 static int _FMODExt_func_FMOD_Studio_EventDescription_GetUserPropertyCount(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     int count;
-    ensure(ST, FMOD_Studio_EventDescription_GetUserPropertyCount, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, int*);
     errCheck(FMOD_Studio_EventDescription_GetUserPropertyCount(eventdescription, &count));
     FMODExt_push_int(L, count);
     return 1;
@@ -8167,7 +7760,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetUserPropertyByIndex(lua
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     int index = FMODExt_check_int(L, 2);
     FMOD_STUDIO_USER_PROPERTY* property = FMODExt_push_ptr_FMOD_STUDIO_USER_PROPERTY(L, NULL);
-    ensure(ST, FMOD_Studio_EventDescription_GetUserPropertyByIndex, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, int, FMOD_STUDIO_USER_PROPERTY*);
     errCheck(FMOD_Studio_EventDescription_GetUserPropertyByIndex(eventdescription, index, property));
     lua_pushvalue(L, -1);
     return 1;
@@ -8182,7 +7774,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetUserProperty(lua_State 
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     const char* name = FMODExt_check_ptr_char(L, 2);
     FMOD_STUDIO_USER_PROPERTY* property = FMODExt_push_ptr_FMOD_STUDIO_USER_PROPERTY(L, NULL);
-    ensure(ST, FMOD_Studio_EventDescription_GetUserProperty, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, const char*, FMOD_STUDIO_USER_PROPERTY*);
     errCheck(FMOD_Studio_EventDescription_GetUserProperty(eventdescription, name, property));
     lua_pushvalue(L, -1);
     return 1;
@@ -8196,7 +7787,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetUserProperty(lua_State 
 static int _FMODExt_func_FMOD_Studio_EventDescription_GetLength(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     int length;
-    ensure(ST, FMOD_Studio_EventDescription_GetLength, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, int*);
     errCheck(FMOD_Studio_EventDescription_GetLength(eventdescription, &length));
     FMODExt_push_int(L, length);
     return 1;
@@ -8211,7 +7801,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetMinMaxDistance(lua_Stat
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     float min;
     float max;
-    ensure(ST, FMOD_Studio_EventDescription_GetMinMaxDistance, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, float*, float*);
     errCheck(FMOD_Studio_EventDescription_GetMinMaxDistance(eventdescription, &min, &max));
     FMODExt_push_float(L, min);
     FMODExt_push_float(L, max);
@@ -8226,7 +7815,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetMinMaxDistance(lua_Stat
 static int _FMODExt_func_FMOD_Studio_EventDescription_GetSoundSize(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     float size;
-    ensure(ST, FMOD_Studio_EventDescription_GetSoundSize, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, float*);
     errCheck(FMOD_Studio_EventDescription_GetSoundSize(eventdescription, &size));
     FMODExt_push_float(L, size);
     return 1;
@@ -8240,7 +7828,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetSoundSize(lua_State *L)
 static int _FMODExt_func_FMOD_Studio_EventDescription_IsSnapshot(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     FMOD_BOOL snapshot;
-    ensure(ST, FMOD_Studio_EventDescription_IsSnapshot, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, FMOD_BOOL*);
     errCheck(FMOD_Studio_EventDescription_IsSnapshot(eventdescription, &snapshot));
     FMODExt_push_FMOD_BOOL(L, snapshot);
     return 1;
@@ -8254,7 +7841,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_IsSnapshot(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventDescription_IsOneshot(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     FMOD_BOOL oneshot;
-    ensure(ST, FMOD_Studio_EventDescription_IsOneshot, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, FMOD_BOOL*);
     errCheck(FMOD_Studio_EventDescription_IsOneshot(eventdescription, &oneshot));
     FMODExt_push_FMOD_BOOL(L, oneshot);
     return 1;
@@ -8268,7 +7854,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_IsOneshot(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventDescription_IsStream(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     FMOD_BOOL isStream;
-    ensure(ST, FMOD_Studio_EventDescription_IsStream, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, FMOD_BOOL*);
     errCheck(FMOD_Studio_EventDescription_IsStream(eventdescription, &isStream));
     FMODExt_push_FMOD_BOOL(L, isStream);
     return 1;
@@ -8282,7 +7867,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_IsStream(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventDescription_Is3D(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     FMOD_BOOL is3D;
-    ensure(ST, FMOD_Studio_EventDescription_Is3D, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, FMOD_BOOL*);
     errCheck(FMOD_Studio_EventDescription_Is3D(eventdescription, &is3D));
     FMODExt_push_FMOD_BOOL(L, is3D);
     return 1;
@@ -8296,7 +7880,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_Is3D(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventDescription_IsDopplerEnabled(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     FMOD_BOOL doppler;
-    ensure(ST, FMOD_Studio_EventDescription_IsDopplerEnabled, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, FMOD_BOOL*);
     errCheck(FMOD_Studio_EventDescription_IsDopplerEnabled(eventdescription, &doppler));
     FMODExt_push_FMOD_BOOL(L, doppler);
     return 1;
@@ -8310,7 +7893,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_IsDopplerEnabled(lua_State
 static int _FMODExt_func_FMOD_Studio_EventDescription_HasSustainPoint(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     FMOD_BOOL sustainPoint;
-    ensure(ST, FMOD_Studio_EventDescription_HasSustainPoint, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, FMOD_BOOL*);
     errCheck(FMOD_Studio_EventDescription_HasSustainPoint(eventdescription, &sustainPoint));
     FMODExt_push_FMOD_BOOL(L, sustainPoint);
     return 1;
@@ -8324,7 +7906,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_HasSustainPoint(lua_State 
 static int _FMODExt_func_FMOD_Studio_EventDescription_CreateInstance(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     FMOD_STUDIO_EVENTINSTANCE* instance;
-    ensure(ST, FMOD_Studio_EventDescription_CreateInstance, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, FMOD_STUDIO_EVENTINSTANCE**);
     errCheck(FMOD_Studio_EventDescription_CreateInstance(eventdescription, &instance));
     FMODExt_push_ptr_FMOD_STUDIO_EVENTINSTANCE(L, instance);
     return 1;
@@ -8338,7 +7919,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_CreateInstance(lua_State *
 static int _FMODExt_func_FMOD_Studio_EventDescription_GetInstanceCount(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     int count;
-    ensure(ST, FMOD_Studio_EventDescription_GetInstanceCount, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, int*);
     errCheck(FMOD_Studio_EventDescription_GetInstanceCount(eventdescription, &count));
     FMODExt_push_int(L, count);
     return 1;
@@ -8354,7 +7934,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetInstanceList(lua_State 
     FMOD_STUDIO_EVENTINSTANCE* array;
     int capacity = FMODExt_check_int(L, 2);
     int count;
-    ensure(ST, FMOD_Studio_EventDescription_GetInstanceList, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, FMOD_STUDIO_EVENTINSTANCE**, int, int*);
     errCheck(FMOD_Studio_EventDescription_GetInstanceList(eventdescription, &array, capacity, &count));
     FMODExt_push_ptr_FMOD_STUDIO_EVENTINSTANCE(L, array);
     FMODExt_push_int(L, count);
@@ -8368,7 +7947,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetInstanceList(lua_State 
 #define FMODExt_func_FMOD_Studio_EventDescription_LoadSampleData _FMODExt_func_FMOD_Studio_EventDescription_LoadSampleData
 static int _FMODExt_func_FMOD_Studio_EventDescription_LoadSampleData(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
-    ensure(ST, FMOD_Studio_EventDescription_LoadSampleData, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*);
     errCheck(FMOD_Studio_EventDescription_LoadSampleData(eventdescription));
     return 0;
 }
@@ -8380,7 +7958,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_LoadSampleData(lua_State *
 #define FMODExt_func_FMOD_Studio_EventDescription_UnloadSampleData _FMODExt_func_FMOD_Studio_EventDescription_UnloadSampleData
 static int _FMODExt_func_FMOD_Studio_EventDescription_UnloadSampleData(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
-    ensure(ST, FMOD_Studio_EventDescription_UnloadSampleData, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*);
     errCheck(FMOD_Studio_EventDescription_UnloadSampleData(eventdescription));
     return 0;
 }
@@ -8393,7 +7970,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_UnloadSampleData(lua_State
 static int _FMODExt_func_FMOD_Studio_EventDescription_GetSampleLoadingState(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
     FMOD_STUDIO_LOADING_STATE state;
-    ensure(ST, FMOD_Studio_EventDescription_GetSampleLoadingState, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*, FMOD_STUDIO_LOADING_STATE*);
     errCheck(FMOD_Studio_EventDescription_GetSampleLoadingState(eventdescription, &state));
     FMODExt_push_FMOD_STUDIO_LOADING_STATE(L, state);
     return 1;
@@ -8406,7 +7982,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_GetSampleLoadingState(lua_
 #define FMODExt_func_FMOD_Studio_EventDescription_ReleaseAllInstances _FMODExt_func_FMOD_Studio_EventDescription_ReleaseAllInstances
 static int _FMODExt_func_FMOD_Studio_EventDescription_ReleaseAllInstances(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* eventdescription = FMODExt_check_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, 1);
-    ensure(ST, FMOD_Studio_EventDescription_ReleaseAllInstances, FMOD_RESULT, FMOD_STUDIO_EVENTDESCRIPTION*);
     errCheck(FMOD_Studio_EventDescription_ReleaseAllInstances(eventdescription));
     return 0;
 }
@@ -8427,7 +8002,6 @@ static int _FMODExt_func_FMOD_Studio_EventDescription_ReleaseAllInstances(lua_St
 #define FMODExt_func_FMOD_Studio_EventInstance_IsValid _FMODExt_func_FMOD_Studio_EventInstance_IsValid
 static int _FMODExt_func_FMOD_Studio_EventInstance_IsValid(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
-    ensure(ST, FMOD_Studio_EventInstance_IsValid, FMOD_BOOL, FMOD_STUDIO_EVENTINSTANCE*);
     FMOD_BOOL retval = FMOD_Studio_EventInstance_IsValid(eventinstance);
     lua_pushboolean(L, retval);
     return 1;
@@ -8441,7 +8015,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_IsValid(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventInstance_GetDescription(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_STUDIO_EVENTDESCRIPTION* description;
-    ensure(ST, FMOD_Studio_EventInstance_GetDescription, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_STUDIO_EVENTDESCRIPTION**);
     errCheck(FMOD_Studio_EventInstance_GetDescription(eventinstance, &description));
     FMODExt_push_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, description);
     return 1;
@@ -8455,7 +8028,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetDescription(lua_State *L) 
 static int _FMODExt_func_FMOD_Studio_EventInstance_GetSystem(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_STUDIO_SYSTEM* system;
-    ensure(ST, FMOD_Studio_EventInstance_GetSystem, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_STUDIO_SYSTEM**);
     errCheck(FMOD_Studio_EventInstance_GetSystem(eventinstance, &system));
     FMODExt_push_ptr_FMOD_STUDIO_SYSTEM(L, system);
     return 1;
@@ -8470,7 +8042,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetVolume(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     float volume;
     float finalvolume;
-    ensure(ST, FMOD_Studio_EventInstance_GetVolume, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, float*, float*);
     errCheck(FMOD_Studio_EventInstance_GetVolume(eventinstance, &volume, &finalvolume));
     FMODExt_push_float(L, volume);
     FMODExt_push_float(L, finalvolume);
@@ -8485,7 +8056,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetVolume(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventInstance_SetVolume(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     float volume = FMODExt_check_float(L, 2);
-    ensure(ST, FMOD_Studio_EventInstance_SetVolume, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, float);
     errCheck(FMOD_Studio_EventInstance_SetVolume(eventinstance, volume));
     return 0;
 }
@@ -8499,7 +8069,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetPitch(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     float pitch;
     float finalpitch;
-    ensure(ST, FMOD_Studio_EventInstance_GetPitch, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, float*, float*);
     errCheck(FMOD_Studio_EventInstance_GetPitch(eventinstance, &pitch, &finalpitch));
     FMODExt_push_float(L, pitch);
     FMODExt_push_float(L, finalpitch);
@@ -8514,7 +8083,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetPitch(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventInstance_SetPitch(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     float pitch = FMODExt_check_float(L, 2);
-    ensure(ST, FMOD_Studio_EventInstance_SetPitch, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, float);
     errCheck(FMOD_Studio_EventInstance_SetPitch(eventinstance, pitch));
     return 0;
 }
@@ -8527,7 +8095,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_SetPitch(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventInstance_Get3DAttributes(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_3D_ATTRIBUTES* attributes = FMODExt_push_ptr_FMOD_3D_ATTRIBUTES(L, NULL);
-    ensure(ST, FMOD_Studio_EventInstance_Get3DAttributes, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_3D_ATTRIBUTES*);
     errCheck(FMOD_Studio_EventInstance_Get3DAttributes(eventinstance, attributes));
     lua_pushvalue(L, -1);
     return 1;
@@ -8541,7 +8108,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_Get3DAttributes(lua_State *L)
 static int _FMODExt_func_FMOD_Studio_EventInstance_Set3DAttributes(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_3D_ATTRIBUTES* attributes = FMODExt_push_ptr_FMOD_3D_ATTRIBUTES(L, NULL);
-    ensure(ST, FMOD_Studio_EventInstance_Set3DAttributes, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_3D_ATTRIBUTES*);
     errCheck(FMOD_Studio_EventInstance_Set3DAttributes(eventinstance, attributes));
     lua_pushvalue(L, -1);
     return 1;
@@ -8555,7 +8121,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_Set3DAttributes(lua_State *L)
 static int _FMODExt_func_FMOD_Studio_EventInstance_GetListenerMask(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     unsigned int mask;
-    ensure(ST, FMOD_Studio_EventInstance_GetListenerMask, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, unsigned int*);
     errCheck(FMOD_Studio_EventInstance_GetListenerMask(eventinstance, &mask));
     FMODExt_push_unsigned_int(L, mask);
     return 1;
@@ -8569,7 +8134,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetListenerMask(lua_State *L)
 static int _FMODExt_func_FMOD_Studio_EventInstance_SetListenerMask(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     unsigned int mask = FMODExt_check_unsigned_int(L, 2);
-    ensure(ST, FMOD_Studio_EventInstance_SetListenerMask, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, unsigned int);
     errCheck(FMOD_Studio_EventInstance_SetListenerMask(eventinstance, mask));
     return 0;
 }
@@ -8583,7 +8147,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetProperty(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_STUDIO_EVENT_PROPERTY index = FMODExt_check_FMOD_STUDIO_EVENT_PROPERTY(L, 2);
     float value;
-    ensure(ST, FMOD_Studio_EventInstance_GetProperty, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_STUDIO_EVENT_PROPERTY, float*);
     errCheck(FMOD_Studio_EventInstance_GetProperty(eventinstance, index, &value));
     FMODExt_push_float(L, value);
     return 1;
@@ -8598,7 +8161,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_SetProperty(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_STUDIO_EVENT_PROPERTY index = FMODExt_check_FMOD_STUDIO_EVENT_PROPERTY(L, 2);
     float value = FMODExt_check_float(L, 3);
-    ensure(ST, FMOD_Studio_EventInstance_SetProperty, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_STUDIO_EVENT_PROPERTY, float);
     errCheck(FMOD_Studio_EventInstance_SetProperty(eventinstance, index, value));
     return 0;
 }
@@ -8612,7 +8174,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetReverbLevel(lua_State *L) 
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     int index = FMODExt_check_int(L, 2);
     float level;
-    ensure(ST, FMOD_Studio_EventInstance_GetReverbLevel, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, int, float*);
     errCheck(FMOD_Studio_EventInstance_GetReverbLevel(eventinstance, index, &level));
     FMODExt_push_float(L, level);
     return 1;
@@ -8627,7 +8188,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_SetReverbLevel(lua_State *L) 
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     int index = FMODExt_check_int(L, 2);
     float level = FMODExt_check_float(L, 3);
-    ensure(ST, FMOD_Studio_EventInstance_SetReverbLevel, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, int, float);
     errCheck(FMOD_Studio_EventInstance_SetReverbLevel(eventinstance, index, level));
     return 0;
 }
@@ -8640,7 +8200,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_SetReverbLevel(lua_State *L) 
 static int _FMODExt_func_FMOD_Studio_EventInstance_GetPaused(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_BOOL paused;
-    ensure(ST, FMOD_Studio_EventInstance_GetPaused, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_BOOL*);
     errCheck(FMOD_Studio_EventInstance_GetPaused(eventinstance, &paused));
     FMODExt_push_FMOD_BOOL(L, paused);
     return 1;
@@ -8654,7 +8213,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetPaused(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventInstance_SetPaused(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_BOOL paused = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(ST, FMOD_Studio_EventInstance_SetPaused, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_BOOL);
     errCheck(FMOD_Studio_EventInstance_SetPaused(eventinstance, paused));
     return 0;
 }
@@ -8666,7 +8224,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_SetPaused(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_EventInstance_Start _FMODExt_func_FMOD_Studio_EventInstance_Start
 static int _FMODExt_func_FMOD_Studio_EventInstance_Start(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
-    ensure(ST, FMOD_Studio_EventInstance_Start, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*);
     errCheck(FMOD_Studio_EventInstance_Start(eventinstance));
     return 0;
 }
@@ -8679,7 +8236,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_Start(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventInstance_Stop(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_STUDIO_STOP_MODE mode = FMODExt_check_FMOD_STUDIO_STOP_MODE(L, 2);
-    ensure(ST, FMOD_Studio_EventInstance_Stop, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_STUDIO_STOP_MODE);
     errCheck(FMOD_Studio_EventInstance_Stop(eventinstance, mode));
     return 0;
 }
@@ -8692,7 +8248,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_Stop(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventInstance_GetTimelinePosition(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     int position;
-    ensure(ST, FMOD_Studio_EventInstance_GetTimelinePosition, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, int*);
     errCheck(FMOD_Studio_EventInstance_GetTimelinePosition(eventinstance, &position));
     FMODExt_push_int(L, position);
     return 1;
@@ -8706,7 +8261,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetTimelinePosition(lua_State
 static int _FMODExt_func_FMOD_Studio_EventInstance_SetTimelinePosition(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     int position = FMODExt_check_int(L, 2);
-    ensure(ST, FMOD_Studio_EventInstance_SetTimelinePosition, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, int);
     errCheck(FMOD_Studio_EventInstance_SetTimelinePosition(eventinstance, position));
     return 0;
 }
@@ -8719,7 +8273,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_SetTimelinePosition(lua_State
 static int _FMODExt_func_FMOD_Studio_EventInstance_GetPlaybackState(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_STUDIO_PLAYBACK_STATE state;
-    ensure(ST, FMOD_Studio_EventInstance_GetPlaybackState, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_STUDIO_PLAYBACK_STATE*);
     errCheck(FMOD_Studio_EventInstance_GetPlaybackState(eventinstance, &state));
     FMODExt_push_FMOD_STUDIO_PLAYBACK_STATE(L, state);
     return 1;
@@ -8733,7 +8286,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetPlaybackState(lua_State *L
 static int _FMODExt_func_FMOD_Studio_EventInstance_GetChannelGroup(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_CHANNELGROUP* group;
-    ensure(ST, FMOD_Studio_EventInstance_GetChannelGroup, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_CHANNELGROUP**);
     errCheck(FMOD_Studio_EventInstance_GetChannelGroup(eventinstance, &group));
     FMODExt_push_ptr_FMOD_CHANNELGROUP(L, group);
     return 1;
@@ -8748,7 +8300,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetMinMaxDistance(lua_State *
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     float min;
     float max;
-    ensure(ST, FMOD_Studio_EventInstance_GetMinMaxDistance, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, float*, float*);
     errCheck(FMOD_Studio_EventInstance_GetMinMaxDistance(eventinstance, &min, &max));
     FMODExt_push_float(L, min);
     FMODExt_push_float(L, max);
@@ -8762,9 +8313,8 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetMinMaxDistance(lua_State *
 #define FMODExt_func_FMOD_Studio_EventInstance_Release _FMODExt_func_FMOD_Studio_EventInstance_Release
 static int _FMODExt_func_FMOD_Studio_EventInstance_Release(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
-    ensure(ST, FMOD_Studio_EventInstance_Release, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*);
     errCheck(FMOD_Studio_EventInstance_Release(eventinstance));
-
+    
     lua_rawgeti(L, LUA_REGISTRYINDEX, FMODExt_registry_refcount);
     lua_pushlightuserdata(L, eventinstance);
     lua_pushnil(L);
@@ -8781,7 +8331,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_Release(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventInstance_IsVirtual(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_BOOL virtualstate;
-    ensure(ST, FMOD_Studio_EventInstance_IsVirtual, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_BOOL*);
     errCheck(FMOD_Studio_EventInstance_IsVirtual(eventinstance, &virtualstate));
     FMODExt_push_FMOD_BOOL(L, virtualstate);
     return 1;
@@ -8797,7 +8346,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetParameterByName(lua_State 
     const char* name = FMODExt_check_ptr_char(L, 2);
     float value;
     float finalvalue;
-    ensure(ST, FMOD_Studio_EventInstance_GetParameterByName, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, const char*, float*, float*);
     errCheck(FMOD_Studio_EventInstance_GetParameterByName(eventinstance, name, &value, &finalvalue));
     FMODExt_push_float(L, value);
     FMODExt_push_float(L, finalvalue);
@@ -8814,7 +8362,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_SetParameterByName(lua_State 
     const char* name = FMODExt_check_ptr_char(L, 2);
     float value = FMODExt_check_float(L, 3);
     FMOD_BOOL ignoreseekspeed = FMODExt_check_FMOD_BOOL(L, 4);
-    ensure(ST, FMOD_Studio_EventInstance_SetParameterByName, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, const char*, float, FMOD_BOOL);
     errCheck(FMOD_Studio_EventInstance_SetParameterByName(eventinstance, name, value, ignoreseekspeed));
     return 0;
 }
@@ -8829,7 +8376,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_SetParameterByNameWithLabel(l
     const char* name = FMODExt_check_ptr_char(L, 2);
     const char* label = FMODExt_check_ptr_char(L, 3);
     FMOD_BOOL ignoreseekspeed = FMODExt_check_FMOD_BOOL(L, 4);
-    ensure(ST, FMOD_Studio_EventInstance_SetParameterByNameWithLabel, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, const char*, const char*, FMOD_BOOL);
     errCheck(FMOD_Studio_EventInstance_SetParameterByNameWithLabel(eventinstance, name, label, ignoreseekspeed));
     return 0;
 }
@@ -8844,7 +8390,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetParameterByID(lua_State *L
     FMOD_STUDIO_PARAMETER_ID* id = FMODExt_check_ptr_FMOD_STUDIO_PARAMETER_ID(L, 2);
     float value;
     float finalvalue;
-    ensure(ST, FMOD_Studio_EventInstance_GetParameterByID, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_STUDIO_PARAMETER_ID, float*, float*);
     errCheck(FMOD_Studio_EventInstance_GetParameterByID(eventinstance, *id, &value, &finalvalue));
     FMODExt_push_float(L, value);
     FMODExt_push_float(L, finalvalue);
@@ -8861,7 +8406,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_SetParameterByID(lua_State *L
     FMOD_STUDIO_PARAMETER_ID* id = FMODExt_check_ptr_FMOD_STUDIO_PARAMETER_ID(L, 2);
     float value = FMODExt_check_float(L, 3);
     FMOD_BOOL ignoreseekspeed = FMODExt_check_FMOD_BOOL(L, 4);
-    ensure(ST, FMOD_Studio_EventInstance_SetParameterByID, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_STUDIO_PARAMETER_ID, float, FMOD_BOOL);
     errCheck(FMOD_Studio_EventInstance_SetParameterByID(eventinstance, *id, value, ignoreseekspeed));
     return 0;
 }
@@ -8876,7 +8420,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_SetParameterByIDWithLabel(lua
     FMOD_STUDIO_PARAMETER_ID* id = FMODExt_check_ptr_FMOD_STUDIO_PARAMETER_ID(L, 2);
     const char* label = FMODExt_check_ptr_char(L, 3);
     FMOD_BOOL ignoreseekspeed = FMODExt_check_FMOD_BOOL(L, 4);
-    ensure(ST, FMOD_Studio_EventInstance_SetParameterByIDWithLabel, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_STUDIO_PARAMETER_ID, const char*, FMOD_BOOL);
     errCheck(FMOD_Studio_EventInstance_SetParameterByIDWithLabel(eventinstance, *id, label, ignoreseekspeed));
     return 0;
 }
@@ -8892,7 +8435,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_SetParametersByIDs(lua_State 
     float values;
     int count = FMODExt_check_int(L, 3);
     FMOD_BOOL ignoreseekspeed = FMODExt_check_FMOD_BOOL(L, 4);
-    ensure(ST, FMOD_Studio_EventInstance_SetParametersByIDs, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, const FMOD_STUDIO_PARAMETER_ID*, float*, int, FMOD_BOOL);
     errCheck(FMOD_Studio_EventInstance_SetParametersByIDs(eventinstance, ids, &values, count, ignoreseekspeed));
     FMODExt_push_float(L, values);
     return 1;
@@ -8905,7 +8447,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_SetParametersByIDs(lua_State 
 #define FMODExt_func_FMOD_Studio_EventInstance_KeyOff _FMODExt_func_FMOD_Studio_EventInstance_KeyOff
 static int _FMODExt_func_FMOD_Studio_EventInstance_KeyOff(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
-    ensure(ST, FMOD_Studio_EventInstance_KeyOff, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*);
     errCheck(FMOD_Studio_EventInstance_KeyOff(eventinstance));
     return 0;
 }
@@ -8928,7 +8469,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetCPUUsage(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     unsigned int exclusive;
     unsigned int inclusive;
-    ensure(ST, FMOD_Studio_EventInstance_GetCPUUsage, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, unsigned int*, unsigned int*);
     errCheck(FMOD_Studio_EventInstance_GetCPUUsage(eventinstance, &exclusive, &inclusive));
     FMODExt_push_unsigned_int(L, exclusive);
     FMODExt_push_unsigned_int(L, inclusive);
@@ -8943,7 +8483,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetCPUUsage(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_EventInstance_GetMemoryUsage(lua_State *L) {
     FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
     FMOD_STUDIO_MEMORY_USAGE* memoryusage = FMODExt_push_ptr_FMOD_STUDIO_MEMORY_USAGE(L, NULL);
-    ensure(ST, FMOD_Studio_EventInstance_GetMemoryUsage, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_STUDIO_MEMORY_USAGE*);
     errCheck(FMOD_Studio_EventInstance_GetMemoryUsage(eventinstance, memoryusage));
     lua_pushvalue(L, -1);
     return 1;
@@ -8956,7 +8495,6 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_GetMemoryUsage(lua_State *L) 
 #define FMODExt_func_FMOD_Studio_Bus_IsValid _FMODExt_func_FMOD_Studio_Bus_IsValid
 static int _FMODExt_func_FMOD_Studio_Bus_IsValid(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
-    ensure(ST, FMOD_Studio_Bus_IsValid, FMOD_BOOL, FMOD_STUDIO_BUS*);
     FMOD_BOOL retval = FMOD_Studio_Bus_IsValid(bus);
     lua_pushboolean(L, retval);
     return 1;
@@ -8970,7 +8508,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_IsValid(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bus_GetID(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
     FMOD_GUID* id = FMODExt_push_ptr_FMOD_GUID(L, NULL);
-    ensure(ST, FMOD_Studio_Bus_GetID, FMOD_RESULT, FMOD_STUDIO_BUS*, FMOD_GUID*);
     errCheck(FMOD_Studio_Bus_GetID(bus, id));
     lua_pushvalue(L, -1);
     return 1;
@@ -8988,7 +8525,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_GetVolume(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
     float volume;
     float finalvolume;
-    ensure(ST, FMOD_Studio_Bus_GetVolume, FMOD_RESULT, FMOD_STUDIO_BUS*, float*, float*);
     errCheck(FMOD_Studio_Bus_GetVolume(bus, &volume, &finalvolume));
     FMODExt_push_float(L, volume);
     FMODExt_push_float(L, finalvolume);
@@ -9003,7 +8539,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_GetVolume(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bus_SetVolume(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
     float volume = FMODExt_check_float(L, 2);
-    ensure(ST, FMOD_Studio_Bus_SetVolume, FMOD_RESULT, FMOD_STUDIO_BUS*, float);
     errCheck(FMOD_Studio_Bus_SetVolume(bus, volume));
     return 0;
 }
@@ -9016,7 +8551,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_SetVolume(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bus_GetPaused(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
     FMOD_BOOL paused;
-    ensure(ST, FMOD_Studio_Bus_GetPaused, FMOD_RESULT, FMOD_STUDIO_BUS*, FMOD_BOOL*);
     errCheck(FMOD_Studio_Bus_GetPaused(bus, &paused));
     FMODExt_push_FMOD_BOOL(L, paused);
     return 1;
@@ -9030,7 +8564,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_GetPaused(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bus_SetPaused(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
     FMOD_BOOL paused = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(ST, FMOD_Studio_Bus_SetPaused, FMOD_RESULT, FMOD_STUDIO_BUS*, FMOD_BOOL);
     errCheck(FMOD_Studio_Bus_SetPaused(bus, paused));
     return 0;
 }
@@ -9043,7 +8576,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_SetPaused(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bus_GetMute(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
     FMOD_BOOL mute;
-    ensure(ST, FMOD_Studio_Bus_GetMute, FMOD_RESULT, FMOD_STUDIO_BUS*, FMOD_BOOL*);
     errCheck(FMOD_Studio_Bus_GetMute(bus, &mute));
     FMODExt_push_FMOD_BOOL(L, mute);
     return 1;
@@ -9057,7 +8589,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_GetMute(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bus_SetMute(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
     FMOD_BOOL mute = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(ST, FMOD_Studio_Bus_SetMute, FMOD_RESULT, FMOD_STUDIO_BUS*, FMOD_BOOL);
     errCheck(FMOD_Studio_Bus_SetMute(bus, mute));
     return 0;
 }
@@ -9070,7 +8601,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_SetMute(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bus_StopAllEvents(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
     FMOD_STUDIO_STOP_MODE mode = FMODExt_check_FMOD_STUDIO_STOP_MODE(L, 2);
-    ensure(ST, FMOD_Studio_Bus_StopAllEvents, FMOD_RESULT, FMOD_STUDIO_BUS*, FMOD_STUDIO_STOP_MODE);
     errCheck(FMOD_Studio_Bus_StopAllEvents(bus, mode));
     return 0;
 }
@@ -9083,7 +8613,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_StopAllEvents(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bus_GetPortIndex(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
     FMOD_PORT_INDEX index;
-    ensure(ST, FMOD_Studio_Bus_GetPortIndex, FMOD_RESULT, FMOD_STUDIO_BUS*, FMOD_PORT_INDEX*);
     errCheck(FMOD_Studio_Bus_GetPortIndex(bus, &index));
     FMODExt_push_unsigned_long_long(L, index);
     return 1;
@@ -9097,7 +8626,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_GetPortIndex(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bus_SetPortIndex(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
     FMOD_PORT_INDEX index = FMODExt_check_unsigned_long_long(L, 2);
-    ensure(ST, FMOD_Studio_Bus_SetPortIndex, FMOD_RESULT, FMOD_STUDIO_BUS*, FMOD_PORT_INDEX);
     errCheck(FMOD_Studio_Bus_SetPortIndex(bus, index));
     return 0;
 }
@@ -9109,7 +8637,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_SetPortIndex(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_Bus_LockChannelGroup _FMODExt_func_FMOD_Studio_Bus_LockChannelGroup
 static int _FMODExt_func_FMOD_Studio_Bus_LockChannelGroup(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
-    ensure(ST, FMOD_Studio_Bus_LockChannelGroup, FMOD_RESULT, FMOD_STUDIO_BUS*);
     errCheck(FMOD_Studio_Bus_LockChannelGroup(bus));
     return 0;
 }
@@ -9121,7 +8648,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_LockChannelGroup(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_Bus_UnlockChannelGroup _FMODExt_func_FMOD_Studio_Bus_UnlockChannelGroup
 static int _FMODExt_func_FMOD_Studio_Bus_UnlockChannelGroup(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
-    ensure(ST, FMOD_Studio_Bus_UnlockChannelGroup, FMOD_RESULT, FMOD_STUDIO_BUS*);
     errCheck(FMOD_Studio_Bus_UnlockChannelGroup(bus));
     return 0;
 }
@@ -9134,7 +8660,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_UnlockChannelGroup(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bus_GetChannelGroup(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
     FMOD_CHANNELGROUP* group;
-    ensure(ST, FMOD_Studio_Bus_GetChannelGroup, FMOD_RESULT, FMOD_STUDIO_BUS*, FMOD_CHANNELGROUP**);
     errCheck(FMOD_Studio_Bus_GetChannelGroup(bus, &group));
     FMODExt_push_ptr_FMOD_CHANNELGROUP(L, group);
     return 1;
@@ -9149,7 +8674,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_GetCPUUsage(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
     unsigned int exclusive;
     unsigned int inclusive;
-    ensure(ST, FMOD_Studio_Bus_GetCPUUsage, FMOD_RESULT, FMOD_STUDIO_BUS*, unsigned int*, unsigned int*);
     errCheck(FMOD_Studio_Bus_GetCPUUsage(bus, &exclusive, &inclusive));
     FMODExt_push_unsigned_int(L, exclusive);
     FMODExt_push_unsigned_int(L, inclusive);
@@ -9164,7 +8688,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_GetCPUUsage(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bus_GetMemoryUsage(lua_State *L) {
     FMOD_STUDIO_BUS* bus = FMODExt_check_ptr_FMOD_STUDIO_BUS(L, 1);
     FMOD_STUDIO_MEMORY_USAGE* memoryusage = FMODExt_push_ptr_FMOD_STUDIO_MEMORY_USAGE(L, NULL);
-    ensure(ST, FMOD_Studio_Bus_GetMemoryUsage, FMOD_RESULT, FMOD_STUDIO_BUS*, FMOD_STUDIO_MEMORY_USAGE*);
     errCheck(FMOD_Studio_Bus_GetMemoryUsage(bus, memoryusage));
     lua_pushvalue(L, -1);
     return 1;
@@ -9177,7 +8700,6 @@ static int _FMODExt_func_FMOD_Studio_Bus_GetMemoryUsage(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_VCA_IsValid _FMODExt_func_FMOD_Studio_VCA_IsValid
 static int _FMODExt_func_FMOD_Studio_VCA_IsValid(lua_State *L) {
     FMOD_STUDIO_VCA* vca = FMODExt_check_ptr_FMOD_STUDIO_VCA(L, 1);
-    ensure(ST, FMOD_Studio_VCA_IsValid, FMOD_BOOL, FMOD_STUDIO_VCA*);
     FMOD_BOOL retval = FMOD_Studio_VCA_IsValid(vca);
     lua_pushboolean(L, retval);
     return 1;
@@ -9191,7 +8713,6 @@ static int _FMODExt_func_FMOD_Studio_VCA_IsValid(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_VCA_GetID(lua_State *L) {
     FMOD_STUDIO_VCA* vca = FMODExt_check_ptr_FMOD_STUDIO_VCA(L, 1);
     FMOD_GUID* id = FMODExt_push_ptr_FMOD_GUID(L, NULL);
-    ensure(ST, FMOD_Studio_VCA_GetID, FMOD_RESULT, FMOD_STUDIO_VCA*, FMOD_GUID*);
     errCheck(FMOD_Studio_VCA_GetID(vca, id));
     lua_pushvalue(L, -1);
     return 1;
@@ -9209,7 +8730,6 @@ static int _FMODExt_func_FMOD_Studio_VCA_GetVolume(lua_State *L) {
     FMOD_STUDIO_VCA* vca = FMODExt_check_ptr_FMOD_STUDIO_VCA(L, 1);
     float volume;
     float finalvolume;
-    ensure(ST, FMOD_Studio_VCA_GetVolume, FMOD_RESULT, FMOD_STUDIO_VCA*, float*, float*);
     errCheck(FMOD_Studio_VCA_GetVolume(vca, &volume, &finalvolume));
     FMODExt_push_float(L, volume);
     FMODExt_push_float(L, finalvolume);
@@ -9224,7 +8744,6 @@ static int _FMODExt_func_FMOD_Studio_VCA_GetVolume(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_VCA_SetVolume(lua_State *L) {
     FMOD_STUDIO_VCA* vca = FMODExt_check_ptr_FMOD_STUDIO_VCA(L, 1);
     float volume = FMODExt_check_float(L, 2);
-    ensure(ST, FMOD_Studio_VCA_SetVolume, FMOD_RESULT, FMOD_STUDIO_VCA*, float);
     errCheck(FMOD_Studio_VCA_SetVolume(vca, volume));
     return 0;
 }
@@ -9236,7 +8755,6 @@ static int _FMODExt_func_FMOD_Studio_VCA_SetVolume(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_Bank_IsValid _FMODExt_func_FMOD_Studio_Bank_IsValid
 static int _FMODExt_func_FMOD_Studio_Bank_IsValid(lua_State *L) {
     FMOD_STUDIO_BANK* bank = FMODExt_check_ptr_FMOD_STUDIO_BANK(L, 1);
-    ensure(ST, FMOD_Studio_Bank_IsValid, FMOD_BOOL, FMOD_STUDIO_BANK*);
     FMOD_BOOL retval = FMOD_Studio_Bank_IsValid(bank);
     lua_pushboolean(L, retval);
     return 1;
@@ -9250,7 +8768,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_IsValid(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bank_GetID(lua_State *L) {
     FMOD_STUDIO_BANK* bank = FMODExt_check_ptr_FMOD_STUDIO_BANK(L, 1);
     FMOD_GUID* id = FMODExt_push_ptr_FMOD_GUID(L, NULL);
-    ensure(ST, FMOD_Studio_Bank_GetID, FMOD_RESULT, FMOD_STUDIO_BANK*, FMOD_GUID*);
     errCheck(FMOD_Studio_Bank_GetID(bank, id));
     lua_pushvalue(L, -1);
     return 1;
@@ -9266,7 +8783,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_GetID(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_Bank_Unload _FMODExt_func_FMOD_Studio_Bank_Unload
 static int _FMODExt_func_FMOD_Studio_Bank_Unload(lua_State *L) {
     FMOD_STUDIO_BANK* bank = FMODExt_check_ptr_FMOD_STUDIO_BANK(L, 1);
-    ensure(ST, FMOD_Studio_Bank_Unload, FMOD_RESULT, FMOD_STUDIO_BANK*);
     errCheck(FMOD_Studio_Bank_Unload(bank));
     return 0;
 }
@@ -9278,7 +8794,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_Unload(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_Bank_LoadSampleData _FMODExt_func_FMOD_Studio_Bank_LoadSampleData
 static int _FMODExt_func_FMOD_Studio_Bank_LoadSampleData(lua_State *L) {
     FMOD_STUDIO_BANK* bank = FMODExt_check_ptr_FMOD_STUDIO_BANK(L, 1);
-    ensure(ST, FMOD_Studio_Bank_LoadSampleData, FMOD_RESULT, FMOD_STUDIO_BANK*);
     errCheck(FMOD_Studio_Bank_LoadSampleData(bank));
     return 0;
 }
@@ -9290,7 +8805,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_LoadSampleData(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_Bank_UnloadSampleData _FMODExt_func_FMOD_Studio_Bank_UnloadSampleData
 static int _FMODExt_func_FMOD_Studio_Bank_UnloadSampleData(lua_State *L) {
     FMOD_STUDIO_BANK* bank = FMODExt_check_ptr_FMOD_STUDIO_BANK(L, 1);
-    ensure(ST, FMOD_Studio_Bank_UnloadSampleData, FMOD_RESULT, FMOD_STUDIO_BANK*);
     errCheck(FMOD_Studio_Bank_UnloadSampleData(bank));
     return 0;
 }
@@ -9303,7 +8817,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_UnloadSampleData(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bank_GetLoadingState(lua_State *L) {
     FMOD_STUDIO_BANK* bank = FMODExt_check_ptr_FMOD_STUDIO_BANK(L, 1);
     FMOD_STUDIO_LOADING_STATE state;
-    ensure(ST, FMOD_Studio_Bank_GetLoadingState, FMOD_RESULT, FMOD_STUDIO_BANK*, FMOD_STUDIO_LOADING_STATE*);
     errCheck(FMOD_Studio_Bank_GetLoadingState(bank, &state));
     FMODExt_push_FMOD_STUDIO_LOADING_STATE(L, state);
     return 1;
@@ -9317,7 +8830,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_GetLoadingState(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bank_GetSampleLoadingState(lua_State *L) {
     FMOD_STUDIO_BANK* bank = FMODExt_check_ptr_FMOD_STUDIO_BANK(L, 1);
     FMOD_STUDIO_LOADING_STATE state;
-    ensure(ST, FMOD_Studio_Bank_GetSampleLoadingState, FMOD_RESULT, FMOD_STUDIO_BANK*, FMOD_STUDIO_LOADING_STATE*);
     errCheck(FMOD_Studio_Bank_GetSampleLoadingState(bank, &state));
     FMODExt_push_FMOD_STUDIO_LOADING_STATE(L, state);
     return 1;
@@ -9331,7 +8843,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_GetSampleLoadingState(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bank_GetStringCount(lua_State *L) {
     FMOD_STUDIO_BANK* bank = FMODExt_check_ptr_FMOD_STUDIO_BANK(L, 1);
     int count;
-    ensure(ST, FMOD_Studio_Bank_GetStringCount, FMOD_RESULT, FMOD_STUDIO_BANK*, int*);
     errCheck(FMOD_Studio_Bank_GetStringCount(bank, &count));
     FMODExt_push_int(L, count);
     return 1;
@@ -9348,7 +8859,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_GetStringCount(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bank_GetEventCount(lua_State *L) {
     FMOD_STUDIO_BANK* bank = FMODExt_check_ptr_FMOD_STUDIO_BANK(L, 1);
     int count;
-    ensure(ST, FMOD_Studio_Bank_GetEventCount, FMOD_RESULT, FMOD_STUDIO_BANK*, int*);
     errCheck(FMOD_Studio_Bank_GetEventCount(bank, &count));
     FMODExt_push_int(L, count);
     return 1;
@@ -9364,7 +8874,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_GetEventList(lua_State *L) {
     FMOD_STUDIO_EVENTDESCRIPTION* array;
     int capacity = FMODExt_check_int(L, 2);
     int count;
-    ensure(ST, FMOD_Studio_Bank_GetEventList, FMOD_RESULT, FMOD_STUDIO_BANK*, FMOD_STUDIO_EVENTDESCRIPTION**, int, int*);
     errCheck(FMOD_Studio_Bank_GetEventList(bank, &array, capacity, &count));
     FMODExt_push_ptr_FMOD_STUDIO_EVENTDESCRIPTION(L, array);
     FMODExt_push_int(L, count);
@@ -9379,7 +8888,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_GetEventList(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bank_GetBusCount(lua_State *L) {
     FMOD_STUDIO_BANK* bank = FMODExt_check_ptr_FMOD_STUDIO_BANK(L, 1);
     int count;
-    ensure(ST, FMOD_Studio_Bank_GetBusCount, FMOD_RESULT, FMOD_STUDIO_BANK*, int*);
     errCheck(FMOD_Studio_Bank_GetBusCount(bank, &count));
     FMODExt_push_int(L, count);
     return 1;
@@ -9395,7 +8903,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_GetBusList(lua_State *L) {
     FMOD_STUDIO_BUS* array;
     int capacity = FMODExt_check_int(L, 2);
     int count;
-    ensure(ST, FMOD_Studio_Bank_GetBusList, FMOD_RESULT, FMOD_STUDIO_BANK*, FMOD_STUDIO_BUS**, int, int*);
     errCheck(FMOD_Studio_Bank_GetBusList(bank, &array, capacity, &count));
     FMODExt_push_ptr_FMOD_STUDIO_BUS(L, array);
     FMODExt_push_int(L, count);
@@ -9410,7 +8917,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_GetBusList(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_Bank_GetVCACount(lua_State *L) {
     FMOD_STUDIO_BANK* bank = FMODExt_check_ptr_FMOD_STUDIO_BANK(L, 1);
     int count;
-    ensure(ST, FMOD_Studio_Bank_GetVCACount, FMOD_RESULT, FMOD_STUDIO_BANK*, int*);
     errCheck(FMOD_Studio_Bank_GetVCACount(bank, &count));
     FMODExt_push_int(L, count);
     return 1;
@@ -9426,7 +8932,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_GetVCAList(lua_State *L) {
     FMOD_STUDIO_VCA* array;
     int capacity = FMODExt_check_int(L, 2);
     int count;
-    ensure(ST, FMOD_Studio_Bank_GetVCAList, FMOD_RESULT, FMOD_STUDIO_BANK*, FMOD_STUDIO_VCA**, int, int*);
     errCheck(FMOD_Studio_Bank_GetVCAList(bank, &array, capacity, &count));
     FMODExt_push_ptr_FMOD_STUDIO_VCA(L, array);
     FMODExt_push_int(L, count);
@@ -9446,7 +8951,6 @@ static int _FMODExt_func_FMOD_Studio_Bank_GetVCAList(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_CommandReplay_IsValid _FMODExt_func_FMOD_Studio_CommandReplay_IsValid
 static int _FMODExt_func_FMOD_Studio_CommandReplay_IsValid(lua_State *L) {
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
-    ensure(ST, FMOD_Studio_CommandReplay_IsValid, FMOD_BOOL, FMOD_STUDIO_COMMANDREPLAY*);
     FMOD_BOOL retval = FMOD_Studio_CommandReplay_IsValid(replay);
     lua_pushboolean(L, retval);
     return 1;
@@ -9460,7 +8964,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_IsValid(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_CommandReplay_GetSystem(lua_State *L) {
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     FMOD_STUDIO_SYSTEM* system;
-    ensure(ST, FMOD_Studio_CommandReplay_GetSystem, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, FMOD_STUDIO_SYSTEM**);
     errCheck(FMOD_Studio_CommandReplay_GetSystem(replay, &system));
     FMODExt_push_ptr_FMOD_STUDIO_SYSTEM(L, system);
     return 1;
@@ -9474,7 +8977,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_GetSystem(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_CommandReplay_GetLength(lua_State *L) {
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     float length;
-    ensure(ST, FMOD_Studio_CommandReplay_GetLength, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, float*);
     errCheck(FMOD_Studio_CommandReplay_GetLength(replay, &length));
     FMODExt_push_float(L, length);
     return 1;
@@ -9488,7 +8990,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_GetLength(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_CommandReplay_GetCommandCount(lua_State *L) {
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     int count;
-    ensure(ST, FMOD_Studio_CommandReplay_GetCommandCount, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, int*);
     errCheck(FMOD_Studio_CommandReplay_GetCommandCount(replay, &count));
     FMODExt_push_int(L, count);
     return 1;
@@ -9503,7 +9004,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_GetCommandInfo(lua_State *L) 
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     int commandindex = FMODExt_check_int(L, 2);
     FMOD_STUDIO_COMMAND_INFO* info = FMODExt_push_ptr_FMOD_STUDIO_COMMAND_INFO(L, NULL);
-    ensure(ST, FMOD_Studio_CommandReplay_GetCommandInfo, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, int, FMOD_STUDIO_COMMAND_INFO*);
     errCheck(FMOD_Studio_CommandReplay_GetCommandInfo(replay, commandindex, info));
     lua_pushvalue(L, -1);
     return 1;
@@ -9521,7 +9021,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_GetCommandAtTime(lua_State *L
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     float time = FMODExt_check_float(L, 2);
     int commandindex;
-    ensure(ST, FMOD_Studio_CommandReplay_GetCommandAtTime, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, float, int*);
     errCheck(FMOD_Studio_CommandReplay_GetCommandAtTime(replay, time, &commandindex));
     FMODExt_push_int(L, commandindex);
     return 1;
@@ -9535,7 +9034,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_GetCommandAtTime(lua_State *L
 static int _FMODExt_func_FMOD_Studio_CommandReplay_SetBankPath(lua_State *L) {
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     const char* bankPath = FMODExt_check_ptr_char(L, 2);
-    ensure(ST, FMOD_Studio_CommandReplay_SetBankPath, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, const char*);
     errCheck(FMOD_Studio_CommandReplay_SetBankPath(replay, bankPath));
     return 0;
 }
@@ -9547,7 +9045,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_SetBankPath(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_CommandReplay_Start _FMODExt_func_FMOD_Studio_CommandReplay_Start
 static int _FMODExt_func_FMOD_Studio_CommandReplay_Start(lua_State *L) {
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
-    ensure(ST, FMOD_Studio_CommandReplay_Start, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*);
     errCheck(FMOD_Studio_CommandReplay_Start(replay));
     return 0;
 }
@@ -9559,7 +9056,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_Start(lua_State *L) {
 #define FMODExt_func_FMOD_Studio_CommandReplay_Stop _FMODExt_func_FMOD_Studio_CommandReplay_Stop
 static int _FMODExt_func_FMOD_Studio_CommandReplay_Stop(lua_State *L) {
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
-    ensure(ST, FMOD_Studio_CommandReplay_Stop, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*);
     errCheck(FMOD_Studio_CommandReplay_Stop(replay));
     return 0;
 }
@@ -9572,7 +9068,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_Stop(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_CommandReplay_SeekToTime(lua_State *L) {
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     float time = FMODExt_check_float(L, 2);
-    ensure(ST, FMOD_Studio_CommandReplay_SeekToTime, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, float);
     errCheck(FMOD_Studio_CommandReplay_SeekToTime(replay, time));
     return 0;
 }
@@ -9585,7 +9080,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_SeekToTime(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_CommandReplay_SeekToCommand(lua_State *L) {
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     int commandindex = FMODExt_check_int(L, 2);
-    ensure(ST, FMOD_Studio_CommandReplay_SeekToCommand, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, int);
     errCheck(FMOD_Studio_CommandReplay_SeekToCommand(replay, commandindex));
     return 0;
 }
@@ -9598,7 +9092,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_SeekToCommand(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_CommandReplay_GetPaused(lua_State *L) {
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     FMOD_BOOL paused;
-    ensure(ST, FMOD_Studio_CommandReplay_GetPaused, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, FMOD_BOOL*);
     errCheck(FMOD_Studio_CommandReplay_GetPaused(replay, &paused));
     FMODExt_push_FMOD_BOOL(L, paused);
     return 1;
@@ -9612,7 +9105,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_GetPaused(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_CommandReplay_SetPaused(lua_State *L) {
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     FMOD_BOOL paused = FMODExt_check_FMOD_BOOL(L, 2);
-    ensure(ST, FMOD_Studio_CommandReplay_SetPaused, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, FMOD_BOOL);
     errCheck(FMOD_Studio_CommandReplay_SetPaused(replay, paused));
     return 0;
 }
@@ -9625,7 +9117,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_SetPaused(lua_State *L) {
 static int _FMODExt_func_FMOD_Studio_CommandReplay_GetPlaybackState(lua_State *L) {
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     FMOD_STUDIO_PLAYBACK_STATE state;
-    ensure(ST, FMOD_Studio_CommandReplay_GetPlaybackState, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, FMOD_STUDIO_PLAYBACK_STATE*);
     errCheck(FMOD_Studio_CommandReplay_GetPlaybackState(replay, &state));
     FMODExt_push_FMOD_STUDIO_PLAYBACK_STATE(L, state);
     return 1;
@@ -9640,7 +9131,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_GetCurrentCommand(lua_State *
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
     int commandindex;
     float currenttime;
-    ensure(ST, FMOD_Studio_CommandReplay_GetCurrentCommand, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, int*, float*);
     errCheck(FMOD_Studio_CommandReplay_GetCurrentCommand(replay, &commandindex, &currenttime));
     FMODExt_push_int(L, commandindex);
     FMODExt_push_float(L, currenttime);
@@ -9654,7 +9144,6 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_GetCurrentCommand(lua_State *
 #define FMODExt_func_FMOD_Studio_CommandReplay_Release _FMODExt_func_FMOD_Studio_CommandReplay_Release
 static int _FMODExt_func_FMOD_Studio_CommandReplay_Release(lua_State *L) {
     FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
-    ensure(ST, FMOD_Studio_CommandReplay_Release, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*);
     errCheck(FMOD_Studio_CommandReplay_Release(replay));
     return 0;
 }
@@ -10662,7 +10151,7 @@ void FMODExt_register(lua_State *L) {
     addEnum(STUDIO_COMMANDREPLAY_SKIP_CLEANUP);
     addEnum(STUDIO_COMMANDREPLAY_FAST_FORWARD);
     addEnum(STUDIO_COMMANDREPLAY_SKIP_BANK_LOAD);
-
+    
 
     #define beginStruct(structName) \
         lua_newtable(L); \
@@ -14305,54 +13794,54 @@ void FMODExt_register(lua_State *L) {
         FMODExt_extras_FMOD_STUDIO_MEMORY_USAGE
         #endif
     endStruct();
+    
 
-
-
+    
         #ifdef FMODExt_func_FMOD_Memory_Initialize
         lua_pushcfunction(L, &FMODExt_func_FMOD_Memory_Initialize);
         lua_setfield(L, -2 - 1, "memory_initialize");
         #endif
-
+    
         #ifdef FMODExt_func_FMOD_Memory_GetStats
         lua_pushcfunction(L, &FMODExt_func_FMOD_Memory_GetStats);
         lua_setfield(L, -2 - 1, "memory_get_stats");
         #endif
-
+    
         #ifdef FMODExt_func_FMOD_Debug_Initialize
         lua_pushcfunction(L, &FMODExt_func_FMOD_Debug_Initialize);
         lua_setfield(L, -2 - 1, "debug_initialize");
         #endif
-
+    
         #ifdef FMODExt_func_FMOD_File_SetDiskBusy
         lua_pushcfunction(L, &FMODExt_func_FMOD_File_SetDiskBusy);
         lua_setfield(L, -2 - 1, "file_set_disk_busy");
         #endif
-
+    
         #ifdef FMODExt_func_FMOD_File_GetDiskBusy
         lua_pushcfunction(L, &FMODExt_func_FMOD_File_GetDiskBusy);
         lua_setfield(L, -2 - 1, "file_get_disk_busy");
         #endif
-
+    
         #ifdef FMODExt_func_FMOD_Thread_SetAttributes
         lua_pushcfunction(L, &FMODExt_func_FMOD_Thread_SetAttributes);
         lua_setfield(L, -2 - 1, "thread_set_attributes");
         #endif
-
+    
         #ifdef FMODExt_func_FMOD_System_Create
         lua_pushcfunction(L, &FMODExt_func_FMOD_System_Create);
         lua_setfield(L, -2 - 1, "system_create");
         #endif
-
+    
         #ifdef FMODExt_func_FMOD_Studio_ParseID
         lua_pushcfunction(L, &FMODExt_func_FMOD_Studio_ParseID);
         lua_setfield(L, -1 - 1, "parse_id");
         #endif
-
+    
         #ifdef FMODExt_func_FMOD_Studio_System_Create
         lua_pushcfunction(L, &FMODExt_func_FMOD_Studio_System_Create);
         lua_setfield(L, -1 - 1, "system_create");
         #endif
-
+    
 
     FMODExt_push_ptr_FMOD_STUDIO_SYSTEM(L, FMODExt_system);
     lua_setfield(L, -2, "system");
