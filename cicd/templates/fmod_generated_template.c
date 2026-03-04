@@ -571,7 +571,7 @@ static int _FMODExt_func_FMOD_Sound_GetSyncPointInfo(lua_State *L) {
     FMOD_SYNCPOINT* point = FMODExt_check_ptr_FMOD_SYNCPOINT(L, 2);
     char name[256];
     unsigned int offset;
-    unsigned int offsettype = FMODExt_check_unsigned_int(L, 4);
+    unsigned int offsettype = FMODExt_check_unsigned_int(L, 3);
     ensure(LL, FMOD_Sound_GetSyncPointInfo, FMOD_RESULT, FMOD_SOUND*, FMOD_SYNCPOINT*, char*, int, unsigned int*, unsigned int);
     errCheck(FMOD_Sound_GetSyncPointInfo(sound, point, name, 256, &offset, offsettype));
     lua_pushstring(L, name);
