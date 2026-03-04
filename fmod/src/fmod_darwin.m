@@ -1,4 +1,4 @@
-#include "fmod_bridge.h"
+#include "fmod_ext.h"
 #import <Foundation/Foundation.h>
 
 #if TARGET_OS_IPHONE
@@ -18,7 +18,7 @@ static void resumeAudioSession(int retries) {
         NSError* error;
         BOOL success = [[AVAudioSession sharedInstance] setActive:TRUE error:&error];
         if (success) {
-            FMODBridge_resumeMixer();
+            FMODExt_resumeMixer();
             return;
         }
 
@@ -42,7 +42,7 @@ static void resumeAudioSession(int retries) {
     }
 }
 
-void FMODBridge_initIOSInterruptionHandler() {
+void FMODExt_initIOSInterruptionHandler() {
     @autoreleasepool {
         [[NSNotificationCenter defaultCenter]
             addObserverForName:AVAudioSessionInterruptionNotification
@@ -57,7 +57,7 @@ void FMODBridge_initIOSInterruptionHandler() {
                               [resumeTimer invalidate];
                               resumeTimer = nil;
                           }
-                          FMODBridge_suspendMixer();
+                          FMODExt_suspendMixer();
 
                       } else if (typeValue == AVAudioSessionInterruptionTypeEnded) {
                           NSUInteger optionsValue =
@@ -71,7 +71,7 @@ void FMODBridge_initIOSInterruptionHandler() {
 }
 #endif
 
-int FMODBridge_getBundleRoot(lua_State* L) {
+int FMODExt_getBundleRoot(lua_State* L) {
     @autoreleasepool {
         NSString* path = [[NSBundle mainBundle] bundlePath];
         lua_pushstring(L, [path UTF8String]);

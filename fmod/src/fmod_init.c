@@ -1,4 +1,4 @@
-#include "fmod_bridge.h"
+#include "fmod_ext.h"
 #include "../include/fmod_errors.h"
 #include <string.h>
 
@@ -21,9 +21,9 @@
 #include <shlwapi.h>
 #endif
 
-FMOD_STUDIO_SYSTEM* FMODBridge_system = NULL;
-FMOD_SYSTEM* FMODBridge_lowLevelSystem = NULL;
-bool FMODBridge_isPaused = false;
+FMOD_STUDIO_SYSTEM* FMODExt_system = NULL;
+FMOD_SYSTEM* FMODExt_lowLevelSystem = NULL;
+bool FMODExt_isPaused = false;
 
 static bool runWhileIconified = false;
 static bool iconified = false;
@@ -43,19 +43,19 @@ static FMOD_SPEAKERMODE speakerModeFromString(const char* str) {
     return FMOD_SPEAKERMODE_DEFAULT;
 }
 
-#define check(fcall)                                       \
-    do {                                                   \
-        FMOD_RESULT res = fcall;                           \
-        if (res != FMOD_OK) {                              \
-            LOGE("%s", FMOD_ErrorString(res));             \
-            FMOD_Studio_System_Release(FMODBridge_system); \
-            FMODBridge_system = NULL;                      \
-            return;                                        \
-        }                                                  \
+#define check(fcall)                                    \
+    do {                                                \
+        FMOD_RESULT res = fcall;                        \
+        if (res != FMOD_OK) {                           \
+            LOGE("%s", FMOD_ErrorString(res));          \
+            FMOD_Studio_System_Release(FMODExt_system); \
+            FMODExt_system = NULL;                      \
+            return;                                     \
+        }                                               \
     } while (0)
 
-void FMODBridge_init(lua_State* L) {
-    if (!FMODBridge_linkLibraries()) {
+void FMODExt_init(lua_State* L) {
+    if (!FMODExt_linkLibraries()) {
         LOGE("Failed to link FMOD libraries");
         return;
     }
@@ -69,165 +69,164 @@ void FMODBridge_init(lua_State* L) {
     ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
 
     FMOD_RESULT res;
-    res = FMOD_Studio_System_Create(&FMODBridge_system, FMOD_VERSION);
+    res = FMOD_Studio_System_Create(&FMODExt_system, FMOD_VERSION);
     if (res != FMOD_OK) {
         LOGE("%s", FMOD_ErrorString(res));
-        FMODBridge_system = NULL;
+        FMODExt_system = NULL;
         return;
     }
 
-    check(FMOD_Studio_System_GetCoreSystem(FMODBridge_system, &FMODBridge_lowLevelSystem));
+    check(FMOD_Studio_System_GetCoreSystem(FMODExt_system, &FMODExt_lowLevelSystem));
 
     int defaultSampleRate = 0;
     unsigned int bufferLength = 0;
     int numBuffers = 0;
 
 #ifdef __EMSCRIPTEN__
-    check(FMOD_System_GetDriverInfo(FMODBridge_lowLevelSystem, 0, NULL, 0, NULL, &defaultSampleRate, NULL, NULL));
+    check(FMOD_System_GetDriverInfo(FMODExt_lowLevelSystem, 0, NULL, 0, NULL, &defaultSampleRate, NULL, NULL));
     bufferLength = 2048;
     numBuffers = 2;
 #endif
 
-    bufferLength = (unsigned int)FMODBridge_dmConfigFile_GetInt("fmod.buffer_length", bufferLength);
-    numBuffers = FMODBridge_dmConfigFile_GetInt("fmod.num_buffers", numBuffers);
+    bufferLength = (unsigned int)FMODExt_dmConfigFile_GetInt("fmod.buffer_length", bufferLength);
+    numBuffers = FMODExt_dmConfigFile_GetInt("fmod.num_buffers", numBuffers);
 
     if (bufferLength || numBuffers) {
         if (!bufferLength) { bufferLength = 1024; }
         if (!numBuffers) { numBuffers = 4; }
-        check(FMOD_System_SetDSPBufferSize(FMODBridge_lowLevelSystem, bufferLength, numBuffers));
+        check(FMOD_System_SetDSPBufferSize(FMODExt_lowLevelSystem, bufferLength, numBuffers));
     }
 
-    int sampleRate = FMODBridge_dmConfigFile_GetInt("fmod.sample_rate", defaultSampleRate);
-    int numRawSpeakers = FMODBridge_dmConfigFile_GetInt("fmod.num_raw_speakers", 0);
-    const char* speakerModeStr = FMODBridge_dmConfigFile_GetString("fmod.speaker_mode", "default");
+    int sampleRate = FMODExt_dmConfigFile_GetInt("fmod.sample_rate", defaultSampleRate);
+    int numRawSpeakers = FMODExt_dmConfigFile_GetInt("fmod.num_raw_speakers", 0);
+    const char* speakerModeStr = FMODExt_dmConfigFile_GetString("fmod.speaker_mode", "default");
     FMOD_SPEAKERMODE speakerMode = speakerModeFromString(speakerModeStr);
 
     if (sampleRate || numRawSpeakers || speakerMode != FMOD_SPEAKERMODE_DEFAULT) {
-        check(FMOD_System_SetSoftwareFormat(FMODBridge_lowLevelSystem, sampleRate, speakerMode, numRawSpeakers));
+        check(FMOD_System_SetSoftwareFormat(FMODExt_lowLevelSystem, sampleRate, speakerMode, numRawSpeakers));
     }
 
     FMOD_STUDIO_INITFLAGS studioInitFlags = FMOD_STUDIO_INIT_NORMAL;
-    if (FMODBridge_dmConfigFile_GetInt("fmod.live_update", 0)) { studioInitFlags |= FMOD_STUDIO_INIT_LIVEUPDATE; }
+    if (FMODExt_dmConfigFile_GetInt("fmod.live_update", 0)) { studioInitFlags |= FMOD_STUDIO_INIT_LIVEUPDATE; }
 
     void* extraDriverData = NULL;
-    check(FMOD_Studio_System_Initialize(FMODBridge_system, 1024, studioInitFlags, FMOD_INIT_NORMAL, extraDriverData));
+    check(FMOD_Studio_System_Initialize(FMODExt_system, 1024, studioInitFlags, FMOD_INIT_NORMAL, extraDriverData));
 
-    FMODBridge_isPaused = false;
+    FMODExt_isPaused = false;
 
     iconified = false;
-    runWhileIconified =
-        FMODBridge_dmConfigFile_GetInt("fmod.run_while_iconified",
-                                       FMODBridge_dmConfigFile_GetInt("engine.run_while_iconified", 0)) != 0;
+    runWhileIconified = FMODExt_dmConfigFile_GetInt("fmod.run_while_iconified",
+                                                    FMODExt_dmConfigFile_GetInt("engine.run_while_iconified", 0)) != 0;
 
 #if TARGET_OS_IPHONE
-    FMODBridge_initIOSInterruptionHandler();
+    FMODExt_initIOSInterruptionHandler();
 #endif
 
-    FMODBridge_register(L);
+    FMODExt_register(L);
 }
 
-void FMODBridge_update() {
-    if (!FMODBridge_system || FMODBridge_isPaused) { return; }
+void FMODExt_update() {
+    if (!FMODExt_system || FMODExt_isPaused) { return; }
 
     ensure(ST, FMOD_Studio_System_Update, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
     ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
 
-    FMOD_RESULT res = FMOD_Studio_System_Update(FMODBridge_system);
+    FMOD_RESULT res = FMOD_Studio_System_Update(FMODExt_system);
     if (res != FMOD_OK) {
         LOGE("%s", FMOD_ErrorString(res));
-        FMOD_Studio_System_Release(FMODBridge_system);
-        FMODBridge_system = NULL;
+        FMOD_Studio_System_Release(FMODExt_system);
+        FMODExt_system = NULL;
     }
 }
 
-void FMODBridge_finalize() {
-    if (FMODBridge_system) {
+void FMODExt_finalize() {
+    if (FMODExt_system) {
         ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
 
-        FMOD_RESULT res = FMOD_Studio_System_Release(FMODBridge_system);
+        FMOD_RESULT res = FMOD_Studio_System_Release(FMODExt_system);
         if (res != FMOD_OK) { LOGE("%s", FMOD_ErrorString(res)); }
-        FMODBridge_system = NULL;
+        FMODExt_system = NULL;
     }
-    FMODBridge_cleanupLibraries();
+    FMODExt_cleanupLibraries();
 }
 
-void FMODBridge_resumeMixer() {
-    if (FMODBridge_system && FMODBridge_isPaused) {
+void FMODExt_resumeMixer() {
+    if (FMODExt_system && FMODExt_isPaused) {
         ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
         ensure(LL, FMOD_System_MixerResume, FMOD_RESULT, FMOD_SYSTEM*);
-        check(FMOD_System_MixerResume(FMODBridge_lowLevelSystem));
-        FMODBridge_isPaused = false;
+        check(FMOD_System_MixerResume(FMODExt_lowLevelSystem));
+        FMODExt_isPaused = false;
     }
 }
 
-void FMODBridge_suspendMixer() {
-    if (FMODBridge_system && !FMODBridge_isPaused) {
+void FMODExt_suspendMixer() {
+    if (FMODExt_system && !FMODExt_isPaused) {
         ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
         ensure(LL, FMOD_System_MixerSuspend, FMOD_RESULT, FMOD_SYSTEM*);
-        check(FMOD_System_MixerSuspend(FMODBridge_lowLevelSystem));
-        FMODBridge_isPaused = true;
+        check(FMOD_System_MixerSuspend(FMODExt_lowLevelSystem));
+        FMODExt_isPaused = true;
     }
 }
 
 #ifdef __EMSCRIPTEN__
 EMSCRIPTEN_KEEPALIVE
-__attribute__((used)) void FMODBridge_unmuteAfterUserInteraction() {
-    if (FMODBridge_system && !FMODBridge_isPaused) {
+__attribute__((used)) void FMODExt_unmuteAfterUserInteraction() {
+    if (FMODExt_system && !FMODExt_isPaused) {
         ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
         ensure(LL, FMOD_System_MixerSuspend, FMOD_RESULT, FMOD_SYSTEM*);
         ensure(LL, FMOD_System_MixerResume, FMOD_RESULT, FMOD_SYSTEM*);
-        check(FMOD_System_MixerSuspend(FMODBridge_lowLevelSystem));
-        check(FMOD_System_MixerResume(FMODBridge_lowLevelSystem));
+        check(FMOD_System_MixerSuspend(FMODExt_lowLevelSystem));
+        check(FMOD_System_MixerResume(FMODExt_lowLevelSystem));
     }
 }
 #endif
 
-void FMODBridge_activateApp() {
+void FMODExt_activateApp() {
 #if defined(__EMSCRIPTEN__) || defined(__ANDROID__)
-    FMODBridge_resumeMixer();
+    FMODExt_resumeMixer();
 #endif
 }
 
-void FMODBridge_deactivateApp() {
+void FMODExt_deactivateApp() {
 #if defined(__EMSCRIPTEN__) || defined(__ANDROID__)
-    FMODBridge_suspendMixer();
+    FMODExt_suspendMixer();
 #endif
 }
 
-void FMODBridge_iconifyApp() {
+void FMODExt_iconifyApp() {
     if (iconified) { return; }
     iconified = true;
 
-    if (!runWhileIconified && FMODBridge_lowLevelSystem) {
+    if (!runWhileIconified && FMODExt_lowLevelSystem) {
         ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
         ensure(LL, FMOD_System_GetMasterChannelGroup, FMOD_RESULT, FMOD_SYSTEM*, FMOD_CHANNELGROUP**);
         ensure(LL, FMOD_ChannelGroup_GetPaused, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL*);
         ensure(LL, FMOD_ChannelGroup_SetPaused, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL);
 
         FMOD_CHANNELGROUP* channelGroup;
-        check(FMOD_System_GetMasterChannelGroup(FMODBridge_lowLevelSystem, &channelGroup));
+        check(FMOD_System_GetMasterChannelGroup(FMODExt_lowLevelSystem, &channelGroup));
         check(FMOD_ChannelGroup_GetPaused(channelGroup, &masterChannelGroupPaused));
         check(FMOD_ChannelGroup_SetPaused(channelGroup, true));
     }
 }
 
-void FMODBridge_deiconifyApp() {
+void FMODExt_deiconifyApp() {
     if (!iconified) { return; }
     iconified = false;
 
-    if (!runWhileIconified && FMODBridge_lowLevelSystem) {
+    if (!runWhileIconified && FMODExt_lowLevelSystem) {
         ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
         ensure(LL, FMOD_System_GetMasterChannelGroup, FMOD_RESULT, FMOD_SYSTEM*, FMOD_CHANNELGROUP**);
         ensure(LL, FMOD_ChannelGroup_SetPaused, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL);
 
         FMOD_CHANNELGROUP* channelGroup;
-        check(FMOD_System_GetMasterChannelGroup(FMODBridge_lowLevelSystem, &channelGroup));
+        check(FMOD_System_GetMasterChannelGroup(FMODExt_lowLevelSystem, &channelGroup));
         check(FMOD_ChannelGroup_SetPaused(channelGroup, masterChannelGroupPaused));
     }
 }
 
 #if !defined(__APPLE__)
-int FMODBridge_getBundleRoot(lua_State* L) {
+int FMODExt_getBundleRoot(lua_State* L) {
 #if defined(_WIN32)
     HMODULE hModule = GetModuleHandle(NULL);
     char path[MAX_PATH];
