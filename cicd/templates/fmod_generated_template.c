@@ -1,15 +1,15 @@
 #include <string.h>
 #include <stdio.h>
 #include <stddef.h>
-#include "fmod_bridge.h"
+#include "fmod_ext.h"
 #include "fmod_errors.h"
 
 /* Error handling */
 
-static int FMODBridge_registry_FMOD_RESULT = LUA_REFNIL;
+static int FMODExt_registry_FMOD_RESULT = LUA_REFNIL;
 inline static void throwError(FMOD_RESULT res, lua_State* L) {
     lua_pushstring(L, FMOD_ErrorString(res));
-    lua_rawgeti(L, LUA_REGISTRYINDEX, FMODBridge_registry_FMOD_RESULT);
+    lua_rawgeti(L, LUA_REGISTRYINDEX, FMODExt_registry_FMOD_RESULT);
     lua_pushvalue(L, -2);
     lua_pushnumber(L, res);
     lua_rawset(L, -3);
@@ -24,48 +24,48 @@ inline static void throwError(FMOD_RESULT res, lua_State* L) {
 
 #define optional(L, index, typename, x) (lua_isnoneornil(L, index) ? ((typename)0) : (x))
 
-#define FMODBridge_push_char(L, x) lua_pushnumber(L, (lua_Number)(x))
-#define FMODBridge_check_char(L, index) ((char)luaL_checknumber(L, index))
-#define FMODBridge_push_short(L, x) lua_pushnumber(L, (lua_Number)(x))
-#define FMODBridge_check_short(L, index) ((short)luaL_checknumber(L, index))
-#define FMODBridge_push_int(L, x) lua_pushnumber(L, (lua_Number)(x))
-#define FMODBridge_check_int(L, index) ((int)luaL_checknumber(L, index))
-#define FMODBridge_push_unsigned_char(L, x) lua_pushnumber(L, (lua_Number)(x))
-#define FMODBridge_check_unsigned_char(L, index) ((unsigned char)luaL_checknumber(L, index))
-#define FMODBridge_push_unsigned_short(L, x) lua_pushnumber(L, (lua_Number)(x))
-#define FMODBridge_check_unsigned_short(L, index) ((unsigned short)luaL_checknumber(L, index))
-#define FMODBridge_push_unsigned_int(L, x) lua_pushnumber(L, (lua_Number)(x))
-#define FMODBridge_check_unsigned_int(L, index) ((unsigned int)luaL_checknumber(L, index))
-#define FMODBridge_push_float(L, x) lua_pushnumber(L, (lua_Number)(x))
-#define FMODBridge_check_float(L, index) ((float)luaL_checknumber(L, index))
-#define FMODBridge_push_double(L, x) lua_pushnumber(L, (lua_Number)(x))
-#define FMODBridge_check_double(L, index) ((double)luaL_checknumber(L, index))
-#define FMODBridge_push_FMOD_BOOL(L, x) lua_pushboolean(L, (x))
-#define FMODBridge_check_FMOD_BOOL(L, index) (luaL_checktype(L, index, LUA_TBOOLEAN), (FMOD_BOOL)lua_toboolean(L, index))
+#define FMODExt_push_char(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODExt_check_char(L, index) ((char)luaL_checknumber(L, index))
+#define FMODExt_push_short(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODExt_check_short(L, index) ((short)luaL_checknumber(L, index))
+#define FMODExt_push_int(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODExt_check_int(L, index) ((int)luaL_checknumber(L, index))
+#define FMODExt_push_unsigned_char(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODExt_check_unsigned_char(L, index) ((unsigned char)luaL_checknumber(L, index))
+#define FMODExt_push_unsigned_short(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODExt_check_unsigned_short(L, index) ((unsigned short)luaL_checknumber(L, index))
+#define FMODExt_push_unsigned_int(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODExt_check_unsigned_int(L, index) ((unsigned int)luaL_checknumber(L, index))
+#define FMODExt_push_float(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODExt_check_float(L, index) ((float)luaL_checknumber(L, index))
+#define FMODExt_push_double(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODExt_check_double(L, index) ((double)luaL_checknumber(L, index))
+#define FMODExt_push_FMOD_BOOL(L, x) lua_pushboolean(L, (x))
+#define FMODExt_check_FMOD_BOOL(L, index) (luaL_checktype(L, index, LUA_TBOOLEAN), (FMOD_BOOL)lua_toboolean(L, index))
 
-#define FMODBridge_push_ptr_char _FMODBridge_push_ptr_char
-inline static void _FMODBridge_push_ptr_char(lua_State *L, const char * x) {
+#define FMODExt_push_ptr_char _FMODExt_push_ptr_char
+inline static void _FMODExt_push_ptr_char(lua_State *L, const char * x) {
     if (x) {
         lua_pushstring(L, x);
     } else {
         lua_pushnil(L);
     }
 }
-#define FMODBridge_check_ptr_char(L, index) luaL_checkstring(L, index)
+#define FMODExt_check_ptr_char(L, index) luaL_checkstring(L, index)
 
-#define FMODBridge_check_FMOD_VECTOR FMODBridge_dmScript_CheckVector3
-#define FMODBridge_push_FMOD_VECTOR _FMODBridge_push_FMOD_VECTOR
-inline static void _FMODBridge_push_FMOD_VECTOR(lua_State *L, FMOD_VECTOR vec) {
-    FMODBridge_dmScript_PushVector3(L, vec.x, vec.y, vec.z);
+#define FMODExt_check_FMOD_VECTOR FMODExt_dmScript_CheckVector3
+#define FMODExt_push_FMOD_VECTOR _FMODExt_push_FMOD_VECTOR
+inline static void _FMODExt_push_FMOD_VECTOR(lua_State *L, FMOD_VECTOR vec) {
+    FMODExt_dmScript_PushVector3(L, vec.x, vec.y, vec.z);
 }
-#define FMODBridge_push_ptr_FMOD_VECTOR _FMODBridge_push_ptr_FMOD_VECTOR
-inline static void _FMODBridge_push_ptr_FMOD_VECTOR(lua_State *L, const FMOD_VECTOR * vec) {
-    FMODBridge_dmScript_PushVector3(L, vec->x, vec->y, vec->z);
+#define FMODExt_push_ptr_FMOD_VECTOR _FMODExt_push_ptr_FMOD_VECTOR
+inline static void _FMODExt_push_ptr_FMOD_VECTOR(lua_State *L, const FMOD_VECTOR * vec) {
+    FMODExt_dmScript_PushVector3(L, vec->x, vec->y, vec->z);
 }
 
 {% for enum in enum_types %}
-#define FMODBridge_push_{{ enum }}(L, x) lua_pushnumber(L, (lua_Number)(x))
-#define FMODBridge_check_{{ enum }}(L, index) (({{ enum }})luaL_checknumber(L, index))
+#define FMODExt_push_{{ enum }}(L, x) lua_pushnumber(L, (lua_Number)(x))
+#define FMODExt_check_{{ enum }}(L, index) (({{ enum }})luaL_checknumber(L, index))
 {% endfor %}
 
 /* Structs and Classes */
@@ -102,13 +102,13 @@ static void * pushClass(lua_State *L, void * instance, int registryIndex) {
     return instance;
 }
 
-static int FMODBridge_registry_refcount = LUA_REFNIL;
+static int FMODExt_registry_refcount = LUA_REFNIL;
 
 static void * pushClassRefCount(lua_State *L, void * instance, int registryIndex) {
     pushClass(L, instance, registryIndex);
 
     /* Increment the ref count */
-    lua_rawgeti(L, LUA_REGISTRYINDEX, FMODBridge_registry_refcount);
+    lua_rawgeti(L, LUA_REGISTRYINDEX, FMODExt_registry_refcount);
     lua_pushlightuserdata(L, instance);
     lua_rawget(L, -2);
     lua_Number refcount = lua_tonumber(L, -1); /* If the value is nil, lua_tonumber returns 0 */
@@ -126,7 +126,7 @@ static void * pushClassRefCount(lua_State *L, void * instance, int registryIndex
 static int classGC(lua_State *L) {
     void * instance = *((void**)lua_touserdata(L, 1));
 
-    lua_rawgeti(L, LUA_REGISTRYINDEX, FMODBridge_registry_refcount);
+    lua_rawgeti(L, LUA_REGISTRYINDEX, FMODExt_registry_refcount);
     lua_pushlightuserdata(L, instance);
     lua_rawget(L, -2);
 
@@ -152,18 +152,18 @@ static int classGC(lua_State *L) {
 }
 
 {% for struct in structs
-    %}static int FMODBridge_registry_{{ struct.name }} = LUA_REFNIL;
+    %}static int FMODExt_registry_{{ struct.name }} = LUA_REFNIL;
 {% endfor %}
 
 /* 64-bit values */
 
-static int FMODBridge_registry_long_long = LUA_REFNIL;
-static int FMODBridge_registry_unsigned_long_long = LUA_REFNIL;
+static int FMODExt_registry_long_long = LUA_REFNIL;
+static int FMODExt_registry_unsigned_long_long = LUA_REFNIL;
 
-#define FMODBridge_check_long_long(L, index) checkLongLong(L, index, FMODBridge_registry_long_long, "s64")
-#define FMODBridge_check_unsigned_long_long(L, index) ((unsigned long long)checkLongLong(L, index, FMODBridge_registry_unsigned_long_long, "u64"))
-#define FMODBridge_push_long_long(L, x) pushLongLong(L, (long long)(x), FMODBridge_registry_long_long)
-#define FMODBridge_push_unsigned_long_long(L, x) pushLongLong(L, (long long)(x), FMODBridge_registry_unsigned_long_long)
+#define FMODExt_check_long_long(L, index) checkLongLong(L, index, FMODExt_registry_long_long, "s64")
+#define FMODExt_check_unsigned_long_long(L, index) ((unsigned long long)checkLongLong(L, index, FMODExt_registry_unsigned_long_long, "u64"))
+#define FMODExt_push_long_long(L, x) pushLongLong(L, (long long)(x), FMODExt_registry_long_long)
+#define FMODExt_push_unsigned_long_long(L, x) pushLongLong(L, (long long)(x), FMODExt_registry_unsigned_long_long)
 
 long long checkLongLong(lua_State *L, int index, int registryIndex, const char * structName) {
     if (lua_type(L, index) == LUA_TNUMBER) {
@@ -193,51 +193,51 @@ static int longLongConstructor(lua_State *L) {
 }
 
 static int longLongGetValue(lua_State *L) {
-    long long value = FMODBridge_check_long_long(L, 1);
+    long long value = FMODExt_check_long_long(L, 1);
     lua_pushnumber(L, (lua_Number)value);
     return 1;
 }
 
 static int unsignedLongLongGetValue(lua_State *L) {
-    unsigned long long value = FMODBridge_check_unsigned_long_long(L, 1);
+    unsigned long long value = FMODExt_check_unsigned_long_long(L, 1);
     lua_pushnumber(L, (lua_Number)value);
     return 1;
 }
 
 static int longLongGetLow(lua_State *L) {
-    unsigned long long value = (unsigned long long)FMODBridge_check_long_long(L, 1);
+    unsigned long long value = (unsigned long long)FMODExt_check_long_long(L, 1);
     lua_pushnumber(L, (unsigned int)value);
     return 1;
 }
 
 static int unsignedLongLongGetLow(lua_State *L) {
-    unsigned long long value = (unsigned long long)FMODBridge_check_unsigned_long_long(L, 1);
+    unsigned long long value = (unsigned long long)FMODExt_check_unsigned_long_long(L, 1);
     lua_pushnumber(L, (unsigned int)value);
     return 1;
 }
 
 static int longLongGetHigh(lua_State *L) {
-    unsigned long long value = (unsigned long long)FMODBridge_check_long_long(L, 1);
+    unsigned long long value = (unsigned long long)FMODExt_check_long_long(L, 1);
     lua_pushnumber(L, (unsigned int)(value >> 32));
     return 1;
 }
 
 static int unsignedLongLongGetHigh(lua_State *L) {
-    unsigned long long value = (unsigned long long)FMODBridge_check_unsigned_long_long(L, 1);
+    unsigned long long value = (unsigned long long)FMODExt_check_unsigned_long_long(L, 1);
     lua_pushnumber(L, (unsigned int)(value >> 32));
     return 1;
 }
 
 static int longLongToString(lua_State *L) {
     char s[22];
-    snprintf(s, 22, "%lld", FMODBridge_check_long_long(L, 1));
+    snprintf(s, 22, "%lld", FMODExt_check_long_long(L, 1));
     lua_pushstring(L, s);
     return 1;
 }
 
 static int unsignedLongLongToString(lua_State *L) {
     char s[22];
-    snprintf(s, 22, "%llu", FMODBridge_check_unsigned_long_long(L, 1));
+    snprintf(s, 22, "%llu", FMODExt_check_unsigned_long_long(L, 1));
     lua_pushstring(L, s);
     return 1;
 }
@@ -245,38 +245,38 @@ static int unsignedLongLongToString(lua_State *L) {
 /* Struct properties */
 
 #define declarePropertyGetter(typename, type) \
-    static int CONCAT(FMODBridge_propertyGet_, typename)(lua_State *L) { \
+    static int CONCAT(FMODExt_propertyGet_, typename)(lua_State *L) { \
         char *base = (char*)lua_touserdata(L, 1); \
         size_t offset = (size_t)lua_touserdata(L, lua_upvalueindex(1)); \
         type *member = (type*)(base + offset); \
-        CONCAT(FMODBridge_push_, typename)(L, *member); \
+        CONCAT(FMODExt_push_, typename)(L, *member); \
         return 1; \
     }
 
 #define declarePropertyGetterPtr(typename, type) \
-    static int CONCAT(FMODBridge_propertyGet_, typename)(lua_State *L) { \
+    static int CONCAT(FMODExt_propertyGet_, typename)(lua_State *L) { \
         char *base = (char*)lua_touserdata(L, 1); \
         size_t offset = (size_t)lua_touserdata(L, lua_upvalueindex(1)); \
         type *member = (type*)(base + offset); \
-        CONCAT(FMODBridge_push_ptr_, typename)(L, member); \
+        CONCAT(FMODExt_push_ptr_, typename)(L, member); \
         return 1; \
     }
 
 #define declarePropertySetter(typename, type) \
-    static int CONCAT(FMODBridge_propertySet_, typename)(lua_State *L) { \
+    static int CONCAT(FMODExt_propertySet_, typename)(lua_State *L) { \
         char *base = (char*)lua_touserdata(L, 1); \
         size_t offset = (size_t)lua_touserdata(L, lua_upvalueindex(1)); \
         type *member = (type*)(base + offset); \
-        *member = CONCAT(FMODBridge_check_, typename)(L, 2); \
+        *member = CONCAT(FMODExt_check_, typename)(L, 2); \
         return 0; \
     } \
 
 #define declarePropertySetterPtr(typename, type) \
-    static int CONCAT(FMODBridge_propertySet_, typename)(lua_State *L) { \
+    static int CONCAT(FMODExt_propertySet_, typename)(lua_State *L) { \
         char *base = (char*)lua_touserdata(L, 1); \
         size_t offset = (size_t)lua_touserdata(L, lua_upvalueindex(1)); \
         type *member = (type*)(base + offset); \
-        *member = *CONCAT(FMODBridge_check_ptr_, typename)(L, 2); \
+        *member = *CONCAT(FMODExt_check_ptr_, typename)(L, 2); \
         return 0; \
     } \
 
@@ -307,22 +307,22 @@ declarePropertyGetterPtr(FMOD_VECTOR, FMOD_VECTOR);
 declarePropertySetter(FMOD_VECTOR, FMOD_VECTOR);
 
 {% for enum in enum_types %}
-#define FMODBridge_propertyGet_{{ enum }} FMODBridge_propertyGet_int
-#define FMODBridge_propertySet_{{ enum }} FMODBridge_propertySet_int
+#define FMODExt_propertyGet_{{ enum }} FMODExt_propertyGet_int
+#define FMODExt_propertySet_{{ enum }} FMODExt_propertySet_int
 {% endfor %}
 
 {% for struct in structs %}
-#ifndef FMODBridge_push_ptr_{{ struct.name }}
-{% if struct.ref_counted %}#define FMODBridge_push_ptr_{{ struct.name }}(L, instance) (({{ struct.name }}*)pushClassRefCount(L, instance, FMODBridge_registry_{{ struct.name }}))
-{% elif struct.is_class %}#define FMODBridge_push_ptr_{{ struct.name }}(L, instance) (({{ struct.name }}*)pushClass(L, instance, FMODBridge_registry_{{ struct.name }}))
-{% else %}#define FMODBridge_push_ptr_{{ struct.name }}(L, structData) (({{ struct.name }}*)pushStruct(L, structData, sizeof({{ struct.name }}), FMODBridge_registry_{{ struct.name }}))
+#ifndef FMODExt_push_ptr_{{ struct.name }}
+{% if struct.ref_counted %}#define FMODExt_push_ptr_{{ struct.name }}(L, instance) (({{ struct.name }}*)pushClassRefCount(L, instance, FMODExt_registry_{{ struct.name }}))
+{% elif struct.is_class %}#define FMODExt_push_ptr_{{ struct.name }}(L, instance) (({{ struct.name }}*)pushClass(L, instance, FMODExt_registry_{{ struct.name }}))
+{% else %}#define FMODExt_push_ptr_{{ struct.name }}(L, structData) (({{ struct.name }}*)pushStruct(L, structData, sizeof({{ struct.name }}), FMODExt_registry_{{ struct.name }}))
 {% endif %}#endif
-#ifndef FMODBridge_check_ptr_{{ struct.name }}
-{% if struct.is_class %}#define FMODBridge_check_ptr_{{ struct.name }}(L, index) (({{ struct.name }}*)checkClass(L, index, FMODBridge_registry_{{ struct.name }}, "{{ struct.name }}"))
-{% else %}#define FMODBridge_check_ptr_{{ struct.name }}(L, index) (({{ struct.name }}*)checkStruct(L, index, FMODBridge_registry_{{ struct.name }}, "{{ struct.name }}"))
+#ifndef FMODExt_check_ptr_{{ struct.name }}
+{% if struct.is_class %}#define FMODExt_check_ptr_{{ struct.name }}(L, index) (({{ struct.name }}*)checkClass(L, index, FMODExt_registry_{{ struct.name }}, "{{ struct.name }}"))
+{% else %}#define FMODExt_check_ptr_{{ struct.name }}(L, index) (({{ struct.name }}*)checkStruct(L, index, FMODExt_registry_{{ struct.name }}, "{{ struct.name }}"))
 {% endif %}#endif
-#ifdef FMODBridge_propertyOverride_{{ struct.name }}
-FMODBridge_propertyOverride_{{ struct.name }}
+#ifdef FMODExt_propertyOverride_{{ struct.name }}
+FMODExt_propertyOverride_{{ struct.name }}
 #else
 declarePropertyGetter(ptr_{{ struct.name }}, {{ struct.name }}*);
 {% if not struct.is_class %}declarePropertyGetterPtr({{ struct.name }}, {{ struct.name }});
@@ -394,55 +394,55 @@ static int structEqualityMetamethod(lua_State *L) {
 
 /* Custom function definitions */
 
-void * FMODBridge_check_ptr_void_size(lua_State *L, int index, size_t *length) {
+void * FMODExt_check_ptr_void_size(lua_State *L, int index, size_t *length) {
     if (lua_type(L, index) == LUA_TSTRING) {
         return (char*)lua_tolstring(L, index, length);
     }
-    FMODBridge_HBuffer buffer = FMODBridge_dmScript_CheckBuffer(L, index);
+    FMODExt_HBuffer buffer = FMODExt_dmScript_CheckBuffer(L, index);
     void *data;
     uint32_t size;
-    if (FMODBridge_dmBuffer_GetBytes(buffer, &data, &size)) {
+    if (FMODExt_dmBuffer_GetBytes(buffer, &data, &size)) {
         luaL_error(L, "dmBuffer::GetBytes failed");
     }
     *length = size;
     return data;
 }
 
-#define FMODBridge_func_FMOD_Studio_System_LoadBankMemory _FMODBridge_func_FMOD_Studio_System_LoadBankMemory
-static int _FMODBridge_func_FMOD_Studio_System_LoadBankMemory(lua_State *L) {
-    FMOD_STUDIO_SYSTEM *system = FMODBridge_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
+#define FMODExt_func_FMOD_Studio_System_LoadBankMemory _FMODExt_func_FMOD_Studio_System_LoadBankMemory
+static int _FMODExt_func_FMOD_Studio_System_LoadBankMemory(lua_State *L) {
+    FMOD_STUDIO_SYSTEM *system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
     size_t length;
-    const char *buffer = (const char*)FMODBridge_check_ptr_void_size(L, 2, &length);
-    FMOD_STUDIO_LOAD_BANK_FLAGS flags = FMODBridge_check_unsigned_int(L, 3);
+    const char *buffer = (const char*)FMODExt_check_ptr_void_size(L, 2, &length);
+    FMOD_STUDIO_LOAD_BANK_FLAGS flags = FMODExt_check_unsigned_int(L, 3);
 
     FMOD_STUDIO_BANK *bank;
 
     ensure(ST, FMOD_Studio_System_LoadBankMemory, FMOD_RESULT, FMOD_STUDIO_SYSTEM *system, const char *buffer, int length, FMOD_STUDIO_LOAD_MEMORY_MODE mode, FMOD_STUDIO_LOAD_BANK_FLAGS flags, FMOD_STUDIO_BANK **bank);
     errCheck(FMOD_Studio_System_LoadBankMemory(system, buffer, (int)length, FMOD_STUDIO_LOAD_MEMORY, flags, &bank));
 
-    FMODBridge_push_ptr_FMOD_STUDIO_BANK(L, bank);
+    FMODExt_push_ptr_FMOD_STUDIO_BANK(L, bank);
     return 1;
 }
 
-#define FMODBridge_func_FMOD_Studio_System_SetListenerAttributes _FMODBridge_func_FMOD_Studio_System_SetListenerAttributes
-static int _FMODBridge_func_FMOD_Studio_System_SetListenerAttributes(lua_State *L) {
-    FMOD_STUDIO_SYSTEM* system = FMODBridge_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
-    int index = FMODBridge_check_int(L, 2);
-    FMOD_3D_ATTRIBUTES* attributes = FMODBridge_check_ptr_FMOD_3D_ATTRIBUTES(L, 3);
+#define FMODExt_func_FMOD_Studio_System_SetListenerAttributes _FMODExt_func_FMOD_Studio_System_SetListenerAttributes
+static int _FMODExt_func_FMOD_Studio_System_SetListenerAttributes(lua_State *L) {
+    FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
+    int index = FMODExt_check_int(L, 2);
+    FMOD_3D_ATTRIBUTES* attributes = FMODExt_check_ptr_FMOD_3D_ATTRIBUTES(L, 3);
     FMOD_VECTOR attenuationposition;
     int hasAttenuationPosition = !lua_isnoneornil(L, 4);
     if (hasAttenuationPosition) {
-        attenuationposition = FMODBridge_check_FMOD_VECTOR(L, 4);
+        attenuationposition = FMODExt_check_FMOD_VECTOR(L, 4);
     }
     ensure(ST, FMOD_Studio_System_SetListenerAttributes, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, int, const FMOD_3D_ATTRIBUTES*, const FMOD_VECTOR*);
     errCheck(FMOD_Studio_System_SetListenerAttributes(system, index, attributes, hasAttenuationPosition ? &attenuationposition : NULL));
     return 0;
 }
 
-#define FMODBridge_func_FMOD_Studio_EventInstance_Set3DAttributes _FMODBridge_func_FMOD_Studio_EventInstance_Set3DAttributes
-static int _FMODBridge_func_FMOD_Studio_EventInstance_Set3DAttributes(lua_State *L) {
-    FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODBridge_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
-    FMOD_3D_ATTRIBUTES* attributes = FMODBridge_check_ptr_FMOD_3D_ATTRIBUTES(L, 2);
+#define FMODExt_func_FMOD_Studio_EventInstance_Set3DAttributes _FMODExt_func_FMOD_Studio_EventInstance_Set3DAttributes
+static int _FMODExt_func_FMOD_Studio_EventInstance_Set3DAttributes(lua_State *L) {
+    FMOD_STUDIO_EVENTINSTANCE* eventinstance = FMODExt_check_ptr_FMOD_STUDIO_EVENTINSTANCE(L, 1);
+    FMOD_3D_ATTRIBUTES* attributes = FMODExt_check_ptr_FMOD_3D_ATTRIBUTES(L, 2);
     ensure(ST, FMOD_Studio_EventInstance_Set3DAttributes, FMOD_RESULT, FMOD_STUDIO_EVENTINSTANCE*, FMOD_3D_ATTRIBUTES*);
     errCheck(FMOD_Studio_EventInstance_Set3DAttributes(eventinstance, attributes));
     return 0;
@@ -455,52 +455,52 @@ static int _FMODBridge_func_FMOD_Studio_EventInstance_Set3DAttributes(lua_State 
 // TODO: FMOD_ChannelGroup_Set3DCustomRolloff
 // TODO: FMOD_ChannelGroup_Get3DCustomRolloff
 
-#define FMODBridge_func_FMOD_DSP_GetParameterFloat _FMODBridge_func_FMOD_DSP_GetParameterFloat
-static int _FMODBridge_func_FMOD_DSP_GetParameterFloat(lua_State *L) {
-    FMOD_DSP* dsp = FMODBridge_check_ptr_FMOD_DSP(L, 1);
-    int index = FMODBridge_check_int(L, 2);
+#define FMODExt_func_FMOD_DSP_GetParameterFloat _FMODExt_func_FMOD_DSP_GetParameterFloat
+static int _FMODExt_func_FMOD_DSP_GetParameterFloat(lua_State *L) {
+    FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
+    int index = FMODExt_check_int(L, 2);
     float value;
     char valuestr[FMOD_DSP_GETPARAM_VALUESTR_LENGTH];
     ensure(LL, FMOD_DSP_GetParameterFloat, FMOD_RESULT, FMOD_DSP*, int, float*, char*, int);
     errCheck(FMOD_DSP_GetParameterFloat(dsp, index, &value, valuestr, FMOD_DSP_GETPARAM_VALUESTR_LENGTH));
-    FMODBridge_push_float(L, value);
-    FMODBridge_push_ptr_char(L, valuestr);
+    FMODExt_push_float(L, value);
+    FMODExt_push_ptr_char(L, valuestr);
     return 2;
 }
 
-#define FMODBridge_func_FMOD_DSP_GetParameterInt _FMODBridge_func_FMOD_DSP_GetParameterInt
-static int _FMODBridge_func_FMOD_DSP_GetParameterInt(lua_State *L) {
-    FMOD_DSP* dsp = FMODBridge_check_ptr_FMOD_DSP(L, 1);
-    int index = FMODBridge_check_int(L, 2);
+#define FMODExt_func_FMOD_DSP_GetParameterInt _FMODExt_func_FMOD_DSP_GetParameterInt
+static int _FMODExt_func_FMOD_DSP_GetParameterInt(lua_State *L) {
+    FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
+    int index = FMODExt_check_int(L, 2);
     int value;
     char valuestr[FMOD_DSP_GETPARAM_VALUESTR_LENGTH];
     ensure(LL, FMOD_DSP_GetParameterInt, FMOD_RESULT, FMOD_DSP*, int, int*, char*, int);
     errCheck(FMOD_DSP_GetParameterInt(dsp, index, &value, valuestr, FMOD_DSP_GETPARAM_VALUESTR_LENGTH));
-    FMODBridge_push_int(L, value);
-    FMODBridge_push_ptr_char(L, valuestr);
+    FMODExt_push_int(L, value);
+    FMODExt_push_ptr_char(L, valuestr);
     return 2;
 }
 
 
-#define FMODBridge_func_FMOD_DSP_GetParameterBool _FMODBridge_func_FMOD_DSP_GetParameterBool
-static int _FMODBridge_func_FMOD_DSP_GetParameterBool(lua_State *L) {
-    FMOD_DSP* dsp = FMODBridge_check_ptr_FMOD_DSP(L, 1);
-    int index = FMODBridge_check_int(L, 2);
+#define FMODExt_func_FMOD_DSP_GetParameterBool _FMODExt_func_FMOD_DSP_GetParameterBool
+static int _FMODExt_func_FMOD_DSP_GetParameterBool(lua_State *L) {
+    FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
+    int index = FMODExt_check_int(L, 2);
     FMOD_BOOL value;
     char valuestr[FMOD_DSP_GETPARAM_VALUESTR_LENGTH];
     ensure(LL, FMOD_DSP_GetParameterBool, FMOD_RESULT, FMOD_DSP*, int, FMOD_BOOL*, char*, int);
     errCheck(FMOD_DSP_GetParameterBool(dsp, index, &value, valuestr, FMOD_DSP_GETPARAM_VALUESTR_LENGTH));
-    FMODBridge_push_FMOD_BOOL(L, value);
-    FMODBridge_push_ptr_char(L, valuestr);
+    FMODExt_push_FMOD_BOOL(L, value);
+    FMODExt_push_ptr_char(L, valuestr);
     return 2;
 }
 
-#define FMODBridge_func_FMOD_System_GetDriverInfo _FMODBridge_func_FMOD_System_GetDriverInfo
-static int _FMODBridge_func_FMOD_System_GetDriverInfo(lua_State *L) {
-    FMOD_SYSTEM* system = FMODBridge_check_ptr_FMOD_SYSTEM(L, 1);
-    int id = FMODBridge_check_int(L, 2);
+#define FMODExt_func_FMOD_System_GetDriverInfo _FMODExt_func_FMOD_System_GetDriverInfo
+static int _FMODExt_func_FMOD_System_GetDriverInfo(lua_State *L) {
+    FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
+    int id = FMODExt_check_int(L, 2);
     char name[256];
-    FMOD_GUID* guid = FMODBridge_push_ptr_FMOD_GUID(L, NULL);
+    FMOD_GUID* guid = FMODExt_push_ptr_FMOD_GUID(L, NULL);
     int systemrate;
     FMOD_SPEAKERMODE speakermode;
     int speakermodechannels;
@@ -508,33 +508,33 @@ static int _FMODBridge_func_FMOD_System_GetDriverInfo(lua_State *L) {
     errCheck(FMOD_System_GetDriverInfo(system, id, name, 256, guid, &systemrate, &speakermode, &speakermodechannels));
     lua_pushstring(L, name);
     lua_pushvalue(L, -2);
-    FMODBridge_push_int(L, systemrate);
-    FMODBridge_push_FMOD_SPEAKERMODE(L, speakermode);
-    FMODBridge_push_int(L, speakermodechannels);
+    FMODExt_push_int(L, systemrate);
+    FMODExt_push_FMOD_SPEAKERMODE(L, speakermode);
+    FMODExt_push_int(L, speakermodechannels);
     return 5;
 }
 
-#define FMODBridge_func_FMOD_System_GetPluginInfo _FMODBridge_func_FMOD_System_GetPluginInfo
-static int _FMODBridge_func_FMOD_System_GetPluginInfo(lua_State *L) {
-    FMOD_SYSTEM* system = FMODBridge_check_ptr_FMOD_SYSTEM(L, 1);
-    unsigned int handle = FMODBridge_check_unsigned_int(L, 2);
+#define FMODExt_func_FMOD_System_GetPluginInfo _FMODExt_func_FMOD_System_GetPluginInfo
+static int _FMODExt_func_FMOD_System_GetPluginInfo(lua_State *L) {
+    FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
+    unsigned int handle = FMODExt_check_unsigned_int(L, 2);
     FMOD_PLUGINTYPE plugintype;
     char name[256];
     unsigned int version;
     ensure(LL, FMOD_System_GetPluginInfo, FMOD_RESULT, FMOD_SYSTEM*, unsigned int, FMOD_PLUGINTYPE*, char*, int, unsigned int*);
     errCheck(FMOD_System_GetPluginInfo(system, handle, &plugintype, name, 256, &version));
-    FMODBridge_push_FMOD_PLUGINTYPE(L, plugintype);
+    FMODExt_push_FMOD_PLUGINTYPE(L, plugintype);
     lua_pushstring(L, name);
-    FMODBridge_push_unsigned_int(L, version);
+    FMODExt_push_unsigned_int(L, version);
     return 3;
 }
 
-#define FMODBridge_func_FMOD_System_GetRecordDriverInfo _FMODBridge_func_FMOD_System_GetRecordDriverInfo
-static int _FMODBridge_func_FMOD_System_GetRecordDriverInfo(lua_State *L) {
-    FMOD_SYSTEM* system = FMODBridge_check_ptr_FMOD_SYSTEM(L, 1);
-    int id = FMODBridge_check_int(L, 2);
+#define FMODExt_func_FMOD_System_GetRecordDriverInfo _FMODExt_func_FMOD_System_GetRecordDriverInfo
+static int _FMODExt_func_FMOD_System_GetRecordDriverInfo(lua_State *L) {
+    FMOD_SYSTEM* system = FMODExt_check_ptr_FMOD_SYSTEM(L, 1);
+    int id = FMODExt_check_int(L, 2);
     char name[256];
-    FMOD_GUID* guid = FMODBridge_push_ptr_FMOD_GUID(L, NULL);
+    FMOD_GUID* guid = FMODExt_push_ptr_FMOD_GUID(L, NULL);
     int systemrate;
     FMOD_SPEAKERMODE speakermode;
     int speakermodechannels;
@@ -543,15 +543,15 @@ static int _FMODBridge_func_FMOD_System_GetRecordDriverInfo(lua_State *L) {
     errCheck(FMOD_System_GetRecordDriverInfo(system, id, name, 256, guid, &systemrate, &speakermode, &speakermodechannels, &state));
     lua_pushstring(L, name);
     lua_pushvalue(L, -2);
-    FMODBridge_push_int(L, systemrate);
-    FMODBridge_push_FMOD_SPEAKERMODE(L, speakermode);
-    FMODBridge_push_int(L, speakermodechannels);
-    FMODBridge_push_unsigned_int(L, state);
+    FMODExt_push_int(L, systemrate);
+    FMODExt_push_FMOD_SPEAKERMODE(L, speakermode);
+    FMODExt_push_int(L, speakermodechannels);
+    FMODExt_push_unsigned_int(L, state);
     return 6;
 }
 
-#define nameGetter(fname, type1, size) static int CONCAT(_FMODBridge_func_, fname)(lua_State *L) { \
-    type1* arg1 = CONCAT(FMODBridge_check_ptr_, type1)(L, 1); \
+#define nameGetter(fname, type1, size) static int CONCAT(_FMODExt_func_, fname)(lua_State *L) { \
+    type1* arg1 = CONCAT(FMODExt_check_ptr_, type1)(L, 1); \
     char name[size]; \
     ensure(LL, fname, FMOD_RESULT, type1*, char*, int); \
     errCheck(fname(arg1, name, size)); \
@@ -559,35 +559,35 @@ static int _FMODBridge_func_FMOD_System_GetRecordDriverInfo(lua_State *L) {
     return 1; \
 }
 
-#define FMODBridge_func_FMOD_System_GetNetworkProxy _FMODBridge_func_FMOD_System_GetNetworkProxy
+#define FMODExt_func_FMOD_System_GetNetworkProxy _FMODExt_func_FMOD_System_GetNetworkProxy
 nameGetter(FMOD_System_GetNetworkProxy, FMOD_SYSTEM, 512);
 
-#define FMODBridge_func_FMOD_Sound_GetName _FMODBridge_func_FMOD_Sound_GetName
+#define FMODExt_func_FMOD_Sound_GetName _FMODExt_func_FMOD_Sound_GetName
 nameGetter(FMOD_Sound_GetName, FMOD_SOUND, 256);
 
-#define FMODBridge_func_FMOD_Sound_GetSyncPointInfo _FMODBridge_func_FMOD_Sound_GetSyncPointInfo
-static int _FMODBridge_func_FMOD_Sound_GetSyncPointInfo(lua_State *L) {
-    FMOD_SOUND* sound = FMODBridge_check_ptr_FMOD_SOUND(L, 1);
-    FMOD_SYNCPOINT* point = FMODBridge_check_ptr_FMOD_SYNCPOINT(L, 2);
+#define FMODExt_func_FMOD_Sound_GetSyncPointInfo _FMODExt_func_FMOD_Sound_GetSyncPointInfo
+static int _FMODExt_func_FMOD_Sound_GetSyncPointInfo(lua_State *L) {
+    FMOD_SOUND* sound = FMODExt_check_ptr_FMOD_SOUND(L, 1);
+    FMOD_SYNCPOINT* point = FMODExt_check_ptr_FMOD_SYNCPOINT(L, 2);
     char name[256];
     unsigned int offset;
-    unsigned int offsettype = FMODBridge_check_unsigned_int(L, 3);
+    unsigned int offsettype = FMODExt_check_unsigned_int(L, 3);
     ensure(LL, FMOD_Sound_GetSyncPointInfo, FMOD_RESULT, FMOD_SOUND*, FMOD_SYNCPOINT*, char*, int, unsigned int*, unsigned int);
     errCheck(FMOD_Sound_GetSyncPointInfo(sound, point, name, 256, &offset, offsettype));
     lua_pushstring(L, name);
-    FMODBridge_push_unsigned_int(L, offset);
+    FMODExt_push_unsigned_int(L, offset);
     return 2;
 }
 
-#define FMODBridge_func_FMOD_ChannelGroup_GetName _FMODBridge_func_FMOD_ChannelGroup_GetName
+#define FMODExt_func_FMOD_ChannelGroup_GetName _FMODExt_func_FMOD_ChannelGroup_GetName
 nameGetter(FMOD_ChannelGroup_GetName, FMOD_CHANNELGROUP, 256);
 
-#define FMODBridge_func_FMOD_SoundGroup_GetName _FMODBridge_func_FMOD_SoundGroup_GetName
+#define FMODExt_func_FMOD_SoundGroup_GetName _FMODExt_func_FMOD_SoundGroup_GetName
 nameGetter(FMOD_SoundGroup_GetName, FMOD_SOUNDGROUP, 256);
 
-#define FMODBridge_func_FMOD_DSP_GetInfo _FMODBridge_func_FMOD_DSP_GetInfo
-static int _FMODBridge_func_FMOD_DSP_GetInfo(lua_State *L) {
-    FMOD_DSP* dsp = FMODBridge_check_ptr_FMOD_DSP(L, 1);
+#define FMODExt_func_FMOD_DSP_GetInfo _FMODExt_func_FMOD_DSP_GetInfo
+static int _FMODExt_func_FMOD_DSP_GetInfo(lua_State *L) {
+    FMOD_DSP* dsp = FMODExt_check_ptr_FMOD_DSP(L, 1);
     char name[32];
     unsigned int version;
     int channels;
@@ -596,17 +596,17 @@ static int _FMODBridge_func_FMOD_DSP_GetInfo(lua_State *L) {
     ensure(LL, FMOD_DSP_GetInfo, FMOD_RESULT, FMOD_DSP*, char*, unsigned int*, int*, int*, int*);
     errCheck(FMOD_DSP_GetInfo(dsp, name, &version, &channels, &configwidth, &configheight));
     lua_pushstring(L, name);
-    FMODBridge_push_unsigned_int(L, version);
-    FMODBridge_push_int(L, channels);
-    FMODBridge_push_int(L, configwidth);
-    FMODBridge_push_int(L, configheight);
+    FMODExt_push_unsigned_int(L, version);
+    FMODExt_push_int(L, channels);
+    FMODExt_push_int(L, configwidth);
+    FMODExt_push_int(L, configheight);
     return 5;
 }
 
-#define FMODBridge_func_FMOD_Studio_System_LookupPath _FMODBridge_func_FMOD_Studio_System_LookupPath
-static int _FMODBridge_func_FMOD_Studio_System_LookupPath(lua_State *L) {
-    FMOD_STUDIO_SYSTEM* system = FMODBridge_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
-    const FMOD_GUID* id = FMODBridge_check_ptr_FMOD_GUID(L, 2);
+#define FMODExt_func_FMOD_Studio_System_LookupPath _FMODExt_func_FMOD_Studio_System_LookupPath
+static int _FMODExt_func_FMOD_Studio_System_LookupPath(lua_State *L) {
+    FMOD_STUDIO_SYSTEM* system = FMODExt_check_ptr_FMOD_STUDIO_SYSTEM(L, 1);
+    const FMOD_GUID* id = FMODExt_check_ptr_FMOD_GUID(L, 2);
     int retrieved;
     ensure(ST, FMOD_Studio_System_LookupPath, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, const FMOD_GUID*, char*, int, int*);
     errCheckBegin(FMOD_Studio_System_LookupPath(system, id, NULL, 0, &retrieved));
@@ -620,8 +620,8 @@ static int _FMODBridge_func_FMOD_Studio_System_LookupPath(lua_State *L) {
     return 1;
 }
 
-#define pathGetter(fname, type1) static int CONCAT(_FMODBridge_func_, fname)(lua_State *L) { \
-    type1* arg1 = CONCAT(FMODBridge_check_ptr_, type1)(L, 1); \
+#define pathGetter(fname, type1) static int CONCAT(_FMODExt_func_, fname)(lua_State *L) { \
+    type1* arg1 = CONCAT(FMODExt_check_ptr_, type1)(L, 1); \
     int retrieved; \
     ensure(ST, fname, FMOD_RESULT, type1*, char*, int, int*); \
     errCheckBegin(fname(arg1, NULL, 0, &retrieved)); \
@@ -635,23 +635,23 @@ static int _FMODBridge_func_FMOD_Studio_System_LookupPath(lua_State *L) {
     return 1; \
 }
 
-#define FMODBridge_func_FMOD_Studio_EventDescription_GetPath _FMODBridge_func_FMOD_Studio_EventDescription_GetPath
+#define FMODExt_func_FMOD_Studio_EventDescription_GetPath _FMODExt_func_FMOD_Studio_EventDescription_GetPath
 pathGetter(FMOD_Studio_EventDescription_GetPath, FMOD_STUDIO_EVENTDESCRIPTION)
 
-#define FMODBridge_func_FMOD_Studio_Bus_GetPath _FMODBridge_func_FMOD_Studio_Bus_GetPath
+#define FMODExt_func_FMOD_Studio_Bus_GetPath _FMODExt_func_FMOD_Studio_Bus_GetPath
 pathGetter(FMOD_Studio_Bus_GetPath, FMOD_STUDIO_BUS)
 
-#define FMODBridge_func_FMOD_Studio_VCA_GetPath _FMODBridge_func_FMOD_Studio_VCA_GetPath
+#define FMODExt_func_FMOD_Studio_VCA_GetPath _FMODExt_func_FMOD_Studio_VCA_GetPath
 pathGetter(FMOD_Studio_VCA_GetPath, FMOD_STUDIO_VCA)
 
-#define FMODBridge_func_FMOD_Studio_Bank_GetPath _FMODBridge_func_FMOD_Studio_Bank_GetPath
+#define FMODExt_func_FMOD_Studio_Bank_GetPath _FMODExt_func_FMOD_Studio_Bank_GetPath
 pathGetter(FMOD_Studio_Bank_GetPath, FMOD_STUDIO_BANK)
 
-#define FMODBridge_func_FMOD_Studio_Bank_GetStringInfo _FMODBridge_func_FMOD_Studio_Bank_GetStringInfo
-static int _FMODBridge_func_FMOD_Studio_Bank_GetStringInfo(lua_State *L) {
-    FMOD_STUDIO_BANK* bank = FMODBridge_check_ptr_FMOD_STUDIO_BANK(L, 1);
-    int index = FMODBridge_check_int(L, 2);
-    FMOD_GUID* id = FMODBridge_push_ptr_FMOD_GUID(L, NULL);
+#define FMODExt_func_FMOD_Studio_Bank_GetStringInfo _FMODExt_func_FMOD_Studio_Bank_GetStringInfo
+static int _FMODExt_func_FMOD_Studio_Bank_GetStringInfo(lua_State *L) {
+    FMOD_STUDIO_BANK* bank = FMODExt_check_ptr_FMOD_STUDIO_BANK(L, 1);
+    int index = FMODExt_check_int(L, 2);
+    FMOD_GUID* id = FMODExt_push_ptr_FMOD_GUID(L, NULL);
     int retrieved;
     ensure(ST, FMOD_Studio_Bank_GetStringInfo, FMOD_RESULT, FMOD_STUDIO_BANK*, int, FMOD_GUID*, char*, int, int*);
     errCheckBegin(FMOD_Studio_Bank_GetStringInfo(bank, index, id, NULL, 0, &retrieved));
@@ -665,10 +665,10 @@ static int _FMODBridge_func_FMOD_Studio_Bank_GetStringInfo(lua_State *L) {
     return 2;
 }
 
-#define FMODBridge_func_FMOD_Studio_CommandReplay_GetCommandString _FMODBridge_func_FMOD_Studio_CommandReplay_GetCommandString
-static int _FMODBridge_func_FMOD_Studio_CommandReplay_GetCommandString(lua_State *L) {
-    FMOD_STUDIO_COMMANDREPLAY* replay = FMODBridge_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
-    int commandindex = FMODBridge_check_int(L, 2);
+#define FMODExt_func_FMOD_Studio_CommandReplay_GetCommandString _FMODExt_func_FMOD_Studio_CommandReplay_GetCommandString
+static int _FMODExt_func_FMOD_Studio_CommandReplay_GetCommandString(lua_State *L) {
+    FMOD_STUDIO_COMMANDREPLAY* replay = FMODExt_check_ptr_FMOD_STUDIO_COMMANDREPLAY(L, 1);
+    int commandindex = FMODExt_check_int(L, 2);
     char buffer[512];
     ensure(ST, FMOD_Studio_CommandReplay_GetCommandString, FMOD_RESULT, FMOD_STUDIO_COMMANDREPLAY*, int, char*, int);
     errCheck(FMOD_Studio_CommandReplay_GetCommandString(replay, commandindex, buffer, 512));
@@ -680,22 +680,22 @@ static int _FMODBridge_func_FMOD_Studio_CommandReplay_GetCommandString(lua_State
 
 {% for f in functions %}
 /* {{ f.name }}({% for arg in f.args %}{{ arg.usage }} {{ arg.type.c_type }} {{ arg.name }}, {% endfor %}) */
-{% if f.generated %}#ifndef FMODBridge_func_{{ f.name }}
-#define FMODBridge_func_{{ f.name }} _FMODBridge_func_{{ f.name }}
-static int _FMODBridge_func_{{ f.name }}(lua_State *L) {
-    {% for arg in f.args %}{% if arg.usage == "input" %}{{ arg.type.c_type }} {{ arg.name }} = {% if arg.optional %}optional(L, {{ arg.arg_index }}, {{ arg.type.c_type }}, {% endif %}FMODBridge_check_{{ arg.type.name }}(L, {{ arg.arg_index }}){% if arg.optional %}){% endif %};
-    {% elif arg.usage == "input_deref" %}{{ arg.type.c_type }}* {{ arg.name }} = {% if arg.optional %}optional(L, {{ arg.arg_index }}, {{ arg.type.c_type }}*, {% endif %}FMODBridge_check_ptr_{{ arg.type.name }}(L, {{ arg.arg_index }}){% if arg.optional %}){% endif %};
-    {% elif arg.usage == "input_ptr" %}{{ arg.type.child.c_type }} {{ arg.name }} = {% if arg.optional %}optional(L, {{ arg.arg_index }}, {{ arg.type.child.c_type }}, {% endif %}FMODBridge_check_{{ arg.type.child.name }}(L, {{ arg.arg_index }}){% if arg.optional %}){% endif %};
+{% if f.generated %}#ifndef FMODExt_func_{{ f.name }}
+#define FMODExt_func_{{ f.name }} _FMODExt_func_{{ f.name }}
+static int _FMODExt_func_{{ f.name }}(lua_State *L) {
+    {% for arg in f.args %}{% if arg.usage == "input" %}{{ arg.type.c_type }} {{ arg.name }} = {% if arg.optional %}optional(L, {{ arg.arg_index }}, {{ arg.type.c_type }}, {% endif %}FMODExt_check_{{ arg.type.name }}(L, {{ arg.arg_index }}){% if arg.optional %}){% endif %};
+    {% elif arg.usage == "input_deref" %}{{ arg.type.c_type }}* {{ arg.name }} = {% if arg.optional %}optional(L, {{ arg.arg_index }}, {{ arg.type.c_type }}*, {% endif %}FMODExt_check_ptr_{{ arg.type.name }}(L, {{ arg.arg_index }}){% if arg.optional %}){% endif %};
+    {% elif arg.usage == "input_ptr" %}{{ arg.type.child.c_type }} {{ arg.name }} = {% if arg.optional %}optional(L, {{ arg.arg_index }}, {{ arg.type.child.c_type }}, {% endif %}FMODExt_check_{{ arg.type.child.name }}(L, {{ arg.arg_index }}){% if arg.optional %}){% endif %};
     {% elif arg.usage == "output" %}{{ arg.type.child.c_type }} {{ arg.name }};
-    {% elif arg.usage == "output_ptr" %}{{ arg.type.c_type }} {{ arg.name }} = FMODBridge_push_{{ arg.type.name }}(L, NULL);
+    {% elif arg.usage == "output_ptr" %}{{ arg.type.c_type }} {{ arg.name }} = FMODExt_push_{{ arg.type.name }}(L, NULL);
     {% endif %}{% endfor %}ensure({{ f.library }}, {{ f.name }}, {{ f.return_type }}{% for arg in f.args %}, {{ arg.type.c_type }}{% endfor %});
     {% if f.returns_bool %}FMOD_BOOL retval = {{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %});
     lua_pushboolean(L, retval);
     return 1;{% else %}errCheck({{ f.name }}({% for arg in f.args %}{% if not loop.first %}, {% endif %}{{ arg.accessor }}{{ arg.name }}{% endfor %}));
-    {% for arg in f.args %}{% if arg.usage == "output" %}FMODBridge_push_{{ arg.type.child.name }}(L, {{ arg.name }});
+    {% for arg in f.args %}{% if arg.usage == "output" %}FMODExt_push_{{ arg.type.child.name }}(L, {{ arg.name }});
     {% elif arg.usage == "output_ptr" %}lua_pushvalue(L, {{ arg.output_ptr_index - f.output_ptr_count - arg.output_index }});
     {% endif %}{% endfor %}{% if f.refcount_release %}
-    lua_rawgeti(L, LUA_REGISTRYINDEX, FMODBridge_registry_refcount);
+    lua_rawgeti(L, LUA_REGISTRYINDEX, FMODExt_registry_refcount);
     lua_pushlightuserdata(L, {{ f.args[0].name }});
     lua_pushnil(L);
     lua_rawset(L, -3);
@@ -725,7 +725,7 @@ static int deprecatedWrapper(lua_State * L) {
 
 /* Register everything to the Lua namespace */
 
-void FMODBridge_register(lua_State *L) {
+void FMODExt_register(lua_State *L) {
     lua_newtable(L);
     lua_pushvalue(L, -1);
     lua_setglobal(L, "fmod");
@@ -737,10 +737,10 @@ void FMODBridge_register(lua_State *L) {
     lua_newtable(L);
     lua_pushvalue(L, -1);
     lua_setfield(L, -4, "error_code");
-    FMODBridge_registry_FMOD_RESULT = luaL_ref(L, LUA_REGISTRYINDEX);
+    FMODExt_registry_FMOD_RESULT = luaL_ref(L, LUA_REGISTRYINDEX);
 
     lua_newtable(L);
-    FMODBridge_registry_refcount = luaL_ref(L, LUA_REGISTRYINDEX);
+    FMODExt_registry_refcount = luaL_ref(L, LUA_REGISTRYINDEX);
 
     #define addEnum(x) \
         lua_pushstring(L, #x); \
@@ -754,7 +754,7 @@ void FMODBridge_register(lua_State *L) {
     #define beginStruct(structName) \
         lua_newtable(L); \
         lua_pushvalue(L, -1); \
-        CONCAT(FMODBridge_registry_, structName) = luaL_ref(L, LUA_REGISTRYINDEX); \
+        CONCAT(FMODExt_registry_, structName) = luaL_ref(L, LUA_REGISTRYINDEX); \
         \
         lua_pushvalue(L, -1); \
         lua_pushcclosure(L, &structIndexMetamethod, 1); \
@@ -783,26 +783,26 @@ void FMODBridge_register(lua_State *L) {
         lua_setfield(L, -4, "__eq")
 
     #define addDestructor(structName, releaseFname) \
-        lua_pushcfunction(L, &CONCAT(FMODBridge_func_, releaseFname)); \
+        lua_pushcfunction(L, &CONCAT(FMODExt_func_, releaseFname)); \
         lua_pushcclosure(L, &classGC, 1); \
         lua_setfield(L, -4, "__gc")
 
     #define endStruct() lua_pop(L, 3)
 
     #define addStructConstructor(structName, name, containerIndex) \
-        lua_pushnumber(L, CONCAT(FMODBridge_registry_, structName)); \
+        lua_pushnumber(L, CONCAT(FMODExt_registry_, structName)); \
         lua_pushnumber(L, sizeof(structName)); \
         lua_pushcclosure(L, &structConstructor, 2); \
         lua_setfield(L, containerIndex - 4, name)
 
     #define addPropertyGetter(structName, name, typename) \
         lua_pushlightuserdata(L, (void*)offsetof(structName, name)); \
-        lua_pushcclosure(L, &CONCAT(FMODBridge_propertyGet_, typename), 1); \
+        lua_pushcclosure(L, &CONCAT(FMODExt_propertyGet_, typename), 1); \
         lua_setfield(L, -3, STRINGIFY(name))
 
     #define addPropertySetter(structName, name, typename) \
         lua_pushlightuserdata(L, (void*)offsetof(structName, name)); \
-        lua_pushcclosure(L, &CONCAT(FMODBridge_propertySet_, typename), 1); \
+        lua_pushcclosure(L, &CONCAT(FMODExt_propertySet_, typename), 1); \
         lua_setfield(L, -2, STRINGIFY(name))
 
     #define addProperty(structName, name, typename) \
@@ -811,7 +811,7 @@ void FMODBridge_register(lua_State *L) {
 
     beginStruct(long_long);
     addStructEquality(long long);
-    lua_pushnumber(L, FMODBridge_registry_long_long);
+    lua_pushnumber(L, FMODExt_registry_long_long);
     lua_pushcclosure(L, &longLongConstructor, 1);
     lua_setfield(L, -6, "s64");
     lua_pushcfunction(L, &longLongGetValue);
@@ -826,7 +826,7 @@ void FMODBridge_register(lua_State *L) {
 
     beginStruct(unsigned_long_long);
     addStructEquality(unsigned long long);
-    lua_pushnumber(L, FMODBridge_registry_unsigned_long_long);
+    lua_pushnumber(L, FMODExt_registry_unsigned_long_long);
     lua_pushcclosure(L, &longLongConstructor, 1);
     lua_setfield(L, -6, "u64");
     lua_pushcfunction(L, &unsignedLongLongGetValue);
@@ -847,30 +847,30 @@ void FMODBridge_register(lua_State *L) {
         {% endif %}{% for property in struct.properties %}/* {{ property[1].c_type }} {{ property[0] }} */
         {% if property[1].readable %}addPropertyGetter({{ struct.name }}, {{ property[0] }}, {{ property[1].name }});
         {% endif %}{% if property[1].writeable %}addPropertySetter({{ struct.name }}, {{ property[0] }}, {{ property[1].name }});
-        {% endif %}{% endfor %}{% for f in struct.methods %}#ifdef FMODBridge_func_{{ f[1].name }}
-        lua_pushcfunction(L, &FMODBridge_func_{{ f[1].name }});
+        {% endif %}{% endfor %}{% for f in struct.methods %}#ifdef FMODExt_func_{{ f[1].name }}
+        lua_pushcfunction(L, &FMODExt_func_{{ f[1].name }});
         lua_setfield(L, -4, "{{ f[0] }}");
         #endif
-        {% endfor %}#ifdef FMODBridge_extras_{{ struct.name }}
-        FMODBridge_extras_{{ struct.name }}
+        {% endfor %}#ifdef FMODExt_extras_{{ struct.name }}
+        FMODExt_extras_{{ struct.name }}
         #endif
     endStruct();
     {% endfor %}
 
     {% for f in global_functions %}
-        #ifdef FMODBridge_func_{{ f[2].name }}
-        lua_pushcfunction(L, &FMODBridge_func_{{ f[2].name }});
+        #ifdef FMODExt_func_{{ f[2].name }}
+        lua_pushcfunction(L, &FMODExt_func_{{ f[2].name }});
         lua_setfield(L, {{ f[0] }} - 1, "{{ f[1] }}");
         #endif
     {% endfor %}
 
-    FMODBridge_push_ptr_FMOD_STUDIO_SYSTEM(L, FMODBridge_system);
+    FMODExt_push_ptr_FMOD_STUDIO_SYSTEM(L, FMODExt_system);
     lua_setfield(L, -2, "system");
 
-    FMODBridge_push_ptr_FMOD_SYSTEM(L, FMODBridge_lowLevelSystem);
+    FMODExt_push_ptr_FMOD_SYSTEM(L, FMODExt_lowLevelSystem);
     lua_setfield(L, -3, "system");
 
-    lua_pushcfunction(L, &FMODBridge_getBundleRoot);
+    lua_pushcfunction(L, &FMODExt_getBundleRoot);
 
     lua_getglobal(L, "sys");
     lua_getfield(L, -1, "get_application_path");

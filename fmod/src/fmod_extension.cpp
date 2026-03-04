@@ -10,7 +10,7 @@
     defined(DM_PLATFORM_IOS) || defined(DM_PLATFORM_HTML5) || defined(DM_PLATFORM_ANDROID) || \
     defined(DM_PLATFORM_SWITCH)
 
-#include "fmod_bridge_interface.hpp"
+#include "fmod_ext.h"
 
 #ifdef DM_PLATFORM_ANDROID
 #include <dmsdk/dlib/android.h>
@@ -27,7 +27,7 @@ dmExtension::Result InitializeDefoldFMOD(dmExtension::Params* params) {
 #ifdef DM_PLATFORM_ANDROID
     dmAndroid::ThreadAttacher thread;
 #endif
-    FMODBridge_init(params->m_L);
+    FMODExt_init(params->m_L);
     return dmExtension::RESULT_OK;
 }
 
@@ -35,7 +35,7 @@ dmExtension::Result UpdateDefoldFMOD(dmExtension::Params* params) {
 #ifdef DM_PLATFORM_ANDROID
     dmAndroid::ThreadAttacher thread;
 #endif
-    FMODBridge_update();
+    FMODExt_update();
     return dmExtension::RESULT_OK;
 }
 
@@ -43,7 +43,7 @@ dmExtension::Result FinalizeDefoldFMOD(dmExtension::Params* params) {
 #ifdef DM_PLATFORM_ANDROID
     dmAndroid::ThreadAttacher thread;
 #endif
-    FMODBridge_finalize();
+    FMODExt_finalize();
     return dmExtension::RESULT_OK;
 }
 
@@ -53,42 +53,42 @@ void OnEventDefoldFMOD(dmExtension::Params* params, const dmExtension::Event* ev
 #endif
     switch (event->m_Event) {
     case EXTENSION_EVENT_ID_ACTIVATEAPP:
-        FMODBridge_activateApp();
+        FMODExt_activateApp();
         break;
     case EXTENSION_EVENT_ID_DEACTIVATEAPP:
-        FMODBridge_deactivateApp();
+        FMODExt_deactivateApp();
         break;
     case EXTENSION_EVENT_ID_ICONIFYAPP:
-        FMODBridge_iconifyApp();
+        FMODExt_iconifyApp();
         break;
     case EXTENSION_EVENT_ID_DEICONIFYAPP:
-        FMODBridge_deiconifyApp();
+        FMODExt_deiconifyApp();
         break;
     default:
         break;
     }
 }
 
-int FMODBridge_dmBuffer_GetBytes(FMODBridge_HBuffer buffer, void** bytes, uint32_t* size) {
+int FMODExt_dmBuffer_GetBytes(FMODExt_HBuffer buffer, void** bytes, uint32_t* size) {
     return dmBuffer::GetBytes((dmBuffer::HBuffer)buffer, bytes, size) != dmBuffer::RESULT_OK;
 }
 
-void FMODBridge_dmScript_PushBuffer(lua_State* L, FMODBridge_HBuffer buffer) {
+void FMODExt_dmScript_PushBuffer(lua_State* L, FMODExt_HBuffer buffer) {
     dmScript::LuaHBuffer wrapper(buffer, dmScript::OWNER_C);
     dmScript::PushBuffer(L, wrapper);
 }
 
-FMODBridge_HBuffer FMODBridge_dmScript_CheckBuffer(lua_State* L, int index) {
+FMODExt_HBuffer FMODExt_dmScript_CheckBuffer(lua_State* L, int index) {
     return dmScript::CheckBuffer(L, index)->m_Buffer;
 }
 
-void FMODBridge_dmScript_PushVector3(lua_State* L, float x, float y, float z) {
+void FMODExt_dmScript_PushVector3(lua_State* L, float x, float y, float z) {
     dmScript::PushVector3(L, Vectormath::Aos::Vector3(x, y, z));
 }
 
-FMODBridge_Vector3 FMODBridge_dmScript_CheckVector3(lua_State* L, int index) {
+FMOD_VECTOR FMODExt_dmScript_CheckVector3(lua_State* L, int index) {
     Vectormath::Aos::Vector3* vec = dmScript::CheckVector3(L, index);
-    FMODBridge_Vector3 result = {
+    FMOD_VECTOR result = {
         .x = vec->getX(),
         .y = vec->getY(),
         .z = vec->getZ(),
@@ -114,7 +114,7 @@ FMODBridge_Vector3 FMODBridge_dmScript_CheckVector3(lua_State* L, int index) {
 #define CONFIG_SUFFIX ""
 #endif
 
-const char* FMODBridge_dmConfigFile_GetString(const char* config, const char* defaultValue) {
+const char* FMODExt_dmConfigFile_GetString(const char* config, const char* defaultValue) {
     const char* value = dmConfigFile::GetString(appConfig, config, defaultValue);
 
     size_t configLen = strlen(config);
@@ -128,7 +128,7 @@ const char* FMODBridge_dmConfigFile_GetString(const char* config, const char* de
     return value;
 }
 
-int32_t FMODBridge_dmConfigFile_GetInt(const char* config, int32_t defaultValue) {
+int32_t FMODExt_dmConfigFile_GetInt(const char* config, int32_t defaultValue) {
     int32_t value = dmConfigFile::GetInt(appConfig, config, defaultValue);
 
     size_t configLen = strlen(config);
