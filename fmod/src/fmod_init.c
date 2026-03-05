@@ -60,14 +60,6 @@ void FMODExt_init(lua_State* L) {
         return;
     }
 
-    ensure(ST, FMOD_Studio_System_Create, FMOD_RESULT, FMOD_STUDIO_SYSTEM**, unsigned int);
-    ensure(ST, FMOD_Studio_System_GetCoreSystem, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, FMOD_SYSTEM**);
-    ensure(LL, FMOD_System_SetSoftwareFormat, FMOD_RESULT, FMOD_SYSTEM*, int, FMOD_SPEAKERMODE, int);
-    ensure(LL, FMOD_System_SetDSPBufferSize, FMOD_RESULT, FMOD_SYSTEM*, unsigned int, int);
-    ensure(ST, FMOD_Studio_System_Initialize, FMOD_RESULT, FMOD_STUDIO_SYSTEM*, int, FMOD_STUDIO_INITFLAGS,
-           FMOD_INITFLAGS, void*);
-    ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
-
     FMOD_RESULT res;
     res = FMOD_Studio_System_Create(&FMODExt_system, FMOD_VERSION);
     if (res != FMOD_OK) {
@@ -128,9 +120,6 @@ void FMODExt_init(lua_State* L) {
 void FMODExt_update() {
     if (!FMODExt_system || FMODExt_isPaused) { return; }
 
-    ensure(ST, FMOD_Studio_System_Update, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
-    ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
-
     FMOD_RESULT res = FMOD_Studio_System_Update(FMODExt_system);
     if (res != FMOD_OK) {
         LOGE("%s", FMOD_ErrorString(res));
@@ -141,8 +130,6 @@ void FMODExt_update() {
 
 void FMODExt_finalize() {
     if (FMODExt_system) {
-        ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
-
         FMOD_RESULT res = FMOD_Studio_System_Release(FMODExt_system);
         if (res != FMOD_OK) { LOGE("%s", FMOD_ErrorString(res)); }
         FMODExt_system = NULL;
@@ -152,8 +139,6 @@ void FMODExt_finalize() {
 
 void FMODExt_resumeMixer() {
     if (FMODExt_system && FMODExt_isPaused) {
-        ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
-        ensure(LL, FMOD_System_MixerResume, FMOD_RESULT, FMOD_SYSTEM*);
         check(FMOD_System_MixerResume(FMODExt_lowLevelSystem));
         FMODExt_isPaused = false;
     }
@@ -161,8 +146,6 @@ void FMODExt_resumeMixer() {
 
 void FMODExt_suspendMixer() {
     if (FMODExt_system && !FMODExt_isPaused) {
-        ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
-        ensure(LL, FMOD_System_MixerSuspend, FMOD_RESULT, FMOD_SYSTEM*);
         check(FMOD_System_MixerSuspend(FMODExt_lowLevelSystem));
         FMODExt_isPaused = true;
     }
@@ -172,9 +155,6 @@ void FMODExt_suspendMixer() {
 EMSCRIPTEN_KEEPALIVE
 __attribute__((used)) void FMODExt_unmuteAfterUserInteraction() {
     if (FMODExt_system && !FMODExt_isPaused) {
-        ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
-        ensure(LL, FMOD_System_MixerSuspend, FMOD_RESULT, FMOD_SYSTEM*);
-        ensure(LL, FMOD_System_MixerResume, FMOD_RESULT, FMOD_SYSTEM*);
         check(FMOD_System_MixerSuspend(FMODExt_lowLevelSystem));
         check(FMOD_System_MixerResume(FMODExt_lowLevelSystem));
     }
@@ -198,11 +178,6 @@ void FMODExt_iconifyApp() {
     iconified = true;
 
     if (!runWhileIconified && FMODExt_lowLevelSystem) {
-        ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
-        ensure(LL, FMOD_System_GetMasterChannelGroup, FMOD_RESULT, FMOD_SYSTEM*, FMOD_CHANNELGROUP**);
-        ensure(LL, FMOD_ChannelGroup_GetPaused, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL*);
-        ensure(LL, FMOD_ChannelGroup_SetPaused, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL);
-
         FMOD_CHANNELGROUP* channelGroup;
         check(FMOD_System_GetMasterChannelGroup(FMODExt_lowLevelSystem, &channelGroup));
         check(FMOD_ChannelGroup_GetPaused(channelGroup, &masterChannelGroupPaused));
@@ -215,10 +190,6 @@ void FMODExt_deiconifyApp() {
     iconified = false;
 
     if (!runWhileIconified && FMODExt_lowLevelSystem) {
-        ensure(ST, FMOD_Studio_System_Release, FMOD_RESULT, FMOD_STUDIO_SYSTEM*);
-        ensure(LL, FMOD_System_GetMasterChannelGroup, FMOD_RESULT, FMOD_SYSTEM*, FMOD_CHANNELGROUP**);
-        ensure(LL, FMOD_ChannelGroup_SetPaused, FMOD_RESULT, FMOD_CHANNELGROUP*, FMOD_BOOL);
-
         FMOD_CHANNELGROUP* channelGroup;
         check(FMOD_System_GetMasterChannelGroup(FMODExt_lowLevelSystem, &channelGroup));
         check(FMOD_ChannelGroup_SetPaused(channelGroup, masterChannelGroupPaused));
