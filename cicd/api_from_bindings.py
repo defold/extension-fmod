@@ -4,6 +4,8 @@ from typing import Any, Protocol
 
 from jinja2 import Environment, FileSystemLoader
 
+from util import log
+
 _SCRIPT_DIR = Path(__file__).resolve().parent
 
 
@@ -171,4 +173,4 @@ def write_script_api_file(
     with open(output_path, "w") as output_file:
         output_file.write(rendered_output)
 
-    print(f"Generated {output_path}")
+    log.info("Generated %s", output_path)

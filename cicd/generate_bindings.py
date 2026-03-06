@@ -1,3 +1,4 @@
+import io
 import re
 from pathlib import Path
 
@@ -5,6 +6,7 @@ from jinja2 import Environment, FileSystemLoader
 from pycparser import c_ast, parse_file
 
 from api_from_bindings import write_script_api_file
+from util import log
 
 _SCRIPT_DIR = Path(__file__).resolve().parent
 _REPO_ROOT = _SCRIPT_DIR.parent
@@ -299,7 +301,7 @@ def generate_bindings(ast):
             if self.refcount_release:
                 self.struct.release_name = self.name
             if not self.generated:
-                print("Cannot auto-generate: " + self.name)
+                log.warning("Cannot auto-generate: %s", self.name)
 
         def parse(self):
             self.parse_arguments()
@@ -361,8 +363,9 @@ def generate_bindings(ast):
                         types[node.name] = TypeBasic
                         basic_types[node.name] = basic_types[parsed_type.name]
                     else:
-                        print("Unknown typedef")
-                        node.show()
+                        buf = io.StringIO()
+                        node.show(buf=buf)
+                        log.warning("Unknown typedef:\n%s", buf.getvalue())
 
         elif isinstance(node, c_ast.Decl):
             if isinstance(node.type, c_ast.Struct):
@@ -372,11 +375,14 @@ def generate_bindings(ast):
                 functions.append(ParsedMethod(node))
 
             else:
-                print("Unknown declaration")
-                node.show()
+                buf = io.StringIO()
+                node.show(buf=buf)
+                log.warning("Unknown declaration:\n%s", buf.getvalue())
 
         else:
-            node.show()
+            buf = io.StringIO()
+            node.show(buf=buf)
+            log.debug("Unhandled node:\n%s", buf.getvalue())
 
     add_defined_enums(enums)
 
