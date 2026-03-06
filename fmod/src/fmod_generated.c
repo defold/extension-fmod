@@ -343,6 +343,7 @@ static void * pushClass(lua_State *L, void * instance, int registryIndex) {
 }
 
 static int FMODExt_registry_refcount = LUA_REFNIL;
+static int FMODExt_registry_rolloff = LUA_REFNIL;
 
 static void * pushClassRefCount(lua_State *L, void * instance, int registryIndex) {
     pushClass(L, instance, registryIndex);
@@ -2023,12 +2024,82 @@ static int _FMODExt_func_FMOD_Studio_EventInstance_Set3DAttributes(lua_State *L)
     return 0;
 }
 
-// TODO: FMOD_Sound_Set3DCustomRolloff
-// TODO: FMOD_Sound_Get3DCustomRolloff
-// TODO: FMOD_Channel_Set3DCustomRolloff
-// TODO: FMOD_Channel_Get3DCustomRolloff
-// TODO: FMOD_ChannelGroup_Set3DCustomRolloff
-// TODO: FMOD_ChannelGroup_Get3DCustomRolloff
+static void rolloff_store(lua_State *L, void *fmod_obj, FMOD_VECTOR *points) {
+    lua_rawgeti(L, LUA_REGISTRYINDEX, FMODExt_registry_rolloff);
+    lua_pushlightuserdata(L, fmod_obj);
+    lua_rawget(L, -2);
+    if (!lua_isnil(L, -1)) {
+        free(lua_touserdata(L, -1));
+    }
+    lua_pop(L, 1);
+    lua_pushlightuserdata(L, fmod_obj);
+    if (points) {
+        lua_pushlightuserdata(L, points);
+    } else {
+        lua_pushnil(L);
+    }
+    lua_rawset(L, -3);
+    lua_pop(L, 1);
+}
+
+static FMOD_VECTOR *rolloff_from_table(lua_State *L, int index, int *out_count) {
+    luaL_checktype(L, index, LUA_TTABLE);
+    int n = (int)lua_objlen(L, index);
+    *out_count = n;
+    if (n == 0) return NULL;
+    FMOD_VECTOR *points = (FMOD_VECTOR*)malloc(sizeof(FMOD_VECTOR) * n);
+    for (int i = 0; i < n; i++) {
+        lua_rawgeti(L, index, i + 1);
+        points[i] = FMODExt_check_FMOD_VECTOR(L, -1);
+        lua_pop(L, 1);
+    }
+    return points;
+}
+
+static void rolloff_push_table(lua_State *L, FMOD_VECTOR *points, int numpoints) {
+    lua_createtable(L, numpoints, 0);
+    for (int i = 0; i < numpoints; i++) {
+        FMODExt_push_FMOD_VECTOR(L, points[i]);
+        lua_rawseti(L, -2, i + 1);
+    }
+}
+
+#define IMPL_Set3DCustomRolloff(name, CTYPE) \
+    static int _FMODExt_func_FMOD_##name##_Set3DCustomRolloff(lua_State *L) { \
+        FMOD_##CTYPE *obj = FMODExt_check_ptr_FMOD_##CTYPE(L, 1); \
+        int numpoints; \
+        FMOD_VECTOR *points = rolloff_from_table(L, 2, &numpoints); \
+        errCheckBegin(FMOD_##name##_Set3DCustomRolloff(obj, points, numpoints)) { \
+            free(points); \
+        } errCheckEnd; \
+        rolloff_store(L, obj, points); \
+        return 0; \
+    }
+
+#define IMPL_Get3DCustomRolloff(name, CTYPE) \
+    static int _FMODExt_func_FMOD_##name##_Get3DCustomRolloff(lua_State *L) { \
+        FMOD_##CTYPE *obj = FMODExt_check_ptr_FMOD_##CTYPE(L, 1); \
+        FMOD_VECTOR *points; \
+        int numpoints; \
+        errCheck(FMOD_##name##_Get3DCustomRolloff(obj, &points, &numpoints)); \
+        rolloff_push_table(L, points, numpoints); \
+        return 1; \
+    }
+
+#define FMODExt_func_FMOD_Sound_Set3DCustomRolloff _FMODExt_func_FMOD_Sound_Set3DCustomRolloff
+IMPL_Set3DCustomRolloff(Sound, SOUND)
+#define FMODExt_func_FMOD_Sound_Get3DCustomRolloff _FMODExt_func_FMOD_Sound_Get3DCustomRolloff
+IMPL_Get3DCustomRolloff(Sound, SOUND)
+
+#define FMODExt_func_FMOD_Channel_Set3DCustomRolloff _FMODExt_func_FMOD_Channel_Set3DCustomRolloff
+IMPL_Set3DCustomRolloff(Channel, CHANNEL)
+#define FMODExt_func_FMOD_Channel_Get3DCustomRolloff _FMODExt_func_FMOD_Channel_Get3DCustomRolloff
+IMPL_Get3DCustomRolloff(Channel, CHANNEL)
+
+#define FMODExt_func_FMOD_ChannelGroup_Set3DCustomRolloff _FMODExt_func_FMOD_ChannelGroup_Set3DCustomRolloff
+IMPL_Set3DCustomRolloff(ChannelGroup, CHANNELGROUP)
+#define FMODExt_func_FMOD_ChannelGroup_Get3DCustomRolloff _FMODExt_func_FMOD_ChannelGroup_Get3DCustomRolloff
+IMPL_Get3DCustomRolloff(ChannelGroup, CHANNELGROUP)
 
 #define FMODExt_func_FMOD_DSP_GetParameterFloat _FMODExt_func_FMOD_DSP_GetParameterFloat
 static int _FMODExt_func_FMOD_DSP_GetParameterFloat(lua_State *L) {
@@ -9201,6 +9272,9 @@ void FMODExt_register(lua_State *L) {
 
     lua_newtable(L);
     FMODExt_registry_refcount = luaL_ref(L, LUA_REGISTRYINDEX);
+
+    lua_newtable(L);
+    FMODExt_registry_rolloff = luaL_ref(L, LUA_REGISTRYINDEX);
 
     #define addEnum(x) \
         lua_pushstring(L, #x); \
