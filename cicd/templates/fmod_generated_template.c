@@ -731,6 +731,69 @@ static int _FMODExt_func_FMOD_Studio_CommandReplay_GetCommandString(lua_State *L
     return 1;
 }
 
+#define labelGetterByName(fname, type1) static int CONCAT(_FMODExt_func_, fname)(lua_State *L) { \
+    type1* arg1 = CONCAT(FMODExt_check_ptr_, type1)(L, 1); \
+    const char* name = luaL_checkstring(L, 2); \
+    int labelindex = FMODExt_check_int(L, 3); \
+    int retrieved; \
+    errCheckBegin(fname(arg1, name, labelindex, NULL, 0, &retrieved)); \
+    errCheckEnd; \
+    char *label = (char*)malloc(retrieved); \
+    errCheckBegin(fname(arg1, name, labelindex, label, retrieved, &retrieved)) { \
+        free(label); \
+    } errCheckEnd; \
+    lua_pushstring(L, label); \
+    free(label); \
+    return 1; \
+}
+
+#define labelGetterByID(fname, type1) static int CONCAT(_FMODExt_func_, fname)(lua_State *L) { \
+    type1* arg1 = CONCAT(FMODExt_check_ptr_, type1)(L, 1); \
+    FMOD_STUDIO_PARAMETER_ID* id = FMODExt_check_ptr_FMOD_STUDIO_PARAMETER_ID(L, 2); \
+    int labelindex = FMODExt_check_int(L, 3); \
+    int retrieved; \
+    errCheckBegin(fname(arg1, *id, labelindex, NULL, 0, &retrieved)); \
+    errCheckEnd; \
+    char *label = (char*)malloc(retrieved); \
+    errCheckBegin(fname(arg1, *id, labelindex, label, retrieved, &retrieved)) { \
+        free(label); \
+    } errCheckEnd; \
+    lua_pushstring(L, label); \
+    free(label); \
+    return 1; \
+}
+
+#define labelGetterByIndex(fname, type1) static int CONCAT(_FMODExt_func_, fname)(lua_State *L) { \
+    type1* arg1 = CONCAT(FMODExt_check_ptr_, type1)(L, 1); \
+    int index = FMODExt_check_int(L, 2); \
+    int labelindex = FMODExt_check_int(L, 3); \
+    int retrieved; \
+    errCheckBegin(fname(arg1, index, labelindex, NULL, 0, &retrieved)); \
+    errCheckEnd; \
+    char *label = (char*)malloc(retrieved); \
+    errCheckBegin(fname(arg1, index, labelindex, label, retrieved, &retrieved)) { \
+        free(label); \
+    } errCheckEnd; \
+    lua_pushstring(L, label); \
+    free(label); \
+    return 1; \
+}
+
+#define FMODExt_func_FMOD_Studio_System_GetParameterLabelByName _FMODExt_func_FMOD_Studio_System_GetParameterLabelByName
+labelGetterByName(FMOD_Studio_System_GetParameterLabelByName, FMOD_STUDIO_SYSTEM)
+
+#define FMODExt_func_FMOD_Studio_System_GetParameterLabelByID _FMODExt_func_FMOD_Studio_System_GetParameterLabelByID
+labelGetterByID(FMOD_Studio_System_GetParameterLabelByID, FMOD_STUDIO_SYSTEM)
+
+#define FMODExt_func_FMOD_Studio_EventDescription_GetParameterLabelByIndex _FMODExt_func_FMOD_Studio_EventDescription_GetParameterLabelByIndex
+labelGetterByIndex(FMOD_Studio_EventDescription_GetParameterLabelByIndex, FMOD_STUDIO_EVENTDESCRIPTION)
+
+#define FMODExt_func_FMOD_Studio_EventDescription_GetParameterLabelByName _FMODExt_func_FMOD_Studio_EventDescription_GetParameterLabelByName
+labelGetterByName(FMOD_Studio_EventDescription_GetParameterLabelByName, FMOD_STUDIO_EVENTDESCRIPTION)
+
+#define FMODExt_func_FMOD_Studio_EventDescription_GetParameterLabelByID _FMODExt_func_FMOD_Studio_EventDescription_GetParameterLabelByID
+labelGetterByID(FMOD_Studio_EventDescription_GetParameterLabelByID, FMOD_STUDIO_EVENTDESCRIPTION)
+
 /* Generated function definitions */
 
 {% for f in functions %}
