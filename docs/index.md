@@ -9,14 +9,11 @@ _FMOD_ is a cross-platform audio engine by Firelight Technologies with real-time
 
 This extension wraps both the Studio and Core APIs for Lua, giving access to the event system, buses, banks, and low-level channel control directly from Defold scripts. It is particularly useful for projects that need dynamic audio beyond simple play/stop, such as vehicle engines that respond to RPM, ambient environments that shift with game state, or music that crossfades between layers based on player action.
 
-<img src="spatial-audio-comparison.png" alt="Traditional stereo delivers flat left/right sound while 3D spatial audio places sounds in a full sphere around the listener" width="500">
+![Traditional stereo delivers flat left/right sound while 3D spatial audio places sounds in a full sphere around the listener](spatial-audio-comparison.png)
 
 *(Source: [Agora.io](https://docs.agora.io/en/video-calling/advanced-features/spatial-audio))*
 
-<p align="center">
-  <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2pzMTMzZ2c5MzJ5YXo3cTdlc3h4MGRvMzRraGFidW1yY2Fwb3JpaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPuxirticU1KVmE/giphy.gif" alt="3D spatial audio layers" width="300">
-  <br><em>(Source: <a href="https://giphy.com/andygottschalk">@andygottschalk</a>)</em>
-</p>
+![3D spatial audio layers](spatial-audio-andy.webp)
 
 
 
@@ -33,7 +30,7 @@ Commercial usage of FMOD requires a license from Firelight Technologies. All pro
 
 To use FMOD in your Defold project, add the extension URL to your `game.project` dependencies from [Releases](https://github.com/defold/extension-fmod/releases). Copy the URL of the ZIP archive for the version you want and add it to the project dependencies   
 
-<img src="add-dependency.png" alt="Adding a dependency URL in game.project" width="500">
+![Adding a dependency URL in game.project](add-dependency.png)
 
 Select <kbd>Project ▸ Fetch Libraries</kbd> to download the extension and make it available in your project.
 
@@ -48,32 +45,32 @@ A typical starting workflow:
 
 1. Create or open project in FMOD Studio
 
-<img src="new-proj-fmod-studio.png" alt="New FMOD Studio project" width="500">
+![New FMOD Studio project](new-proj-fmod-studio.png)
 
 2. Import assets via right-click in the **Assets** tab
 
-<img src="new-asset-fmod-studio.png" alt="Importing assets in the FMOD Studio Assets tab" width="500">
+![Importing assets in the FMOD Studio Assets tab](new-asset-fmod-studio.png)
 
 3. Create events from assets by right-clicking an asset and selecting **Create Event**. An event wraps one or more audio files with playback logic, effects, and parameter automation.
 
-<img src="new-event-fmod-studio.png" alt="Creating an event from an asset in FMOD Studio" width="500">
+![Creating an event from an asset in FMOD Studio](new-event-fmod-studio.png)
 
 4. Assign a bank to those events via right-click on the **Events** tab. Banks group events for loading at runtime; the default Master bank works to start with.
 
-<img src="assign-bank-event-fmod-studio.png" alt="Assigning an event to a bank via Assign to Bank in FMOD Studio" width="500">
+![Assigning an event to a bank via Assign to Bank in FMOD Studio](assign-bank-event-fmod-studio.png)
 
 5. Build the project via <kbd>File ▸ Build</kbd> to produce `.bank` files
 
-<img src="build-fmod-studio.png" alt="Building bank files from the File menu in FMOD Studio" width="500">
+![Building bank files from the File menu in FMOD Studio](build-fmod-studio.png)
 
 
 Every build produces at least a **Master Bank** and a **Master Bank.strings** bank. The master bank holds global mixer and bus data, while the strings bank maps event paths (like `event:/UI/Click`) to their internal IDs.
 
 ### Project setup
 
-<img src="bank-path.png" alt="Bank file path in the Defold project" width="500">
-
 1. Place your exported `.bank` files in your project and add the directory to `custom_resources` in `game.project` (this makes banks available via `resource.load()` during development; for release builds, see [Loading banks from the file system](#loading-banks-from-the-file-system))
+![Bank file path in the Defold project](bank-path.png)
+
 2. You always need at least two banks: the **Master Bank** and the **Master Bank.strings** bank
 3. Check that FMOD is available on your platform before calling any API:
 
@@ -93,7 +90,6 @@ function init(self)
 
   fmod.studio.system:load_bank_memory(resource.load("/banks/Master Bank.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
   fmod.studio.system:load_bank_memory(resource.load("/banks/Master Bank.strings.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
-  fmod.studio.system:load_bank_memory(resource.load("/banks/SFX.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
 
   fmod.studio.system:get_event("event:/UI/Click"):create_instance():start()
 end
@@ -101,23 +97,11 @@ end
 
 This loads banks into memory, looks up an event by its Studio path, creates a playback instance, and starts it.
 
-## API conventions
-
-Structs and classes are exposed on the `fmod` and `fmod.studio` namespaces. Method names are converted from `camelCase` to `snake_case`. Methods that return values through pointer arguments in C++ return the values directly in Lua and throw a Lua error when their result is not `FMOD_OK`.
-
-Enums are exposed on the `fmod` table without the leading `FMOD_` (e.g. `FMOD_STUDIO_PLAYBACK_PLAYING` becomes `fmod.STUDIO_PLAYBACK_PLAYING`).
-
-A fully initialised `FMOD::Studio::System` is exposed as `fmod.studio.system` and the corresponding low-level `FMOD::System` as `fmod.system`.
-
-You can use `vmath.vector3` instead of `FMOD_VECTOR`. Conversion is done seamlessly.
-
-The extension calls `fmod.studio.system:update()` from native code each frame, so you never need to call it manually.
-
 ## Project configuration
 
 You can configure FMOD settings in the Editor under the FMOD section of `game.project`:
 
-<img src="lib-properties.png" alt="FMOD settings in game.project" width="500">
+![FMOD settings in game.project](lib-properties.png)
 
 *The FMOD section in <kbd>game.project</kbd> exposes speaker mode, buffer settings, live update, and more.*
 
@@ -133,7 +117,7 @@ live_update = 1
 
 ### Speaker mode
 
-Sets the output format before FMOD initialises. Most projects need this since Studio banks are mixed at a specific speaker mode. See [FMOD_System_SetSoftwareFormat](https://www.fmod.org/docs/content/generated/FMOD_System_SetSoftwareFormat.html). Supported values for `speaker_mode`: `default`, `raw`, `mono`, `stereo`, `quad`, `surround`, `5.1`, `7.1`, `max`.
+Sets the output format before FMOD initialises. Most projects need this since Studio banks are mixed at a specific speaker mode. See [FMOD_System_SetSoftwareFormat](https://www.fmod.com/docs/content/generated/FMOD_System_SetSoftwareFormat.html). Supported values for `speaker_mode`: `default`, `raw`, `mono`, `stereo`, `quad`, `surround`, `5.1`, `7.1`, `max`.
 
 You can also set `sample_rate` and `num_raw_speakers` in the same section.
 
@@ -162,29 +146,19 @@ FMOD needs enough memory for banks and sound buffers on HTML5 (particularly Safa
 heap_size = 512
 ```
 
-### Sound while minimised
-
-By default, FMOD respects the `engine.run_while_iconified` setting. If the engine can run in the background, FMOD will too; otherwise all audio is paused.
-
-To keep the engine running in the background but still pause audio:
-
-```
-[engine]
-run_while_iconified = 1
-
-[fmod]
-run_while_iconified = 0
-```
-
 ## Loading banks from the file system
 
 Loading from memory with `load_bank_memory` (as shown in Getting started) uses `custom_resources` and `resource.load()`, which is straightforward for development but inefficient for release builds since it copies the entire bank into Lua memory and does not support streaming.
 
 For release builds, use `bundled_resources` instead. This bundles the files into the application package without loading them into Lua memory. Place your banks at the following paths relative to your `bundled_resources` directory:
 
-* Windows, Linux and iOS: `win32/banks/`, `linux/banks/`, `ios/banks/`
-* macOS: `osx/Contents/Resources/banks`
-* Android: `android/assets/banks`
+| Platform | Path relative to `bundled_resources` |
+|---|---|
+| Windows | `win32/banks/` |
+| Linux | `linux/banks/` |
+| macOS | `osx/Contents/Resources/banks/` |
+| iOS | `ios/banks/` |
+| Android | `android/assets/banks/` |
 
 Then load from the file system:
 
@@ -200,7 +174,9 @@ end
 fmod.studio.system:load_bank_file(path_to_banks .. "/Master Bank.bank", fmod.STUDIO_LOAD_BANK_NORMAL)
 ```
 
-> **Warning:** Don't use relative paths for loading banks. Use `sys.get_application_path()`. The current working directory is not always the game's installation directory, especially on macOS and iOS.
+For large banks, load asynchronously with `fmod.STUDIO_LOAD_BANK_NONBLOCKING` and poll `bank:get_loading_state()` before using the bank's events.
+
+> **Tip:** Don't use relative paths for loading banks. Use `sys.get_application_path()`. The current working directory is not always the game's installation directory, especially on macOS and iOS.
 
 ## Controlling events
 
@@ -219,13 +195,14 @@ event:stop(fmod.STUDIO_STOP_ALLOWFADEOUT)
 
 Event instances stay alive until you call `release()` or Lua's garbage collector collects them. Since GC timing is unpredictable, calling `release()` explicitly gives you deterministic cleanup. For fire-and-forget one-shots, you can call `release()` right after `start()` and FMOD will destroy the instance once it finishes playing.
 
-For long-lived events stored on `self`, stop and release them in `final()`:
+For long-lived events stored on `self`, stop and release them in `final()`. Banks should also be unloaded when no longer needed:
 
 ```lua
 function final(self)
   if not fmod then return end
   self.event:stop(fmod.STUDIO_STOP_IMMEDIATE)
   self.event:release()
+  self.bank:unload()
 end
 ```
 
@@ -240,6 +217,19 @@ event:set_parameter_by_name("RPM", 650.0, false)
 The third argument is `ignoreseekspeed`: when `true` the value jumps immediately, when `false` it transitions gradually at the seek speed set in FMOD Studio. Immediate jumps work well for gameplay-driven parameters; gradual transitions suit musical changes.
 
 Parameters marked as global in FMOD Studio affect all instances of events using that parameter, not just one.
+
+## Buses and VCAs
+
+Control mix levels through buses and VCAs defined in FMOD Studio:
+
+```lua
+local music = fmod.studio.system:get_bus("bus:/Music")
+music:set_volume(0.5)
+music:set_paused(true)
+
+local master_vca = fmod.studio.system:get_vca("vca:/Master")
+master_vca:set_volume(0.8)
+```
 
 ## 3D audio
 
@@ -297,7 +287,7 @@ function update(self, dt)
 end
 ```
 
-For a full working example, see the [example script](https://github.com/nicokrs/extension-fmod/blob/master/main/main.script).
+For a full working example, see the [example script](https://github.com/defold/extension-fmod/blob/master/example/example.script).
 
 ## Error handling
 
@@ -318,6 +308,20 @@ else
 end
 ```
 
+To enable FMOD's internal logging, call `fmod.debug_initialize()` early in your project. See the FMOD documentation for flag options.
+
+## API conventions
+
+Structs and classes are exposed on the `fmod` and `fmod.studio` namespaces. Method names are converted from `camelCase` to `snake_case`. Methods that return values through pointer arguments in C++ return the values directly in Lua and throw a Lua error when their result is not `FMOD_OK`.
+
+Enums are exposed on the `fmod` table without the leading `FMOD_` (e.g. `FMOD_STUDIO_PLAYBACK_PLAYING` becomes `fmod.STUDIO_PLAYBACK_PLAYING`).
+
+A fully initialised `FMOD::Studio::System` is exposed as `fmod.studio.system` and the corresponding low-level `FMOD::System` as `fmod.system`.
+
+You can use `vmath.vector3` instead of `FMOD_VECTOR`. The extension handles the conversion.
+
+The extension calls `fmod.studio.system:update()` from native code each frame, so you never need to call it manually.
+
 ## 64-bit values
 
 A small number of FMOD functions and structs work with 64-bit number types. Lua 5.1 does not have a native 64-bit type. Functions with 64-bit arguments accept regular Lua numbers if the extra precision is not needed, but for full precision use `fmod.s64()` and `fmod.u64()`.
@@ -336,5 +340,6 @@ tostring(x)               -- Converts to a numeric string
 ## Links
 
 * [FMOD API Documentation](https://www.fmod.com/resources/documentation-api?version=2.03.09&page=content/generated/studio_api.html)
+* [Script API reference](/extension-fmod/fmod_api/)
 * [Example project](https://github.com/defold/extension-fmod/blob/master/example/example.script)
 * [Source code](https://github.com/defold/extension-fmod)
