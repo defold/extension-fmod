@@ -208,6 +208,8 @@ end
 
 ## Parameters
 
+![Adding a parameter sheet to an event in FMOD Studio](new-parameter-fmod-studio.png)
+
 Events can have parameters that control playback behavior, like RPM for engine sounds or intensity for ambience:
 
 ```lua
@@ -232,6 +234,8 @@ master_vca:set_volume(0.8)
 ```
 
 ## 3D audio
+
+![The example project with a listener and movable sound source](try-our-example.png)
 
 FMOD supports 3D spatial audio with listener and emitter positioning. Set up both the listener (typically the camera or player) and source positions.
 
