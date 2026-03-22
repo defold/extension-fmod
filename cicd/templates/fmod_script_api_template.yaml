@@ -16,9 +16,12 @@
 
   members:
 {% for enum in enums %}
+  {% if not is_sentinel_enum(enum) %}
   - name: {{ enum }}
     type: number
+    desc: {{ generate_enum_desc(enum) }}
 
+  {% endif %}
 {% endfor %}
 
 #*****************************************************************************************************
@@ -43,7 +46,7 @@
   - name: {{ f[1] }}
     type: function
     desc: |
-      {{ f[2].name }}
+      {{ generate_global_func_desc(f[2].name) | indent(6, first=False) }}
     {% if f[2].generated %}
       {% set inputs = get_input_args(f[2]) %}
       {% if inputs %}
@@ -51,7 +54,7 @@
         {% for arg in inputs %}
     - name: {{ arg.name }}
       type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
-      desc: {{ get_param_description(arg.name) }}{% if arg.optional %} (optional){% endif %}
+      desc: {{ get_param_description(arg.name, get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}{% if arg.optional %} (optional){% endif %}
 
         {% endfor %}
       {% endif %}
@@ -61,6 +64,7 @@
         {% for arg in outputs %}
     - name: {{ arg.name }}
       type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
+      desc: {{ generate_return_desc(arg.name, get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
 
         {% endfor %}
       {% endif %}
@@ -115,14 +119,19 @@
   {% if struct.is_class and not struct.name.startswith('FMOD_STUDIO_') %}
 - name: {{ struct.name|lower|replace('fmod_', 'fmod.') }}
   type: userdata
-  desc: {{ struct.name }} instance
+  desc: |
+    {{ get_class_description(struct.name) | indent(4, first=False) }}
+  {% set notes = get_class_notes(struct.name) %}
+  {% if notes %}
+  notes: {{ notes }}
+  {% endif %}
 
   members:
     {% for method in struct.methods %}
   - name: {{ method[0] }}
     type: function
     desc: |
-      {{ method[1].name }}
+      {{ generate_func_desc(method[1].name, struct.name) | indent(6, first=False) }}
     {% if method[1].generated %}
       {% set inputs = get_input_args(method[1], True) %}
       {% if inputs %}
@@ -130,7 +139,7 @@
         {% for arg in inputs %}
     - name: {{ arg.name }}
       type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
-      desc: {{ get_param_description(arg.name) }}{% if arg.optional %} (optional){% endif %}
+      desc: {{ get_param_description(arg.name, get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}{% if arg.optional %} (optional){% endif %}
 
         {% endfor %}
       {% endif %}
@@ -140,6 +149,7 @@
         {% for arg in outputs %}
     - name: {{ arg.name }}
       type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
+      desc: {{ generate_return_desc(arg.name, get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
 
         {% endfor %}
 
@@ -185,7 +195,7 @@
   - name: {{ f[1] }}
     type: function
     desc: |
-      {{ f[2].name }}
+      {{ generate_global_func_desc(f[2].name) | indent(6, first=False) }}
     {% if f[2].generated %}
       {% set inputs = get_input_args(f[2]) %}
       {% if inputs %}
@@ -193,7 +203,7 @@
         {% for arg in inputs %}
     - name: {{ arg.name }}
       type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
-      desc: {{ get_param_description(arg.name) }}{% if arg.optional %} (optional){% endif %}
+      desc: {{ get_param_description(arg.name, get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}{% if arg.optional %} (optional){% endif %}
 
         {% endfor %}
       {% endif %}
@@ -203,6 +213,7 @@
         {% for arg in outputs %}
     - name: {{ arg.name }}
       type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
+      desc: {{ generate_return_desc(arg.name, get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
 
         {% endfor %}
       {% endif %}
@@ -223,14 +234,19 @@
   {% if struct.is_class and struct.name.startswith('FMOD_STUDIO_') %}
 - name: {{ struct.name|lower|replace('fmod_studio_', 'fmod.studio.')|replace('fmod_', 'fmod.') }}
   type: userdata
-  desc: {{ struct.name }} instance
+  desc: |
+    {{ get_class_description(struct.name) | indent(4, first=False) }}
+  {% set notes = get_class_notes(struct.name) %}
+  {% if notes %}
+  notes: {{ notes }}
+  {% endif %}
 
   members:
     {% for method in struct.methods %}
   - name: {{ method[0] }}
     type: function
     desc: |
-      {{ method[1].name }}
+      {{ generate_func_desc(method[1].name, struct.name) | indent(6, first=False) }}
     {% if method[1].generated %}
       {% set inputs = get_input_args(method[1], True) %}
       {% if inputs %}
@@ -238,7 +254,7 @@
         {% for arg in inputs %}
     - name: {{ arg.name }}
       type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
-      desc: {{ get_param_description(arg.name) }}{% if arg.optional %} (optional){% endif %}
+      desc: {{ get_param_description(arg.name, get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}{% if arg.optional %} (optional){% endif %}
 
         {% endfor %}
       {% endif %}
@@ -248,6 +264,7 @@
         {% for arg in outputs %}
     - name: {{ arg.name }}
       type: {{ c_type_to_lua_type(get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
+      desc: {{ generate_return_desc(arg.name, get_arg_type_info(arg)[0], get_arg_type_info(arg)[1]) }}
 
         {% endfor %}
 
@@ -270,7 +287,7 @@
   - name: {{ property[0] }}
       {% if property[1].c_type != '__UNKNOWN__' %}
     type: {{ c_type_to_lua_type(property[1].c_type, property[1].type) }}
-    desc: {{ property[1].c_type }} field
+    desc: {{ generate_field_desc(property[0], property[1].c_type, struct.name) }}
       {% endif %}
 
     {% endfor %}
