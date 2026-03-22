@@ -23,33 +23,20 @@ copy a dependency URL, then add it to your dependencies in `game.project`.
 
 ### Set the speaker mode
 
-This step is [only required if you use Studio banks][set_software_format].
-To set the speaker mode, create an `fmod` section in your `game.project`:
+Note: This step is [only required if you use Studio banks][set_software_format].
 
-```
-[fmod]
-speaker_mode = stereo
-```
+To set the speaker mode, open `game.project` and scroll to the `fmod` section and change `Speaker Mode`. Supported values for `speaker_mode` are: `default`, `raw`, `mono`, `stereo`, `quad`, `surround`, `5.1`, `7.1`, `max`.
 
-Supported values for `speaker_mode` are: `default`, `raw`, `mono`, `stereo`,
-`quad`, `surround`, `5.1`, `7.1`, `max`.
+If ever needed, you can also configure `Sample Rate` and `Num Raw Speakers` in the same way.
 
-If ever needed, you can also set `sample_rate` and `num_raw_speakers` in the same way.
-
-If you have issues with stutter, you can try adjusting
-`buffer_length` and `num_buffers` from here as well.
+If you have issues with stutter, you can try adjusting `Buffer Length` and `Num Buffers` from here as well.
 [More details here](https://fmod.com/resources/documentation-api?version=2.0&page=core-api-system.html#system_setdspbuffersize).
 
-If you need platform-specific overrides for these settings, append one of
-`_macos`, `_windows`, `_linux`, `_android`, `_ios`, `_html5` to the config key
-(eg. `buffer_length_android`).
+If you need platform-specific overrides for these settings, open `game.project` as a text file, scroll to the `fmod` section and append one of `_macos`, `_windows`, `_linux`, `_android`, `_ios`, `_html5` to the config key (eg. `buffer_length_android`).
 
 ### Raise the heap size on HTML5
 
-FMOD will hiccup and not play sound on HTML5 (particularily Safari on iOS and macOS)
-if it doesn't have enough memory for your banks and sound buffers, especially if
-loaded with `load_bank_memory()`, which copies them into memory. The exact amount 
-depends from game to game, but for this example to run, it needs a 512MB heap.
+FMOD will hiccup and not play sound on HTML5 (particularily Safari on iOS and macOS) if it doesn't have enough memory for your banks and sound buffers, especially if loaded with `load_bank_memory()`, which copies them into memory. The exact amount  depends from game to game, but for this example to run, it needs a 512MB heap.
 
 ```
 [html5]
@@ -58,20 +45,13 @@ heap_size = 512
 
 ## Usage
 
-Structs and classes are exposed on the `fmod` and `fmod.studio` namespaces. All
-method names are converted from `camelCase` to `snake_case`. Methods that
-returned values through pointer arguments now actually return the values and
-throw with a Lua error when their result is not `FMOD_OK`.
+Structs and classes are exposed on the `fmod` and `fmod.studio` namespaces. All method names are converted from `camelCase` to `snake_case`. Methods that returned values through pointer arguments now actually return the values and throw with a Lua error when their result is not `FMOD_OK`.
 
-Enums are exposed on the `fmod` table without the leading `FMOD_`.
-(eg.: `FMOD_STUDIO_PLAYBACK_PLAYING` is exposed as `fmod.STUDIO_PLAYBACK_PLAYING`)
+Enums are exposed on the `fmod` table without the leading `FMOD_`. (eg.: `FMOD_STUDIO_PLAYBACK_PLAYING` is exposed as `fmod.STUDIO_PLAYBACK_PLAYING`)
 
-A fully initialised instance of `FMOD::Studio::System` is exposed to Lua as
-`fmod.studio.system` and the corresponding instance of
-`FMOD::System` (the low level system), is exposed as `fmod.system`.
+A fully initialised instance of `FMOD::Studio::System` is exposed to Lua as `fmod.studio.system` and the corresponding instance of `FMOD::System` (the low level system), is exposed as `fmod.system`.
 
-You can use `vmath.vector3` instead of FMOD's `FMOD_VECTOR` struct. Conversion
-is being done seamlessly.
+You can use `vmath.vector3` instead of FMOD's `FMOD_VECTOR` struct. Conversion is being done seamlessly.
 
 See an [example script][example] to get an idea.
 
@@ -91,17 +71,13 @@ event:start()
 
 ## Memory management
 
-Instances of `FMOD_STUDIO_EVENTINSTANCE` are automatically garbage collected by
-Lua and `release()` is called automatically for you when you no longer hold
-references.
+Instances of `FMOD_STUDIO_EVENTINSTANCE` are automatically garbage collected by Lua and `release()` is called automatically for you when you no longer hold references.
 
-**Any other class is not memory managed and you still need to call `instance:release()`
-manually, where applicable.**
+**Any other class is not memory managed and you still need to call `instance:release()` manually, where applicable.**
 
 ## Error handling
 
-You can retrieve the error code of an FMOD error and use it for more specific
-error handling:
+You can retrieve the error code of an FMOD error and use it for more specific error handling:
 
 ```lua
 local ok, err = pcall(function ()
@@ -122,10 +98,7 @@ end
 
 ## 64-bit values
 
-A small amount of FMOD functions and structs work with 64-bit number types.
-Lua 5.1 doesn't have a 64-bit type. Functions with 64-bit arguments accept
-regular lua numbers instead if the extra precision is not needed, but if you
-need more, use `fmod.s64()` and `fmod.u64()`,
+A small amount of FMOD functions and structs work with 64-bit number types. Lua 5.1 doesn't have a 64-bit type. Functions with 64-bit arguments accept regular lua numbers instead if the extra precision is not needed, but if you need more, use `fmod.s64()` and `fmod.u64()`,
 
 Functions that return 64-bit numbers will return instances of `fmod.s64` or `fmod.u64`.
 
@@ -140,8 +113,7 @@ tostring(x) -- Converts the value to a numeric string
 
 ## Studio Live Update
 
-Add the following setting to your `game.project` to enable the live update server
-used by FMOD Studio.
+Add the following setting to your `game.project` to enable the live update server used by FMOD Studio.
 
 ```
 [fmod]
@@ -150,12 +122,9 @@ live_update = 1
 
 ## Loading banks from the file system
 
-For development it's ok to put your banks in `custom_resources` and use
-`load_bank_memory` to load them, but this is inefficient (costs a lot of memory
-and you don't benefit from streaming).
+For development it's ok to put your banks in `custom_resources` and use `load_bank_memory` to load them, but this is inefficient (costs a lot of memory and you don't benefit from streaming).
 
-When building, you want your banks on the file system. In your
-`bundled_resources` directory, add the banks to the following paths:
+When building, you want your banks on the file system. In your `bundled_resources` directory, add the banks to the following paths:
 
 * For Windows, Linux and iOS: `win32/banks/`, `linux/banks/`, `ios/banks/`
 * For macOS: `osx/Contents/Resources/banks`
@@ -179,16 +148,12 @@ fmod.studio.system:load_bank_file(path_to_banks .. "/Master Bank.bank", fmod.STU
 
 ## Sound while the game is minimised
 
-By default, FMOD should respect the setting of `engine.run_while_iconified`. This
-means that if the engine can run in the background, FMOD will too, otherwise
-all audio will be paused while the engine is minimised (and paused as well).
+By default, FMOD should respect the setting of `engine.run_while_iconified`. This means that if the engine can run in the background, FMOD will too, otherwise all audio will be paused while the engine is minimised (and paused as well).
 
-If you'd like to keep the engine running in the background but still pause the music,
-set `engine.run_while_iconified = 1` and add a new setting `fmod.run_while_iconified = 0`.
+If you'd like to keep the engine running in the background but still pause the music, set `engine.run_while_iconified = 1` and add a new setting `fmod.run_while_iconified = 0`.
 
 ## Nintendo Switch support
-After [getting access to Defold for Nintendo Switch](https://defold.com/manuals/nintendo-switch/), 
-follow [these instructions](https://forum.defold.com/t/fmod-extension-for-switch/65719).
+After [getting access to Defold for Nintendo Switch](https://defold.com/manuals/nintendo-switch/), follow [these instructions](https://forum.defold.com/t/fmod-extension-for-switch/65719).
 
 ## Contributing
 
