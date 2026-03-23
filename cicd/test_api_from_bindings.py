@@ -67,10 +67,10 @@ PARAM_DESCRIPTION_CASES = [
     ("system", "FMOD system handle"),
     ("sound", "Sound handle"),
     ("channel", "Channel handle"),
-    ("filename", "Name or path"),
+    ("filename", "File path"),
     ("name", "Name or path"),
-    ("length", "Length or size value"),
-    ("size", "Length or size value"),
+    ("length", "Length value"),
+    ("size", "Size in bytes"),
     ("mode", "Mode flags"),
     ("volume", "Volume level (0.0 to 1.0)"),
     ("position", "Position value"),
@@ -82,9 +82,9 @@ PARAM_DESCRIPTION_CASES = [
     # Substring matching
     ("sound_name", "Sound handle"),
     ("my_system", "FMOD system handle"),
-    ("buffer_size", "Length or size value"),
-    # Unknown falls back to raw name
-    ("unknown_param", "unknown_param"),
+    ("buffer_size", "Size in bytes"),
+    # Unknown falls back to humanized name
+    ("unknown_param", "Unknown param"),
     ("xyz", "xyz"),
 ]
 
@@ -114,7 +114,7 @@ class TestGenerateParameterDescription(unittest.TestCase):
 
     def test_exact_match_beats_substring(self):
         self.assertEqual(generate_parameter_description("name"), "Name or path")
-        self.assertEqual(generate_parameter_description("filename"), "Name or path")
+        self.assertEqual(generate_parameter_description("filename"), "File path")
 
 
 def _make_arg(name, usage, c_type="int", type_enum=TYPE_BASIC, child=None):
