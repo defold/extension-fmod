@@ -6,13 +6,11 @@ function init(self)
     return
   end
 
-  self.master_bank = fmod.studio.system:load_bank_memory(resource.load("/example/build/Master.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
-  self.strings_bank = fmod.studio.system:load_bank_memory(resource.load("/example/build/Master.strings.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
+  self.master_bank = fmod.studio.system:load_bank_memory(resource.load("/example/banks/Master Bank.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
+  self.strings_bank = fmod.studio.system:load_bank_memory(resource.load("/example/banks/Master Bank.strings.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
+  self.vehicles_bank = fmod.studio.system:load_bank_memory(resource.load("/example/banks/Vehicles.bank"), fmod.STUDIO_LOAD_BANK_NORMAL)
 
-  -- You can alternatively use this path to load banks from your bundle_resources dir
-  print(sys.get_application_path())
-
-  local event_description = fmod.studio.system:get_event("event:/engine_loop")
+  local event_description = fmod.studio.system:get_event("event:/Vehicles/Basic Engine")
   local event = event_description:create_instance()
   self.event = event
 
@@ -122,6 +120,9 @@ function final(self)
   end
 
   -- Unload banks
+  if self.vehicles_bank then
+    self.vehicles_bank:unload()
+  end
   if self.strings_bank then
     self.strings_bank:unload()
   end

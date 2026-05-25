@@ -1,7 +1,7 @@
 [project]
 title = FMODexample
 version = 0.1
-custom_resources = example/banks/,example/build/
+custom_resources = example/banks/
 
 [bootstrap]
 main_collection = /example/main.collectionc
