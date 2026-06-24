@@ -2,41 +2,59 @@ name: "DefoldFMOD"
 platforms:
   osx:
     context:
-      libs: ["fmodbridge"]
+      flags: ["-fvisibility=hidden"]
+      dynamicLibs: ["fmod", "fmodstudio"]
+      linkFlags: ["-Wl,-rpath,@executable_path"]
 
   arm64-ios:
     context:
-      frameworks: ["AVFoundation"]
-
-  armv7-ios:
-    context:
-      frameworks: ["AVFoundation"]
+      frameworks: ["AVFoundation", "AudioToolbox"]
+      libs: ["fmod", "fmodstudio"]
 
   x86_64-ios:
     context:
-      frameworks: ["AVFoundation"]
+      frameworks: ["AVFoundation", "AudioToolbox"]
+      libs: ["fmod", "fmodstudio"]
 
   armv7-android:
     context:
-      libs: ["fmodbridge"]
+      dynamicLibs: ["fmod", "fmodstudio"]
 
   arm64-android:
     context:
-      libs: ["fmodbridge"]
+      dynamicLibs: ["fmod", "fmodstudio"]
 
   x86_64-win32:
     context:
+      dynamicLibs: ["fmod", "fmodstudio"]
       libs: ["shlwapi.lib"]
 
   x86-win32:
     context:
+      dynamicLibs: ["fmod", "fmodstudio"]
       libs: ["shlwapi.lib"]
 
-  web:
+  x86_64-linux:
     context:
-      libs: ["fmodbridge", "fmodstudio"]
+      flags: ["-fvisibility=hidden"]
+      dynamicLibs: ["fmod", "fmodstudio"]
+
+  arm64-linux:
+    context:
+      flags: ["-fvisibility=hidden"]
+      dynamicLibs: ["fmod", "fmodstudio"]
+
+  js-web:
+    context:
+      libs: ["fmod", "fmodstudio"]
+      emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]"]
+
+  wasm-web:
+    context:
+      libs: ["fmod", "fmodstudio"]
       emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]"]
 
   wasm_pthread-web:
     context:
+      libs: ["fmod", "fmodstudio"]
       emscriptenLinkFlags: ["EXPORTED_RUNTIME_METHODS=[\"ccall\",\"callMain\",\"UTF8ToString\",\"HEAPU8\",\"stringToUTF8\",\"cwrap\",\"getValue\",\"setValue\"]", "-pthread", "-s PTHREAD_POOL_SIZE=5"]

@@ -1,27 +1,23 @@
-.externalToolBuilders
+# OS
 .DS_Store
-.lock-wscript
-build
-*.pyc
-.project
-.cproject
-builtins
-.internal
-.vs
-Debug
-Release
-*.user
-*.userosscache
-*.sln.docstates
-*.suo
 
-/resources/x86_64-osx/Contents/MacOS/libfmod*.dylib
-/resources/x86_64-linux/libfmod*.so*
-/resources/x86-linux/libfmod*.so*
-/stub/lib/x86_64-win32/fmod*.lib
-/stub/lib/x86-win32/fmod*.lib
-/stub/res/x86_64-win32/fmod*.dll
-/stub/res/x86-win32/fmod*.dll
-/stub/lib/ios/libfmod*.a
-/stub/lib/js-web/libfmod*.a
+# Defold
+/build
+builtins/
+/.internal
+.lock-wscript
 /.editor_settings
+
+# Python
+*.pyc
+__pycache__/
+.ruff_cache/
+
+# Build artifacts
+bundle/
+
+# Signing keys
+debug.keystore
+debug.keystore.pass.txt
+manifest.private.der
+manifest.public.der
