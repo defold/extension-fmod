@@ -155,6 +155,11 @@ If you'd like to keep the engine running in the background but still pause the m
 ## Nintendo Switch support
 After [getting access to Defold for Nintendo Switch](https://defold.com/manuals/nintendo-switch/), follow [these instructions](https://forum.defold.com/t/fmod-extension-for-switch/65719).
 
+## Credits
+
+3D Assets used in examples by [Kenney](https://kenney.nl/assets/)
+Original FMOD extension and sounds by [Marius Petcu](https://github.com/dapetcu21/defold-fmod)
+
 ## Contributing
 
 See [CONTRIBUTE.md](./CONTRIBUTE.md) for details about how to contribute to this project.
