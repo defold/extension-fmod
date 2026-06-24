@@ -341,6 +341,19 @@ x.high                    -- Highest 32 bits as an unsigned int
 tostring(x)               -- Converts to a numeric string
 ```
 
+When an event finishes and reaches the end of its timeline, it releases itself automatically. For one-shot sounds, you typically don't need to manually release. For looping or long-running events you control manually, call `event:release()` when done.
+
+## Controlling volume and pitch
+
+Every event instance has built-in volume and pitch controls that don't require parameters:
+
+```lua
+event:set_volume(0.75)  -- Range: 0.0 to 1.0
+event:set_pitch(1.2)    -- 1.0 = normal, 0.5 = half speed, 2.0 = double speed
+```
+
+Volume changes are useful for distance attenuation or mixing. Pitch changes create tape-speed effects and can add variety to repeated sounds.
+
 ## Links
 
 * [FMOD API Documentation](https://www.fmod.com/resources/documentation-api?version=2.03.09&page=content/generated/studio_api.html)

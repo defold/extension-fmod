@@ -1,0 +1,224 @@
+script: "/example/controls.gui_script"
+fonts {
+  name: "default"
+  font: "/example/assets/fonts/text22.font"
+}
+nodes {
+  position {
+    x: 500.0
+    y: 200.0
+  }
+  size {
+    x: 280.0
+    y: 380.0
+  }
+  color {
+    x: 0.2
+    y: 0.2
+    z: 0.2
+  }
+  type: TYPE_BOX
+  id: "panel_background"
+  xanchor: XANCHOR_RIGHT
+  yanchor: YANCHOR_BOTTOM
+  pivot: PIVOT_SW
+  inherit_alpha: true
+  alpha: 0.9
+}
+nodes {
+  position {
+    x: 140.0
+    y: 350.0
+  }
+  size {
+    x: 260.0
+    y: 24.0
+  }
+  color {
+    x: 0.5
+    y: 0.8
+  }
+  type: TYPE_TEXT
+  text: "FMOD Event Controls"
+  font: "default"
+  id: "title"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 140.0
+    y: 300.0
+  }
+  size {
+    x: 240.0
+    y: 45.0
+  }
+  color {
+    x: 0.3
+    y: 0.8
+    z: 0.3
+  }
+  type: TYPE_BOX
+  id: "button_start_instant"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  size {
+    x: 220.0
+    y: 20.0
+  }
+  type: TYPE_TEXT
+  text: "Start"
+  font: "default"
+  id: "text_start_instant"
+  parent: "button_start_instant"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 140.0
+    y: 235.0
+  }
+  size {
+    x: 240.0
+    y: 45.0
+  }
+  color {
+    x: 0.8
+    y: 0.3
+    z: 0.3
+  }
+  type: TYPE_BOX
+  id: "button_stop_instant"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  size {
+    x: 220.0
+    y: 20.0
+  }
+  type: TYPE_TEXT
+  text: "Stop (Instant)"
+  font: "default"
+  id: "text_stop_instant"
+  parent: "button_stop_instant"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 140.0
+    y: 170.0
+  }
+  size {
+    x: 240.0
+    y: 45.0
+  }
+  color {
+    x: 0.8
+    y: 0.3
+    z: 0.3
+  }
+  type: TYPE_BOX
+  id: "button_stop_fade"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  size {
+    x: 220.0
+    y: 20.0
+  }
+  type: TYPE_TEXT
+  text: "Stop"
+  font: "default"
+  id: "text_stop_fade"
+  parent: "button_stop_fade"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 140.0
+    y: 105.0
+  }
+  size {
+    x: 240.0
+    y: 45.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.3
+  }
+  type: TYPE_BOX
+  id: "button_pause"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  size {
+    x: 220.0
+    y: 20.0
+  }
+  type: TYPE_TEXT
+  text: "Pause"
+  font: "default"
+  id: "text_pause"
+  parent: "button_pause"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 140.0
+    y: 70.0
+  }
+  size {
+    x: 240.0
+    y: 2.0
+  }
+  color {
+    x: 0.5
+    y: 0.5
+    z: 0.5
+  }
+  type: TYPE_BOX
+  id: "separator"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 140.0
+    y: 50.0
+  }
+  size {
+    x: 240.0
+    y: 16.0
+  }
+  type: TYPE_TEXT
+  text: "State: STOPPED"
+  font: "default"
+  id: "label_state"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 140.0
+    y: 25.0
+  }
+  size {
+    x: 240.0
+    y: 16.0
+  }
+  type: TYPE_TEXT
+  text: "Paused: No"
+  font: "default"
+  id: "label_paused"
+  parent: "panel_background"
+  inherit_alpha: true
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

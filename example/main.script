@@ -1,0 +1,116 @@
+-- Main example controller.
+--
+-- The FMOD examples are separate collections loaded through collection proxies.
+-- This lets each example have its own scene, scripts, GUI, and FMOD event
+-- instance while sharing one loader GUI.
+
+-- Proxy transition state. Collection proxies load asynchronously, so a small
+-- state machine keeps requests serialized.
+local STATE_IDLE = 0
+local STATE_UNLOADING = 1
+local STATE_LOADING = 2
+
+function init(self)
+	-- The proxy manager receives input first so it can give the loader GUI
+	-- priority, then let the active example receive the remaining input.
+	msg.post(".", "acquire_input_focus")
+
+	self.current_example = 1
+	self.target_example = nil
+	self.state = STATE_LOADING
+
+	-- Start with example 1. The proxy_loaded message will enable it and make it
+	-- the input listener.
+	msg.post("#example_1_proxy", "load")
+
+	msg.post("loader#loader_gui", "example_active", { example_id = 1 })
+end
+
+function on_input(self, action_id, action)
+	-- The loader is always visible, but active examples also use input. Because
+	-- collection proxy input can consume actions, clicks inside the loader area
+	-- are forwarded manually to loader.gui_script before input reaches examples.
+	if action_id == hash("touch") and action.x and action.y then
+		-- Loader GUI is at bottom-left (20, 20) with size (200, 160).
+		if action.x >= 20 and action.x <= 220 and action.y >= 20 and action.y <= 180 then
+			msg.post("loader#loader_gui", "loader_input", {
+				action_id = hash("touch"),
+				x = action.x,
+				y = action.y,
+				screen_x = action.screen_x or action.x,
+				screen_y = action.screen_y or action.y,
+				dx = action.dx or 0,
+				dy = action.dy or 0,
+				pressed = action.pressed,
+				released = action.released
+			})
+			return true
+		end
+	end
+
+	-- Returning false lets the current collection proxy receive this input.
+	return false
+end
+
+function on_message(self, message_id, message, sender)
+	-- Collection proxies send loaded/unloaded notifications. The loader GUI
+	-- sends load_example requests.
+	if message_id == hash("load_example") then
+		handle_load_request(self, message.example_id)
+
+	elseif message_id == hash("proxy_loaded") then
+		handle_proxy_loaded(self, sender)
+
+	elseif message_id == hash("proxy_unloaded") then
+		handle_proxy_unloaded(self, sender)
+	end
+end
+
+function handle_load_request(self, example_id)
+	-- Ignore attempts to load the active example.
+	if example_id == self.current_example and self.state == STATE_IDLE then
+		return
+	end
+
+	-- Only one proxy transition should run at a time.
+	if self.state ~= STATE_IDLE then
+		return
+	end
+
+	-- Unload the current collection before loading the next one. This keeps only
+	-- one example active and prevents overlapping FMOD event instances.
+	self.target_example = example_id
+	self.state = STATE_UNLOADING
+
+	local proxy_url = "#example_" .. self.current_example .. "_proxy"
+	msg.post(proxy_url, "disable")
+	msg.post(proxy_url, "unload")
+end
+
+function handle_proxy_loaded(self, sender)
+	-- Enabling initializes the collection contents.
+	msg.post(sender, "enable")
+
+	-- Route input not consumed by the loader to the newly loaded example.
+	msg.post(sender, "set_input_listener")
+
+	if self.target_example then
+		self.current_example = self.target_example
+		self.target_example = nil
+	end
+
+	self.state = STATE_IDLE
+
+	-- Let the loader update active button state.
+	msg.post("loader#loader_gui", "example_active", {
+		example_id = self.current_example
+	})
+end
+
+function handle_proxy_unloaded(self, sender)
+	-- Once the old example is gone, load the requested one.
+	self.state = STATE_LOADING
+
+	local proxy_url = "#example_" .. self.target_example .. "_proxy"
+	msg.post(proxy_url, "load")
+end

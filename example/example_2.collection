@@ -1,0 +1,25 @@
+name: "example_2"
+scale_along_z: 0
+embedded_instances {
+  id: "event_controller"
+  data: "components {\n"
+  "  id: \"script\"\n"
+  "  component: \"/example/example_2.script\"\n"
+  "}\n"
+  ""
+  position {
+    x: 640.0
+    y: 360.0
+  }
+}
+embedded_instances {
+  id: "controls"
+  data: "components {\n"
+  "  id: \"controls\"\n"
+  "  component: \"/example/controls.gui\"\n"
+  "}\n"
+  ""
+  position {
+    z: 1.0
+  }
+}

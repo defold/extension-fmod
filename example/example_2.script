@@ -1,0 +1,122 @@
+-- Example 2: FMOD event playback controls.
+--
+-- This example keeps the scene simple and focuses on the lifecycle of one FMOD
+-- event instance: start, stop immediately, stop with fadeout, pause/resume, and
+-- querying playback state for the GUI.
+local fmod_banks = require("example.fmod_banks")
+
+-- FMOD returns playback states as numeric constants. The names here are only
+-- for GUI/debug display.
+local STATE_NAMES = {
+	[0] = "PLAYING",
+	[1] = "SUSTAINING",
+	[2] = "STOPPED",
+	[3] = "STARTING",
+	[4] = "STOPPING"
+}
+
+-- The example banks currently include Vehicles.bank, so this controls example
+-- uses an engine event instead of a missing music bank.
+local EVENT_PATH = "event:/Vehicles/Car Engine"
+
+local function set_parameter_if_present(event, name, value)
+	-- Parameters are authored in FMOD Studio. pcall keeps the example readable
+	-- if a bank is changed and one of these demonstration parameters disappears.
+	local ok, err = pcall(function()
+		event:set_parameter_by_name(name, value, false)
+	end)
+
+	if not ok then
+		print("FMOD parameter '" .. name .. "' not available for controls event:", err)
+	end
+end
+
+local function configure_audible_defaults(self)
+	-- An event instance can have per-instance volume. This is separate from bus
+	-- volume and affects only this event.
+	self.event:set_volume(0.85)
+
+	-- This event is spatial, so even in the controls example we provide a
+	-- listener and a nearby source. Without 3D attributes a spatial event may be
+	-- inaudible or not pan as expected.
+	self.listener_attr = fmod._3D_ATTRIBUTES()
+	self.listener_attr.position = vmath.vector3()
+	self.listener_attr.velocity = vmath.vector3()
+	self.listener_attr.forward = vmath.vector3(0.0, 0.0, -1.0)
+	self.listener_attr.up = vmath.vector3(0.0, 1.0, 0.0)
+	fmod.studio.system:set_listener_attributes(0, self.listener_attr)
+
+	self.source_attr = fmod._3D_ATTRIBUTES()
+	self.source_attr.position = vmath.vector3(0.0, 0.0, -1.0)
+	self.source_attr.velocity = vmath.vector3()
+	self.source_attr.forward = vmath.vector3(0.0, 0.0, -1.0)
+	self.source_attr.up = vmath.vector3(0.0, 1.0, 0.0)
+	self.event:set_3d_attributes(self.source_attr)
+
+	-- Set parameters to audible values before the user presses Start.
+	set_parameter_if_present(self.event, "RPM", 1200.0)
+	set_parameter_if_present(self.event, "Load", 0.75)
+end
+
+function init(self)
+	if not fmod then
+		print("Sorry! Your platform is not yet supported.")
+		return
+	end
+
+	-- Master + strings let us resolve EVENT_PATH; Vehicles contains the actual
+	-- event data and audio assets.
+	fmod_banks.load({ "master", "strings", "vehicles" })
+
+	-- get_event returns the event description. create_instance creates the
+	-- controllable runtime instance used by the GUI below.
+	local event_description = fmod.studio.system:get_event(EVENT_PATH)
+	self.event = event_description:create_instance()
+	configure_audible_defaults(self)
+	print("FMOD event controls ready: " .. EVENT_PATH .. " (" .. STATE_NAMES[self.event:get_playback_state()] .. ")")
+end
+
+function on_message(self, message_id, message, sender)
+	if not fmod or not self.event then
+		return
+	end
+
+	if message_id == hash("fmod_control") then
+		-- The GUI sends small command messages instead of calling FMOD directly.
+		-- That keeps FMOD ownership in this script and keeps the GUI reusable.
+		if message.action == "start_instant" then
+			self.event:set_paused(false)
+			self.event:start()
+		elseif message.action == "stop_instant" then
+			-- Immediate stop cuts the event now.
+			self.event:stop(fmod.STUDIO_STOP_IMMEDIATE)
+		elseif message.action == "stop_fade" then
+			-- Allow fadeout uses the fade-out behavior authored in FMOD Studio.
+			self.event:stop(fmod.STUDIO_STOP_ALLOWFADEOUT)
+		elseif message.action == "toggle_pause" then
+			-- Pause preserves playback position; Start/Stop controls the event
+			-- lifecycle itself.
+			self.event:set_paused(not self.event:get_paused())
+		end
+	elseif message_id == hash("fmod_query_state") then
+		-- The GUI polls this so it can enable/disable buttons based on the real
+		-- FMOD playback state instead of guessing.
+		msg.post(sender, "fmod_state_update", {
+			playback_state = self.event:get_playback_state(),
+			is_paused = self.event:get_paused()
+		})
+	end
+end
+
+function final(self)
+	if not fmod then
+		return
+	end
+
+	-- Stop and release the event instance when this collection is unloaded.
+	-- Banks remain loaded through fmod_banks.lua for reuse by other examples.
+	if self.event then
+		self.event:stop(fmod.STUDIO_STOP_IMMEDIATE)
+		self.event:release()
+	end
+end
