@@ -2,6 +2,8 @@
 title = FMODexample
 version = 0.1
 custom_resources = example/banks/
+dependencies#0 = https://github.com/Insality/druid/archive/refs/tags/1.1.6.zip
+dependencies#1 = https://github.com/Insality/defold-event/archive/refs/tags/14.zip
 
 [bootstrap]
 main_collection = /example/main.collectionc
@@ -14,6 +16,11 @@ use_accelerometer = 0
 width = 1280
 height = 720
 high_dpi = 1
+
+[render]
+clear_color_red = 0.160156
+clear_color_green = 0.164063
+clear_color_blue = 0.183594
 
 [physics]
 scale = 0.02
@@ -30,4 +37,3 @@ speaker_mode = 5.1
 
 [html5]
 heap_size = 512
-

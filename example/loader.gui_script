@@ -1,4 +1,11 @@
--- Button color definitions
+-- GUI for switching between the FMOD examples.
+--
+-- The buttons are Druid buttons. They do not load collections directly; instead
+-- they ask main.script's proxy manager to switch collection proxies.
+local druid = require("druid.druid")
+
+-- Visual button states. Druid controls click handling, and this script controls
+-- colors based on active/disabled state.
 local COLORS = {
 	button_normal = vmath.vector4(0.3, 0.6, 0.8, 1.0),
 	button_active = vmath.vector4(0.5, 0.8, 1.0, 1.0),
@@ -7,68 +14,89 @@ local COLORS = {
 }
 
 function init(self)
-	-- Note: We don't acquire input focus. Input is handled by proxy_manager
-	-- which forwards clicks to us via messages
+	-- One Druid instance owns all buttons in this GUI scene.
+	self.druid = druid.new(self)
 
-	-- Get node references
+	-- Cache GUI nodes used for active-state coloring.
 	self.button_example_1 = gui.get_node("button_example_1")
 	self.button_example_2 = gui.get_node("button_example_2")
+	self.button_example_3 = gui.get_node("button_example_3")
 	self.panel_background = gui.get_node("panel_background")
 
-	-- State tracking
-	self.active_example = 1  -- Start with Example 1
+	-- main.script starts by loading example 1, so the loader starts in the same
+	-- active state. transitioning prevents multiple overlapping proxy requests.
+	self.active_example = 1
 	self.pressed_button = nil
 	self.transitioning = false
 
-	-- Initial visual state
+	-- Each button posts a load request through handle_button_press. Animations
+	-- are disabled so the custom active/disabled colors stay predictable.
+	self.druid_button_example_1 = self.druid:new_button("button_example_1", function()
+		handle_button_press(self, 1, self.button_example_1)
+	end):set_animations_disabled()
+	self.druid_button_example_2 = self.druid:new_button("button_example_2", function()
+		handle_button_press(self, 2, self.button_example_2)
+	end):set_animations_disabled()
+	self.druid_button_example_3 = self.druid:new_button("button_example_3", function()
+		handle_button_press(self, 3, self.button_example_3)
+	end):set_animations_disabled()
+
 	update_button_visuals(self)
 end
 
+function update(self, dt)
+	-- Required for Druid's internal component updates.
+	self.druid:update(dt)
+end
+
 function on_message(self, message_id, message, sender)
+	-- Forward messages so Druid can process layout/window events.
+	self.druid:on_message(message_id, message, sender)
+
 	if message_id == hash("example_active") then
+		-- main.script sends this when the requested collection proxy is loaded
+		-- and enabled. Only then do we re-enable loader buttons.
 		self.active_example = message.example_id
 		self.transitioning = false
 		update_button_visuals(self)
 
-	elseif message_id == hash("loader_click") then
-		-- Handle click forwarded from main.script
-		local action = { x = message.x, y = message.y, pressed = true }
-		handle_loader_click(self, action)
+	elseif message_id == hash("loader_input") then
+		-- main.script owns global input focus and forwards clicks in the loader
+		-- area here. This lets the loader work while example proxies also use
+		-- input.
+		self.druid:on_input(message.action_id or hash("touch"), message)
 	end
 end
 
--- Helper Functions
+function on_input(self, action_id, action)
+	-- Druid can also receive input directly if this GUI has input focus.
+	return self.druid:on_input(action_id, action)
+end
 
-function handle_loader_click(self, action)
-	if self.transitioning then
-		return
-	end
-
-	-- Check which button was clicked
-	if gui.pick_node(self.button_example_1, action.x, action.y) then
-		handle_button_press(self, 1, self.button_example_1)
-	elseif gui.pick_node(self.button_example_2, action.x, action.y) then
-		handle_button_press(self, 2, self.button_example_2)
-	end
+function final(self)
+	-- Release Druid components and any input focus they acquired.
+	self.druid:final()
 end
 
 function handle_button_press(self, example_id, button_node)
-	-- Don't reload current example
+	-- Do not reload the active collection.
 	if example_id == self.active_example then
 		return
 	end
 
-	-- Visual feedback
+	-- Give immediate feedback, then wait for main.script to finish the proxy
+	-- unload/load sequence.
 	gui.set_color(button_node, COLORS.button_pressed)
 	self.pressed_button = button_node
 
-	-- Request example load
 	self.transitioning = true
 	msg.post("proxy_manager", "load_example", { example_id = example_id })
 end
 
 function update_button_visuals(self)
-	-- Update button 1
+	-- The active example button is highlighted and disabled. Inactive buttons
+	-- stay clickable unless a proxy transition is currently running.
+	self.druid_button_example_1:set_enabled(not self.transitioning and self.active_example ~= 1)
 	if self.active_example == 1 then
 		gui.set_color(self.button_example_1, COLORS.button_active)
 	else
@@ -76,15 +104,23 @@ function update_button_visuals(self)
 	end
 
 	-- Update button 2
+	self.druid_button_example_2:set_enabled(not self.transitioning and self.active_example ~= 2)
 	if self.active_example == 2 then
 		gui.set_color(self.button_example_2, COLORS.button_active)
 	else
 		gui.set_color(self.button_example_2, COLORS.button_normal)
 	end
 
-	-- Disable all buttons during transition
+	self.druid_button_example_3:set_enabled(not self.transitioning and self.active_example ~= 3)
+	if self.active_example == 3 then
+		gui.set_color(self.button_example_3, COLORS.button_active)
+	else
+		gui.set_color(self.button_example_3, COLORS.button_normal)
+	end
+
 	if self.transitioning then
 		gui.set_color(self.button_example_1, COLORS.button_disabled)
 		gui.set_color(self.button_example_2, COLORS.button_disabled)
+		gui.set_color(self.button_example_3, COLORS.button_disabled)
 	end
 end

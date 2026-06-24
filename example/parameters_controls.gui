@@ -1,15 +1,15 @@
 script: "/example/parameters_controls.gui_script"
 fonts {
   name: "default"
-  font: "/example/default.font"
+  font: "/example/assets/fonts/text22.font"
 }
 nodes {
   position {
-    x: 320.0
-    y: 300.0
+    x: 750.0
+    y: 430.0
   }
   size {
-    x: 400.0
+    x: 490.0
     y: 250.0
   }
   color {
@@ -27,7 +27,7 @@ nodes {
 }
 nodes {
   position {
-    x: 200.0
+    x: 245.0
     y: 220.0
   }
   size {
@@ -48,11 +48,11 @@ nodes {
 }
 nodes {
   position {
-    x: 60.0
+    x: 10.0
     y: 160.0
   }
   size {
-    x: 80.0
+    x: 60.0
     y: 20.0
   }
   color {
@@ -64,12 +64,13 @@ nodes {
   text: "RPM:"
   font: "default"
   id: "label_rpm"
+  pivot: PIVOT_W
   parent: "panel_background"
   inherit_alpha: true
 }
 nodes {
   position {
-    x: 230.0
+    x: 250.0
     y: 160.0
   }
   size {
@@ -88,7 +89,7 @@ nodes {
 }
 nodes {
   position {
-    x: 230.0
+    x: 250.0
     y: 160.0
   }
   size {
@@ -107,7 +108,7 @@ nodes {
 }
 nodes {
   position {
-    x: 360.0
+    x: 450.0
     y: 160.0
   }
   size {
@@ -128,11 +129,11 @@ nodes {
 }
 nodes {
   position {
-    x: 60.0
+    x: 10.0
     y: 100.0
   }
   size {
-    x: 80.0
+    x: 60.0
     y: 20.0
   }
   color {
@@ -144,12 +145,13 @@ nodes {
   text: "Volume:"
   font: "default"
   id: "label_volume"
+  pivot: PIVOT_W
   parent: "panel_background"
   inherit_alpha: true
 }
 nodes {
   position {
-    x: 230.0
+    x: 250.0
     y: 100.0
   }
   size {
@@ -168,7 +170,7 @@ nodes {
 }
 nodes {
   position {
-    x: 230.0
+    x: 250.0
     y: 100.0
   }
   size {
@@ -187,7 +189,7 @@ nodes {
 }
 nodes {
   position {
-    x: 360.0
+    x: 450.0
     y: 100.0
   }
   size {
@@ -208,11 +210,11 @@ nodes {
 }
 nodes {
   position {
-    x: 60.0
+    x: 10.0
     y: 40.0
   }
   size {
-    x: 80.0
+    x: 60.0
     y: 20.0
   }
   color {
@@ -224,12 +226,13 @@ nodes {
   text: "Pitch:"
   font: "default"
   id: "label_pitch"
+  pivot: PIVOT_W
   parent: "panel_background"
   inherit_alpha: true
 }
 nodes {
   position {
-    x: 230.0
+    x: 250.0
     y: 40.0
   }
   size {
@@ -248,7 +251,7 @@ nodes {
 }
 nodes {
   position {
-    x: 230.0
+    x: 250.0
     y: 40.0
   }
   size {
@@ -267,7 +270,7 @@ nodes {
 }
 nodes {
   position {
-    x: 360.0
+    x: 450.0
     y: 40.0
   }
   size {

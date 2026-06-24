@@ -1,15 +1,27 @@
--- Color definitions
+-- GUI for Example 3.
+--
+-- This script demonstrates Druid sliders driving an FMOD event through messages.
+-- It converts normalized slider values into useful ranges, updates labels, and
+-- posts values to example_3.script, where the FMOD API is called.
+local druid = require("druid.druid")
+
+-- The slider colors are defined here for easy visual tuning. Druid handles the
+-- actual drag behavior.
 local COLORS = {
 	thumb_normal = vmath.vector4(0.5, 0.7, 0.9, 1.0),
 	thumb_active = vmath.vector4(0.6, 0.8, 1.0, 1.0)
 }
 
 function init(self)
-	msg.post(".", "acquire_input_focus")
+	-- Druid manages input hit testing and dragging for the sliders.
+	self.druid = druid.new(self)
 
-	-- Define all sliders with their properties
+	-- Each entry describes one GUI slider and the message it sends. The same
+	-- setup code can then create RPM, Volume, and Pitch controls.
 	self.sliders = {
 		{
+			-- RPM is an FMOD parameter. The audio script also uses it to move the
+			-- road, so the visual speed and engine sound stay connected.
 			name = "RPM",
 			thumb = gui.get_node("thumb_rpm"),
 			track = gui.get_node("track_rpm"),
@@ -18,9 +30,11 @@ function init(self)
 			max = 2000,
 			current_value = 650,
 			message_type = "set_parameter",
-			format = "%.0f"
+			format = "%.0f",
+			step = 1
 		},
 		{
+			-- Volume is sent to event:set_volume on the active FMOD event instance.
 			name = "Volume",
 			thumb = gui.get_node("thumb_volume"),
 			track = gui.get_node("track_volume"),
@@ -29,9 +43,12 @@ function init(self)
 			max = 1.0,
 			current_value = 0.75,
 			message_type = "set_volume",
-			format = "%.2f"
+			format = "%.2f",
+			step = 0.01
 		},
 		{
+			-- Pitch is sent to event:set_pitch and also changes the car scale as
+			-- visible feedback.
 			name = "Pitch",
 			thumb = gui.get_node("thumb_pitch"),
 			track = gui.get_node("track_pitch"),
@@ -40,100 +57,92 @@ function init(self)
 			max = 2.0,
 			current_value = 1.0,
 			message_type = "set_pitch",
-			format = "%.1fx"
+			format = "%.1fx",
+			step = 0.1
 		}
 	}
 
-	self.dragging_slider = nil
+	-- Turn every slider description into a Druid slider component.
+	for i, slider in ipairs(self.sliders) do
+		setup_druid_slider(self, slider)
+	end
 
-	-- Initialize all slider positions
+	-- Put thumbs and labels at their initial values before the first input.
 	update_all_sliders(self)
 end
 
-function on_input(self, action_id, action)
-	if action_id == hash("click") then
-		if action.pressed then
-			-- Check if any slider thumb was clicked
-			for i, slider in ipairs(self.sliders) do
-				if gui.pick_node(slider.thumb, action.x, action.y) then
-					self.dragging_slider = slider
-					gui.set_color(slider.thumb, COLORS.thumb_active)
-					return true
-				end
-			end
-		end
-
-		if action.released and self.dragging_slider then
-			-- Release slider
-			gui.set_color(self.dragging_slider.thumb, COLORS.thumb_normal)
-			self.dragging_slider = nil
-			return true
-		end
-	end
-
-	-- Handle dragging (runs on every mouse move)
-	if self.dragging_slider and action.x then
-		update_slider_from_mouse(self, self.dragging_slider, action.x)
-		return true
-	end
-
-	return false
+function update(self, dt)
+	-- Required for Druid component timing.
+	self.druid:update(dt)
 end
 
--- Helper Functions
+function on_message(self, message_id, message, sender)
+	-- Lets Druid react to GUI layout/window messages if needed.
+	self.druid:on_message(message_id, message, sender)
+end
 
-function update_slider_from_mouse(self, slider, mouse_x)
-	-- Get track bounds
+function on_input(self, action_id, action)
+	-- Forward Defold input to Druid. The project input binding maps the left
+	-- mouse button to "touch", which is what Druid's slider component expects.
+	return self.druid:on_input(action_id, action)
+end
+
+function final(self)
+	-- Release Druid components and input focus.
+	self.druid:final()
+end
+
+function setup_druid_slider(self, slider)
+	-- Druid sliders move a thumb between its starting position and an end
+	-- position. We derive those positions from the GUI track node so mouse
+	-- movement maps to the track width, not to the full window size.
 	local track_pos = gui.get_position(slider.track)
 	local track_size = gui.get_size(slider.track)
 	local track_left = track_pos.x - track_size.x / 2
 	local track_right = track_pos.x + track_size.x / 2
-
-	-- Clamp mouse position to track bounds
-	local clamped_x = math.max(track_left, math.min(track_right, mouse_x))
-
-	-- Convert to normalized value (0-1)
-	local normalized = (clamped_x - track_left) / (track_right - track_left)
-
-	-- Map to parameter range
-	local param_value = slider.min + normalized * (slider.max - slider.min)
-
-	-- Update slider state
-	slider.current_value = param_value
-
-	-- Update visual position
 	local thumb_pos = gui.get_position(slider.thumb)
-	gui.set_position(slider.thumb, vmath.vector3(clamped_x, thumb_pos.y, thumb_pos.z))
+	local start_pos = vmath.vector3(track_left, thumb_pos.y, thumb_pos.z)
+	local end_pos = vmath.vector3(track_right, thumb_pos.y, thumb_pos.z)
 
-	-- Update value display
+	gui.set_position(slider.thumb, start_pos)
+
+	slider.druid_slider = self.druid:new_slider(slider.thumb, end_pos, function(_, normalized)
+		update_slider_from_value(self, slider, normalized)
+	end)
+	-- Allow clicking anywhere on the track, not only the thumb. Druid does the
+	-- correct screen-to-local conversion internally.
+	slider.druid_slider:set_input_node(slider.track)
+end
+
+function update_slider_from_value(self, slider, normalized)
+	-- Druid gives values as 0..1. Convert that to the FMOD/user-facing range and
+	-- snap to the requested step size.
+	local raw_value = slider.min + normalized * (slider.max - slider.min)
+	local param_value = math.floor(raw_value / slider.step + 0.5) * slider.step
+	param_value = math.max(slider.min, math.min(slider.max, param_value))
+	slider.current_value = param_value
 	gui.set_text(slider.value_label, string.format(slider.format, param_value))
 
-	-- Send message to example_2.script
 	if slider.message_type == "set_parameter" then
-		msg.post("example_2:/audio_controller", slider.message_type, {
+		-- Named FMOD parameters need both the parameter name and value.
+		msg.post("example_3:/audio_controller", slider.message_type, {
 			name = slider.name,
 			value = param_value
 		})
 	else
-		msg.post("example_2:/audio_controller", slider.message_type, {
+		-- Volume and pitch are direct event-instance setters in example_3.script.
+		msg.post("example_3:/audio_controller", slider.message_type, {
 			value = param_value
 		})
 	end
 end
 
 function update_all_sliders(self)
-	-- Set initial thumb positions and value labels
+	-- Set initial thumb positions silently so setup does not send messages
+	-- before example_3.script has finished initializing its FMOD event.
 	for i, slider in ipairs(self.sliders) do
 		local normalized = (slider.current_value - slider.min) / (slider.max - slider.min)
-		local track_pos = gui.get_position(slider.track)
-		local track_size = gui.get_size(slider.track)
-		local track_left = track_pos.x - track_size.x / 2
-		local track_width = track_size.x
-
-		local thumb_x = track_left + normalized * track_width
-		local thumb_pos = gui.get_position(slider.thumb)
-		gui.set_position(slider.thumb, vmath.vector3(thumb_x, thumb_pos.y, thumb_pos.z))
-
+		slider.druid_slider:set(normalized, true)
 		gui.set_text(slider.value_label, string.format(slider.format, slider.current_value))
 	end
 end

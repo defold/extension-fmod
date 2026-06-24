@@ -1,4 +1,13 @@
--- State name mapping for display
+-- GUI for Example 2.
+--
+-- The GUI does not call FMOD directly. It uses Druid for button input and sends
+-- command messages to example_2.script, which owns the FMOD event instance.
+-- Keeping FMOD calls in one script avoids splitting event lifecycle state
+-- between GUI code and game-object code.
+local druid = require("druid.druid")
+
+-- FMOD playback states are returned as numbers. The GUI maps them to readable
+-- strings for display.
 local STATE_NAMES = {
 	[0] = "PLAYING",
 	[1] = "SUSTAINING",
@@ -7,7 +16,8 @@ local STATE_NAMES = {
 	[4] = "STOPPING"
 }
 
--- Button color definitions
+-- Simple visual states for the controls. Druid handles the input; these colors
+-- are only presentation.
 local COLORS = {
 	start_normal = vmath.vector4(0.3, 0.8, 0.3, 1.0),
 	start_pressed = vmath.vector4(0.4, 1.0, 0.4, 1.0),
@@ -19,9 +29,10 @@ local COLORS = {
 }
 
 function init(self)
-	msg.post(".", "acquire_input_focus")
+	-- A Druid instance owns all GUI components created in this gui_script.
+	self.druid = druid.new(self)
 
-	-- Get all button nodes
+	-- Cache nodes used by the state display and button visual updates.
 	self.button_start_instant = gui.get_node("button_start_instant")
 	self.button_stop_instant = gui.get_node("button_stop_instant")
 	self.button_stop_fade = gui.get_node("button_stop_fade")
@@ -33,33 +44,54 @@ function init(self)
 	self.label_paused = gui.get_node("label_paused")
 	self.panel_background = gui.get_node("panel_background")
 
-	-- State tracking
-	self.current_state = 2  -- Start as STOPPED
+	-- Start with a conservative UI state. The real state is polled from FMOD
+	-- below and then sent back by example_2.script.
+	self.current_state = 2  -- STOPPED
 	self.is_paused = false
 
-	-- Polling timer (50ms = 20 Hz)
+	-- Polling keeps the GUI in sync with FMOD state changes. This is useful
+	-- because an event can move through STARTING/STOPPING asynchronously.
 	self.poll_timer = 0
 	self.poll_interval = 0.05
 
-	-- Track pressed button for visual feedback
+	-- Druid buttons consume mouse/touch input and call these callbacks on click.
+	-- set_animations_disabled keeps the example's custom color states visible.
 	self.pressed_button = nil
+	self.druid_button_start = self.druid:new_button("button_start_instant", function()
+		send_control("start_instant")
+	end):set_animations_disabled()
+	self.druid_button_stop_instant = self.druid:new_button("button_stop_instant", function()
+		send_control("stop_instant")
+	end):set_animations_disabled()
+	self.druid_button_stop_fade = self.druid:new_button("button_stop_fade", function()
+		send_control("stop_fade")
+	end):set_animations_disabled()
+	self.druid_button_pause = self.druid:new_button("button_pause", function()
+		send_control("toggle_pause")
+	end):set_animations_disabled()
 
-	-- Initial state display
 	update_state_display(self)
 	update_button_states(self)
 end
 
 function update(self, dt)
-	-- Poll for state updates every 50ms
+	-- Druid components need update() for internal timing and input state.
+	self.druid:update(dt)
+
 	self.poll_timer = self.poll_timer + dt
 	if self.poll_timer >= self.poll_interval then
 		self.poll_timer = 0
-		msg.post("example_1:/listener", "fmod_query_state", {})
+		msg.post("example_2:/event_controller", "fmod_query_state", {})
 	end
 end
 
 function on_message(self, message_id, message, sender)
+	-- Forward messages first so Druid widgets can react to layout/window events.
+	self.druid:on_message(message_id, message, sender)
+
 	if message_id == hash("fmod_state_update") then
+		-- example_2.script sends the authoritative FMOD state. The GUI uses it
+		-- to decide which controls should be enabled.
 		self.current_state = message.playback_state
 		self.is_paused = message.is_paused
 		update_state_display(self)
@@ -68,60 +100,17 @@ function on_message(self, message_id, message, sender)
 end
 
 function on_input(self, action_id, action)
-	if action_id == hash("click") then
-		-- Check if click is on the panel at all (to consume input)
-		local panel_hit = gui.pick_node(self.panel_background, action.x, action.y)
-
-		if panel_hit then
-			if action.pressed then
-				-- Check each button
-				if gui.pick_node(self.button_start_instant, action.x, action.y) then
-					gui.set_color(self.button_start_instant, COLORS.start_pressed)
-					self.pressed_button = self.button_start_instant
-					send_control("start_instant")
-				elseif gui.pick_node(self.button_stop_instant, action.x, action.y) then
-					gui.set_color(self.button_stop_instant, COLORS.stop_pressed)
-					self.pressed_button = self.button_stop_instant
-					send_control("stop_instant")
-				elseif gui.pick_node(self.button_stop_fade, action.x, action.y) then
-					gui.set_color(self.button_stop_fade, COLORS.stop_pressed)
-					self.pressed_button = self.button_stop_fade
-					send_control("stop_fade")
-				elseif gui.pick_node(self.button_pause, action.x, action.y) then
-					gui.set_color(self.button_pause, COLORS.pause_pressed)
-					self.pressed_button = self.button_pause
-					send_control("toggle_pause")
-				end
-			end
-
-			if action.released and self.pressed_button then
-				-- Reset button color on release
-				update_button_states(self)
-				self.pressed_button = nil
-			end
-
-			-- Consume ALL click events (pressed, released, repeated) on the panel
-			-- print("GUI: Consuming click - NOT forwarding to game")
-			return true
-		else
-			-- Click/drag is outside panel - forward to game script for source movement
-			msg.post("example_1:/listener", "click_outside_ui", {
-				x = action.x,
-				y = action.y,
-				pressed = action.pressed,
-				released = action.released
-			})
-			-- Still consume the click to prevent game script from also handling it
-			return true
-		end
-	end
-
-	return false
+	-- Druid expects input to be forwarded from gui_script on_input.
+	return self.druid:on_input(action_id, action)
 end
 
--- Helper Functions
+function final(self)
+	-- Release Druid components and input focus owned by the instance.
+	self.druid:final()
+end
 
 function update_state_display(self)
+	-- Text nodes are plain display; the values come from FMOD state polling.
 	local state_text = "State: " .. (STATE_NAMES[self.current_state] or "UNKNOWN")
 	local paused_text = "Paused: " .. (self.is_paused and "Yes" or "No")
 
@@ -130,19 +119,21 @@ function update_state_display(self)
 end
 
 function update_button_states(self)
-	-- Determine which buttons should be enabled
+	-- Buttons are enabled according to the FMOD lifecycle. For example, pausing
+	-- only makes sense while the event is actually playing or sustaining.
 	local can_start = (self.current_state == 2 or self.current_state == 4)  -- STOPPED or STOPPING
 	local can_stop = (self.current_state == 0 or self.current_state == 1 or self.current_state == 3)  -- PLAYING, SUSTAINING, or STARTING
 	local can_pause = (self.current_state == 0 or self.current_state == 1)  -- PLAYING or SUSTAINING
 
-	-- Update start button
+	self.druid_button_start:set_enabled(can_start)
 	if can_start then
 		gui.set_color(self.button_start_instant, COLORS.start_normal)
 	else
 		gui.set_color(self.button_start_instant, COLORS.disabled)
 	end
 
-	-- Update stop buttons
+	self.druid_button_stop_instant:set_enabled(can_stop)
+	self.druid_button_stop_fade:set_enabled(can_stop)
 	if can_stop then
 		gui.set_color(self.button_stop_instant, COLORS.stop_normal)
 		gui.set_color(self.button_stop_fade, COLORS.stop_normal)
@@ -151,10 +142,9 @@ function update_button_states(self)
 		gui.set_color(self.button_stop_fade, COLORS.disabled)
 	end
 
-	-- Update pause button and label
+	self.druid_button_pause:set_enabled(can_pause)
 	if can_pause then
 		gui.set_color(self.button_pause, COLORS.pause_normal)
-		-- Dynamic label: "Pause" when playing, "Resume" when paused
 		if self.is_paused then
 			gui.set_text(self.text_pause, "Resume")
 		else
@@ -167,5 +157,7 @@ function update_button_states(self)
 end
 
 function send_control(action)
-	msg.post("example_1:/listener", "fmod_control", { action = action })
+	-- Send a small command to the FMOD-owning script. The action strings are the
+	-- message protocol between this GUI and example_2.script.
+	msg.post("example_2:/event_controller", "fmod_control", { action = action })
 end

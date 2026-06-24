@@ -1,0 +1,113 @@
+-- Example 3: FMOD parameters connected to a 3D scene.
+--
+-- The GUI sliders send messages to this script. RPM drives both the FMOD engine
+-- parameter and the visible road speed, Pitch changes FMOD playback pitch and
+-- the car scale, and Volume changes the event instance volume.
+local fmod_banks = require("example.fmod_banks")
+
+-- The road is made from repeated track models under the /track game object.
+-- Moving the parent forward creates the illusion that the car is driving.
+local TRACK_PART_COUNT = 6
+local TRACK_PART_SIZE = 4.0
+local RPM_MIN = 0.0
+local RPM_MAX = 2000.0
+local TRACK_MAX_SPEED = 11.2
+local PITCH_MIN = 0.5
+local PITCH_MAX = 2.0
+
+local function clamp(value, min_value, max_value)
+	-- Keep incoming GUI values in the same ranges used by the sliders and FMOD.
+	return math.max(min_value, math.min(max_value, value))
+end
+
+local function normalize(value, min_value, max_value)
+	-- Convert a value range to 0..1 for visual mapping.
+	return (clamp(value, min_value, max_value) - min_value) / (max_value - min_value)
+end
+
+local function update_car_scale(pitch)
+	-- Pitch is audible through FMOD. Scaling the car is just visual feedback so
+	-- users can see that the pitch slider is affecting the example.
+	local t = normalize(pitch, PITCH_MIN, PITCH_MAX)
+	local scale = 1.25 - t * 0.6
+	go.set_scale(vmath.vector3(scale, scale, scale), "/car")
+end
+
+function init(self)
+	-- Use the camera component in this collection for the 3D view.
+	msg.post("@render:", "use_camera_projection")
+
+	if not fmod then
+		print("Sorry! Your platform is not yet supported.")
+		return
+	end
+
+	-- Road scrolling state. RPM 0 maps to speed 0, so the track stops fully.
+	self.current_z = 0
+	self.loop_at_z = TRACK_PART_SIZE * (TRACK_PART_COUNT - 2)
+	self.rpm = 650
+	self.speed = 0
+
+	-- Master + strings resolve event paths; Vehicles contains the engine event.
+	fmod_banks.load({ "master", "strings", "vehicles" })
+
+	-- Create one event instance and keep it alive while the collection is active.
+	-- Sliders update this same instance instead of recreating events.
+	local event_description = fmod.studio.system:get_event("event:/Vehicles/Basic Engine")
+	self.event = event_description:create_instance()
+	self.event:set_parameter_by_name("RPM", self.rpm, false)
+	self.event:set_volume(0.75)
+	self.event:set_pitch(1.0)
+	self.event:start()
+
+	update_car_scale(1.0)
+end
+
+function update(self, dt)
+	-- The visual track speed is derived from the same RPM value sent to FMOD.
+	-- This keeps sound and motion connected: RPM 0 means no road movement.
+	local rpm_t = normalize(self.rpm, RPM_MIN, RPM_MAX)
+	self.speed = rpm_t * TRACK_MAX_SPEED
+	self.current_z = self.current_z + self.speed * dt
+	if self.current_z > self.loop_at_z then
+		self.current_z = self.current_z - self.loop_at_z
+	end
+	go.set("/track", "position.z", self.current_z)
+end
+
+function on_message(self, message_id, message, sender)
+	if not fmod or not self.event then
+		return
+	end
+
+	if message_id == hash("set_parameter") then
+		-- Generic parameter message from the GUI. This example currently sends
+		-- RPM, but the message format also works for other named FMOD parameters.
+		self.rpm = clamp(message.value, RPM_MIN, RPM_MAX)
+		local ok, err = pcall(function()
+			self.event:set_parameter_by_name(message.name, self.rpm, false)
+		end)
+		if not ok then
+			print("Parameter '" .. message.name .. "' not found:", err)
+		end
+	elseif message_id == hash("set_volume") then
+		-- Event instance volume affects only this engine sound.
+		self.event:set_volume(message.value)
+	elseif message_id == hash("set_pitch") then
+		-- Event instance pitch changes playback speed/pitch for this instance.
+		self.event:set_pitch(message.value)
+		update_car_scale(message.value)
+	end
+end
+
+function final(self)
+	if not fmod then
+		return
+	end
+
+	-- Release only the event instance; banks are shared by fmod_banks.lua.
+	if self.event then
+		self.event:stop(fmod.STUDIO_STOP_IMMEDIATE)
+		self.event:release()
+	end
+end
