@@ -1,0 +1,2 @@
+# The FMOD native libraries load vendor Java classes and methods by name through JNI.
+-keep,allowoptimization class org.fmod.** { *; }
