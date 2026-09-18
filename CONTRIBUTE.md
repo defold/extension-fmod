@@ -11,6 +11,7 @@ Please stick to the indentation style used throughout the project (K&R-like).
 | `gcc` | All | C preprocessor for parsing FMOD headers |
 | `codesign` | macOS only | Signs extracted `.dylib` and `.a` |
 | `hdiutil` | macOS only | Mounts `.dmg` archives for macOS/iOS libraries |
+| `lipo` | macOS only | Splits the fat iOS simulator `.a` into per-architecture slices |
 | `7z` or `unar` | All | Extracts Windows `.exe` installers (auto-detected) |
 | `ar` | All | Combines split WASM `.a` archives for HTML5 |
 | `patchelf` | Linux only | Workaround: strips versioned SONAME from `.so` files (e.g. `libfmod.so.14` → `libfmod.so`) so Defold's `dynamicLibs` can resolve them |
@@ -80,6 +81,13 @@ python cicd/build.py update ~/Downloads/fmod20309/
 
 The script discovers archives by filename pattern. Platforms
 without a matching archive are skipped.
+
+The iOS distribution ships a single fat (arm64 + x86_64) simulator archive. The
+script splits it with `lipo`: the x86_64 slice goes to `fmod/lib/x86_64-ios/`
+(Defold 1.13.1 and older) and the arm64 slice to `fmod/lib/arm64_sim-ios/`
+(Defold 1.13.2+, where `x86_64-ios` was removed). Once the extension requires
+Defold 1.13.2 or newer, `x86_64-ios` can be dropped from `cicd/update.py`,
+`fmod/ext.manifest` and `fmod/lib/`.
 
 On non-macOS systems (where `hdiutil` is unavailable), skip Apple platforms
 with `--ignore-apple`:

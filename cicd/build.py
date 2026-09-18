@@ -180,6 +180,11 @@ DEPENDENCIES = {
             "platform": "darwin",
         },
         "hdiutil": {"cmd": "hdiutil", "hint": "macOS only", "platform": "darwin"},
+        "lipo": {
+            "cmd": "lipo",
+            "hint": "macOS only (splits fat iOS simulator libs)",
+            "platform": "darwin",
+        },
     },
     "lint/format": {
         "ruff": {"cmd": "ruff", "hint": "pip install -r cicd/requirements.txt"},
