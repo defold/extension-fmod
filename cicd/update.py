@@ -285,23 +285,22 @@ def update_html5(archive: Path, tmpdir: Path) -> None:
     )
 
 
+ANDROID_ABIS = {
+    "arm64-android": "arm64-v8a",
+    "armv7-android": "armeabi-v7a",
+    "x86_64-android": "x86_64",
+}
+
+
 def update_android(archive: Path, tmpdir: Path) -> None:
     log.debug("Updating Android...")
     d = tmpdir / "android"
     _extract_tar(archive, d, strip=1)
 
-    arm64 = REPO_ROOT / "fmod" / "lib" / "arm64-android"
-    _copy(d / "api" / "core" / "lib" / "arm64-v8a" / "libfmod.so", arm64 / "libfmod.so")
-    _copy(
-        d / "api" / "studio" / "lib" / "arm64-v8a" / "libfmodstudio.so", arm64 / "libfmodstudio.so"
-    )
-
-    armv7 = REPO_ROOT / "fmod" / "lib" / "armv7-android"
-    _copy(d / "api" / "core" / "lib" / "armeabi-v7a" / "libfmod.so", armv7 / "libfmod.so")
-    _copy(
-        d / "api" / "studio" / "lib" / "armeabi-v7a" / "libfmodstudio.so",
-        armv7 / "libfmodstudio.so",
-    )
+    for platform, abi in ANDROID_ABIS.items():
+        dest = REPO_ROOT / "fmod" / "lib" / platform
+        _copy(d / "api" / "core" / "lib" / abi / "libfmod.so", dest / "libfmod.so")
+        _copy(d / "api" / "studio" / "lib" / abi / "libfmodstudio.so", dest / "libfmodstudio.so")
 
     jar_dest = REPO_ROOT / "fmod" / "lib" / "android"
     _copy(d / "api" / "core" / "lib" / "fmod.jar", jar_dest / "fmod.jar")

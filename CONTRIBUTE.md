@@ -86,8 +86,10 @@ The iOS distribution ships a single fat (arm64 + x86_64) simulator archive. The
 script splits it with `lipo`: the x86_64 slice goes to `fmod/lib/x86_64-ios/`
 (Defold 1.13.1 and older) and the arm64 slice to `fmod/lib/arm64_sim-ios/`
 (Defold 1.13.2+, where `x86_64-ios` was removed). Once the extension requires
-Defold 1.13.2 or newer, `x86_64-ios` can be dropped from `cicd/update.py`,
-`fmod/ext.manifest` and `fmod/lib/`.
+Defold 1.13.2 or newer, `x86_64-ios` can be dropped from `cicd/update.py` and
+`fmod/lib/`.
+
+`x86_64-android` (Android emulator) also requires Defold 1.13.2 or newer.
 
 On non-macOS systems (where `hdiutil` is unavailable), skip Apple platforms
 with `--ignore-apple`:
