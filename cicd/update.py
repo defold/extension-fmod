@@ -145,6 +145,19 @@ def update_macos(archive: Path, tmpdir: Path) -> None:
     _codesign(dest / "libfmodstudio.dylib")
 
 
+# arm64_sim-ios replaced x86_64-ios in Defold 1.13.2
+# (https://github.com/defold/defold/pull/12900); both are kept for now.
+IOS_SIM_SLICES = {
+    REPO_ROOT / "fmod" / "lib" / "x86_64-ios": "x86_64",
+    REPO_ROOT / "fmod" / "lib" / "arm64_sim-ios": "arm64",
+}
+
+
+def _lipo_thin(src: Path, arch: str, dst: Path) -> None:
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    _run(["lipo", str(src), "-thin", arch, "-output", str(dst)])
+
+
 def update_ios(archive: Path, tmpdir: Path) -> None:
     log.debug("Updating iOS...")
     mp = tmpdir / "ios"
@@ -153,19 +166,23 @@ def update_ios(archive: Path, tmpdir: Path) -> None:
     try:
         api = mp / "FMOD Programmers API" / "api"
         arm_dest = REPO_ROOT / "fmod" / "lib" / "arm64-ios"
-        sim_dest = REPO_ROOT / "fmod" / "lib" / "x86_64-ios"
         _copy(api / "core" / "lib" / "libfmod_iphoneos.a", arm_dest / "libfmod.a")
         _copy(api / "studio" / "lib" / "libfmodstudio_iphoneos.a", arm_dest / "libfmodstudio.a")
-        _copy(api / "core" / "lib" / "libfmod_iphonesimulator.a", sim_dest / "libfmod.a")
-        _copy(
-            api / "studio" / "lib" / "libfmodstudio_iphonesimulator.a", sim_dest / "libfmodstudio.a"
-        )
+        # FMOD ships one fat (arm64 + x86_64) simulator archive; split it per platform
+        for sim_dest, arch in IOS_SIM_SLICES.items():
+            _lipo_thin(
+                api / "core" / "lib" / "libfmod_iphonesimulator.a", arch, sim_dest / "libfmod.a"
+            )
+            _lipo_thin(
+                api / "studio" / "lib" / "libfmodstudio_iphonesimulator.a",
+                arch,
+                sim_dest / "libfmodstudio.a",
+            )
     finally:
         _run(["hdiutil", "detach", str(mp)])
-    _codesign(arm_dest / "libfmod.a")
-    _codesign(arm_dest / "libfmodstudio.a")
-    _codesign(sim_dest / "libfmod.a")
-    _codesign(sim_dest / "libfmodstudio.a")
+    for dest in (arm_dest, *IOS_SIM_SLICES):
+        _codesign(dest / "libfmod.a")
+        _codesign(dest / "libfmodstudio.a")
 
 
 def _require_patchelf() -> str:
@@ -268,23 +285,22 @@ def update_html5(archive: Path, tmpdir: Path) -> None:
     )
 
 
+ANDROID_ABIS = {
+    "arm64-android": "arm64-v8a",
+    "armv7-android": "armeabi-v7a",
+    "x86_64-android": "x86_64",
+}
+
+
 def update_android(archive: Path, tmpdir: Path) -> None:
     log.debug("Updating Android...")
     d = tmpdir / "android"
     _extract_tar(archive, d, strip=1)
 
-    arm64 = REPO_ROOT / "fmod" / "lib" / "arm64-android"
-    _copy(d / "api" / "core" / "lib" / "arm64-v8a" / "libfmod.so", arm64 / "libfmod.so")
-    _copy(
-        d / "api" / "studio" / "lib" / "arm64-v8a" / "libfmodstudio.so", arm64 / "libfmodstudio.so"
-    )
-
-    armv7 = REPO_ROOT / "fmod" / "lib" / "armv7-android"
-    _copy(d / "api" / "core" / "lib" / "armeabi-v7a" / "libfmod.so", armv7 / "libfmod.so")
-    _copy(
-        d / "api" / "studio" / "lib" / "armeabi-v7a" / "libfmodstudio.so",
-        armv7 / "libfmodstudio.so",
-    )
+    for platform, abi in ANDROID_ABIS.items():
+        dest = REPO_ROOT / "fmod" / "lib" / platform
+        _copy(d / "api" / "core" / "lib" / abi / "libfmod.so", dest / "libfmod.so")
+        _copy(d / "api" / "studio" / "lib" / abi / "libfmodstudio.so", dest / "libfmodstudio.so")
 
     jar_dest = REPO_ROOT / "fmod" / "lib" / "android"
     _copy(d / "api" / "core" / "lib" / "fmod.jar", jar_dest / "fmod.jar")
